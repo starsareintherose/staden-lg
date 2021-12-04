@@ -1,0 +1,17 @@
+0  file not found
+	The file in the file of file names was not found.
+
+1  read too short
+	The read was shorter than the minimum match length.
+
+2  failed to align and not entered
+	The read had minimum match length hits with more than one
+	reading and didn't aligned with any.
+
+3  failed on entry
+	The read already exists in the database.
+
+4  failed to align but entered
+	The read was to make a join, but after being incorporated into
+	one contig, it could not be aligned successfully with the other
+	within the assembly constraints.

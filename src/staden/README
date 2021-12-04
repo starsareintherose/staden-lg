@@ -1,0 +1,37 @@
+The staden suite of sequence analysis programs for the SUN/X11
+--------------------------------------------------------------
+
+The contents of this directory should be (at least):
+bin		executable sequence analysis programs
+help		helpfiles used by these programs
+staden.l        manual page
+staden.login	csh initialisations
+staden.profile	sh initialisations
+tables		tables used by the programs
+
+Installers should first print out a copy of the manual page.
+This describes the current state of the software and how to
+invoke the initialisations. The manual page should be placed
+somewhere where `man' can find it.
+
+The directory structure should be position independent. It's
+location, however, must be encoded in the environment
+variable $STADENROOT. This is described in the man page.
+
+
+xdap - Sequence assembly program
+--------------------------------
+
+This is the source directory for the dap and xdap sequence assembly
+programmes, and convert_project.  As well as the sources you should
+find a makefile and a default resources file "Xdap".
+
+The "xdap" application can be constructed by simply typing "make xdap",
+and installed by typing "make installx" As xdap requires objects from
+the "staden" and "ted" directories, it should be made after the staden
+package proper and the trace editor have been made.
+
+The default X resource file "Xdap" files is found in
+$STADENROOT/tables, and the environment variable XFILESEARCHPATH is set
+in staden.login to refer to it. This file could also be placed in the
+"/usr/lib/X11/app-defaults" directory.

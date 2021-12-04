@@ -1,0 +1,25 @@
+The staden suite of sequence analysis programs for the SUN/X11
+--------------------------------------------------------------
+
+This is the source directory for the staden suite of programs.
+This file describes what its contents are, how to make it and
+how to install it. The companion file `README' is to be read
+by those who have just installed the suite.
+
+The contents of this directory should be (at least):
+                The executable sequence analysis programs
+*.f, *.c *.h    The program sources
+help		helpfiles used by these programs
+makefile
+staden.l        manual page
+staden.login	csh initialisations
+staden.profile	sh initialisations
+tables		tables used by the programs
+
+makefile
+--------
+The makefile needs the macro `SRCDIR' setting before it runs.
+There are commands to make individual programs (e.g. `make xpip'),
+all the `normal' xterm programs (`make nprogs'), all the X programs
+(`make xprogs'), all the programs (`make all') and to install
+everything (`make install') and to install bits.

@@ -1,0 +1,48 @@
+#! /bin/csh -f
+#
+# File: clean
+# Version: 1.1
+#
+# Author: Simon Dear
+#         MRC Laboratory of Molecular Biology
+#	  Hills Road
+#	  Cambridge CB2 2QH
+#	  United Kingdom
+#
+# Created: 19 January 1993
+# Updated:
+#
+# Description:
+#       C shell script to remove empty results folders
+#
+# Usage:
+#	clean dir [dir...]
+#
+
+set diri = 1
+set dirn = $#argv
+while ( $diri <= $dirn )
+    set dir = "$argv[$diri]"
+
+    if (! -e "$dir") then
+	echo $dir does not exist
+	goto skip
+    else if (! -d "$dir") then
+	echo "$dir" is not a directory
+	goto skip
+    endif
+
+    # remove directory, but only if no files left
+    # >150 0.5k disk blocks is arbitrary, but should trap any valid ABI files
+    set big_files = `find "$dir" -size +150 -print`
+    if ( $#big_files == 0 ) then
+	echo Removing directory "$dir"
+	/bin/rm -r "$dir"
+    else
+	echo Not removing directory "$dir" - large files present
+    endif
+
+skip:
+    @ diri ++
+end
+

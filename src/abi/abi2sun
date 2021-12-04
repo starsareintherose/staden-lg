@@ -1,0 +1,88 @@
+#! /bin/sh
+# shell script to process a batch of ABI data.
+# it assumes that the raw data is in ~/Mac-files-$USER/'Results date',
+# where date is e.g. 10_28_90.
+# after preliminary checks it runs ted on each file
+# then forces the user to back up on tape
+# then copies everything across to the project directory
+# (latter two steps are done in abibackup, so they can be executed on a
+#  remote machine - cele in our case)
+#
+# RMD 6/12/90, based on an original of JES
+#
+# define machine on which qic drive resides
+QIC_MACH=dumpy
+
+if test ! -n "$DISPLAY"
+  then
+    echo "Sorry - you must run abiprocess under X windows"
+    exit 1
+  fi
+
+case $# in
+  2) ;;
+  *) echo 'Usage: abiprocess machine_letter date' 1>&2; exit 2
+esac
+
+if test ! -d $HOME/Mac-files-$USER/Results?$1?$2
+  then
+    echo "Bad folder machine or date"
+    exit 1
+  fi
+cd $HOME/Mac-files-$USER/Results?$1?$2
+
+echo "abiprocess: runs ted, backs up on tape, and transfers to project"
+echo "  To abort, type CTRL/C in the xterm window while in ted"
+echo "  If you do this, or you don't backup, just rerun abiprocess; you"
+echo "    will not have to run ted again on traces you have already processed."
+echo "  You can not transfer to your project without backing up."
+
+# next loop runs ted on each eligible file
+
+filenames=${2}${1}fn	# file of filenames
+
+for i in 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 
+  do
+    oldname=Sample?$i
+    if test ! -f $oldname
+      then continue
+    fi
+# sed in next line replaces spaces in sample name by  '_', since
+# spaces mess things up badly (they shouldn't be there!)
+    newname=`echo \`getABISampleName $oldname\` | sed 's/ /_/g'`
+    echo $i $newname
+    if test $newname 
+      then if test -f $oldname.Seq
+        then 
+          ted -ABI $oldname -output $newname -raw $newname"RES"
+	  if test ! $? = 0
+	    then 
+	      echo "ted failed - am exiting without changing that clone"
+	      exit 1
+	    fi
+#          2rs -abi < "Sample $i.Seq" > $newname"MCH"
+	  rm $oldname.Seq
+          if test -f $newname
+	    then
+	      mv $oldname $newname"RES"
+	      cat >> $filenames << EOF
+$newname
+EOF
+	    else 
+	      mv $oldname $newname"FLD"
+          fi
+        else mv $oldname $newname"FLD"
+        fi
+# if they didn't attach a name to their clone then destroy the data
+      else 
+	if test -f "Sample $i.Seq"
+          then
+	    echo "Can't find name for sample $i - get help!"
+	    exit 1 
+          else
+	    rm $oldname
+	fi
+    fi
+  done
+
+rsh $QIC_MACH /usr/local/bin/abibackup  "\"${1}?${2}\""

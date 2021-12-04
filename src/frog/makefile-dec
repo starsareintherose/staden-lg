@@ -1,0 +1,32 @@
+CC = c89
+CFLAGS = -g -std -w0
+
+SRC = .
+PROGS = frog toad
+all: $(PROGS)
+
+FROGOBJ =\
+	frog.o\
+	mach-io.o
+
+frog : $(FROGOBJ)
+	$(CC) $(CFLAGS) -o frog $(FROGOBJ)
+
+
+TOADOBJ =\
+	toad.o\
+	scfIO.o\
+	mach-io.o
+
+toad : $(TOADOBJ)
+	$(CC) $(CFLAGS) -o toad $(TOADOBJ)
+
+
+#
+# Specials
+#
+%.o:$(SRC)/%.c
+	$(CC) $(CFLAGS) -c $<
+
+clean:
+	/bin/rm -f $(PROGS) $(FROGOBJ)

@@ -1,0 +1,81 @@
+#! /bin/csh -f
+#
+# script to make a free text index for the genbank library
+#
+# NOTE only active for primate file
+#
+
+echo "genbfreetext.script Version 1.0"
+echo ""
+
+set RM = "echo /bin/rm -f"
+set SORT = "sort -T tmp"
+set UNIQ = uniq
+
+#
+#
+#
+set WORDS = $STADENROOT/seqman/stopwords
+
+genbfreetext gbpri.seq gbpri.list
+if ( $status ) goto abort
+genbfreetext gbrod.seq gbrod.list
+if ( $status ) goto abort
+genbfreetext gbmam.seq gbmam.list
+if ( $status ) goto abort
+genbfreetext gbvrt.seq gbvrt.list
+if ( $status ) goto abort
+genbfreetext gbinv.seq gbinv.list
+if ( $status ) goto abort
+genbfreetext gbpln.seq gbpln.list
+if ( $status ) goto abort
+genbfreetext gborg.seq gborg.list
+if ( $status ) goto abort
+genbfreetext gbbct.seq gbbct.list
+if ( $status ) goto abort
+genbfreetext gbrna.seq gbrna.list
+if ( $status ) goto abort
+genbfreetext gbvrl.seq gbvrl.list
+if ( $status ) goto abort
+genbfreetext gbphg.seq gbphg.list
+if ( $status ) goto abort
+genbfreetext gbsyn.seq gbsyn.list
+if ( $status ) goto abort
+genbfreetext gbuna.seq gbuna.list
+if ( $status ) goto abort
+
+${SORT} -b +1 gbpri.list gbrod.list gbmam.list gbvrt.list gbinv.list gbpln.list gborg.list gbbct.list gbrna.list gbvrl.list gbphg.list gbsyn.list gbuna.list | ${UNIQ} | excludewords ${WORDS} | ${SORT} >! freetext.sorted
+if ( $status ) goto abort
+${RM} gbpri.list gbrod.list gbmam.list gbvrt.list gbinv.list gbpln.list gborg.list gbbct.list gbrna.list gbvrl.list gbphg.list gbsyn.list gbuna.list 
+
+# sort on words, remove dumplicates, remove stopwords, resort on entry name
+#${SORT} -b +1 gbpri.list | ${UNIQ} | excludewords ${WORDS} | ${SORT} >! freetext.sorted
+#if ( $status ) goto abort
+#${RM} gbpri.list
+
+# include entry numbers in the file
+freetext2 freetext.sorted freetext.entry
+if ( $status ) goto abort
+${RM} freetext.sorted
+
+# sort on text
+${SORT} -b +2 freetext.entry >! freetext.sorted2
+if ( $status ) goto abort
+${RM} freetext.entry
+
+# create the index
+freetext4 freetext.sorted2 freetext.trg freetext.hit
+if ( $status ) goto abort
+${RM} freetext.sorted2
+
+echo "Completion successful"
+echo ""
+
+exit 0
+
+#
+# Abort
+#
+abort:
+echo "genbfreetext.script: aborting due to serious error"
+exit 2

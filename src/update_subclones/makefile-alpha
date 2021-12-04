@@ -1,0 +1,42 @@
+#
+# Makefile for subclonedb
+#
+
+#
+# Programs made by this makefile
+#
+PROGS = update_subclones
+
+#
+# Where the wild things are
+#
+SRC = .
+MISCSRC = $(SRC)/../Misc
+MISCBIN = $(MISCSRC)/alpha-binaries
+INCLUDES = -I$(SRC) -I$(MISCSRC)
+
+#
+# Alpha
+#
+CC = cc
+CFLAGS = -g -std1 -ieee_with_inexact $(INCLUDES)
+LD = cc
+LDFLAGS = -g -non_shared
+
+#
+# Here they are
+#
+
+update_subclones : update_subclones.o $(MISCBIN)/misc.a
+	$(LD) $(LDFLAGS) -o update_subclones update_subclones.o $(MISCBIN)/misc.a
+
+#
+# Special dependencies
+#
+all: $(PROGS)
+
+clean:
+	/bin/rm -f $(PROGS)
+
+%.o: $(SRC)/%.c
+	$(CC) $(CFLAGS) -c $<

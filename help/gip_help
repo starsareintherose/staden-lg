@@ -1,0 +1,198 @@
+                                  GIP
+
+        A digitizer is a  two  dimensional  surface which is such that
+ if  a  special  pen  is  pressed onto it, the pens coordinates can be
+ recorded by a computer.  These coordinates can be  interpreted  by  a
+ program.
+
+        The digitizing device we use works by the pen emitting a  high
+ frequency  sound  which is picked up by two microphones positioned at
+ the rear of the working area.  The  pen  position  is  determined  by
+ triangulation  and the digitizing device sends the coordinates to the
+ computer.  As  no  special  surface  is  required  the   device   can
+ conveniently  be  positioned  on  a light box giving the sequencer an
+ unobscured view of the autoradiographs.
+ The digitizer  is  called  a  GRAPHBAR  MODEL  GP7  made  by  Science
+ Accessories  Corp,  970  Kings  Highway  West, Southport, Connecticut
+ 06490, USA.
+
+        The program uses a menu to allow the user to  select  commands
+ or  to   enter  the  uncertainty  codes  for  areas  of  the gel that
+ are difficult to interpret.  A menu is simply a series of boxes drawn
+ on  the   digitizing  surface   that   each   contain   a  command or
+ uncertainty code.  When the user puts the pen down in these   special
+ regions   the program interprets the coordinates as commands and acts
+ appropriately. A copy of the menu should have been sent to  you.   It
+ should  be  stuck  down  on  the  surface  of  the  light  box in the
+ digitizing area. For convenience it is best to  position  it  to  the
+ right of the digitizing area, but in practice as long as its top edge
+ is parallel to the digitizer box, it  can  be  put  anywhere  in  the
+ active region.
+
+ Entering gel readings using a digitizer
+
+        The autoradiograph should be stuck down on the light box  with
+ the  lanes  running,  as  near is as possible, at right angles to the
+ digitizer. To read an autoradiograph placed on the light box the user
+ need  only  define the positions of the four sequencing lanes and the
+ bases to which they correspond and then use  the  pen  to  point   to
+ each  successive   band progressing up the gel.  The program examines
+ the coordinates of each pen position to see in  which  of  the   four
+ lanes  it   lies  and  assigns  the  corresponding  base to be stored
+ in the computer.  Each time the pen tip is depressed to  point  to  a
+ position  on   the   surface  of the digitizer the program sounds the
+ bell on the terminal (a different sound for each of the four bases on
+ the  microcomputer  version  of  the program) to indicate to the user
+ that a point has been  recorded.   As  the   sequence   is  read  the
+ program displays it on the screen.
+
+        The program uses a menu to allow the user to  select  commands
+ or  to   enter  the  uncertainty  codes  for  areas  of  the gel that
+ are difficult to interpret.  A menu is simply a series of boxes drawn
+ on  the   digitizing  surface   that   each   contain   a  command or
+ uncertainty code.  When the user puts the pen down in these   special
+ regions   the program interprets the coordinates as commands and acts
+ appropriately.     As    well    as    the     uncertainty      codes
+ A,C,G,T,1,2,3,4,B,D,H,V,R,Y,X,-,5,6,7,8   the  following commands are
+ included in the menu:  DELETE removes the last  character   from  the
+ sequence; RESET allows the lane centres to be redefined; START  means
+ begin  the  next stage  of  the   procedure;   STOP  means  stop  the
+ current  stage in the procedure;  CONFIRM means confirm that the last
+ command  or  set  of coordinates  are  correct.
+
+        The digitizing device also has a menu of its own. This lies in
+ a two inch wide strip immediately in front of the digitizing box. Pen
+ positions within this two inch strip are interpretted as commands  to
+ the  digitizer  and  are  not sent to the GIP program. In general the
+ only time users will need to use the device menu is  when  they  tell
+ GIP  where the program menu lies in the digitizing area. This is done
+ by first hitting ORIGIN in the  device  menu  and  then  hitting  the
+ bottom  left  hand  corner  of the program menu. The program menu can
+ hence be positioned anywhere in  the  active  region  but  should  be
+ arranged parallel to the digitizer.
+
+        The user should try to hit the bands as near  as  possible  to
+ the  centre  of the lanes because the program tracks the lanes up the
+ film using the pen positions. By using  this  tracking  strategy  the
+ user only has to define the centres of the bottom of the lanes before
+ starting to read the film. The program  can  correctly  follow  quite
+ curved  lanes  and constantly checks that its lane centre coordinates
+ look sensible. If the lane centres appear to be getting too close the
+ program stops responding to the pen positions of bands and hence does
+ not ring the bell. If this occurs users must hit the reset box in the
+ menu  and  the program will request them to redefine the lane centres
+ at the current reading position. Then they can continue reading. As a
+ further  safeguard  the  program  will  only respond to pen positions
+ either in the menu or very close to the current reading position.
+
+ Running the gel reading program
+ The autoradiograph should be firmly stuck down on the light  box  and
+ the program started by typing GIP. It will ask the first question.
+  " ? FILE OF FILE NAMES="
+  Type the name for the  file  of  file  names  and  then  follow  the
+  instructions.
+  " HIT DIGITIZER MENU ORIGIN"
+  " THEN PROGRAM MENU ORIGIN"
+  " THEN HIT START IN PROGRAM MENU"
+  If the bell does not sound after you hit start try hitting metric in
+  the  device menu (the program uses metric units, and some digitizers
+  are set to default to use inches; hitting  metric  switches  between
+  the two).
+  After the bell has sounded the program will give  the  default  lane
+  order.
+  " LANE ORDER IS T C A G"
+  " IF CORRECT HIT CONFIRM, ELSE HIT RESET"
+  If the lane order, reading from left to right is correct hit confirm
+  in  the  program  menu. If you are using a different order hit reset
+  and you will be asked to define the lane order from  left  to  right
+  using the program menu (as follows).
+  " DEFINE LANE ORDER (LEFT TO RIGHT) USING MENU"
+  Hit the boxes in the menu that contain the symbols  A,C,G,T  in  the
+  left-right  order  of  the  lanes. The program will respond with the
+  lane order as above and ask for confirmation. When this is received,
+  the  next  task  is  to  define the start positions of the next four
+  lanes.
+  " HIT START, THEN HIT (LEFT TO RIGHT)"
+  " THE START POSITIONS FOR THE NEXT FOUR LANES"
+  Hit the centres of the four lanes at a height level with  the  first
+  band that is going to be read. The program will report the mean lane
+  separations and asks for confirmation that they are correct.
+  " MEAN LANE SEPARATION IS XX"
+  " HIT CONFIRM TO CONTINUE"
+  Users will become familiar with the values from their films and will
+  spot  any  unusual numbers.  Asking for confirmation allows users to
+  try again if they  had  made  a  mistake,  but  generally  the  lane
+  separation values can be ignored.  Hit confirm, and the program will
+  give the message
+  " HIT START WHEN READY TO BEGIN READING"
+  Hit start and the program will give the message
+  " HIT BANDS, UNCERTAINTY CODES, RESET OR STOP"
+  Hit the bands, interpretting the sequence progressing up  the  film.
+  If  necessary use the uncertainty codes. If the pen stops responding
+  hit reset and follow the instructions as above.  When  the  sequence
+  becomes unreadable hit stop and the program will ask for a file name
+  for the gel reading just read.
+  " ? FILE NAME FOR THIS GEL READING="
+  Type the file name observing the  rules  about  legal  gel  readings
+  names.  The program will ask if you wish to read another sequence.
+  " TO ENTER ANOTHER GEL READING TYPE 1"
+  To enter another type 1 and you will be back to the step of defining
+  the lane order. Typing anything else will stop the program.
+
+ Running the microcomputer version of the gel reading program
+ The microcomputer version of GIP is slightly different and is  called
+ GIPB.  The  BBC  micro  does not have the capacity to process the gel
+ readings beyond the reading stage.  This means  that  users  of  this
+ program  would  need to transfer their gel readings from the micro to
+ another machine using a terminal emmulator. Transferring  many  files
+ is  tedious  and  so  the  microcomputer  version  of the gel reading
+ program stores all the gel readings for each run of the program in  a
+ single file. This special file contains both sequences and file names
+ and can be moved in a single transfer to another machine. Once on the
+ other machine the single file must be split into separate gel reading
+ files and a file of file  names.  This  is  done  using  the  program
+ BSPLIT.  As  far  as using the microcomputer version of GIP, the only
+ difference is that the first file name the program requests is not  a
+ file of file names, but a name for the single file to contain all the
+ gel readings and their names.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

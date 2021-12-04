@@ -1,0 +1,39 @@
+		       ALFPROCESS DOCUMENTATION
+
+alfprocess and alfprocess2 are scripts that take an alf
+trace file, break it down into smaller pieces corresponding to
+individual clones, and run ted, the trace editor on each one of the
+clones.  Afterwards, alfprocess will backup files to tape and move the accepted
+files into your project directory.
+
+I. alfprocess
+
+alfprocess is modeled directly on abiprocess, it requires that:
+
+(i) your raw data from the alf is held in the directory ~/alf_e/Results<date>
+    where <date> is written 910322a for March 22, 1991 run "a"
+    of the day
+
+(ii) it also requires that your project directory is given
+     relative to your home directory when it asks you for this name
+
+example usage:
+
+% alfprocess 910322a
+
+II. alfprocess2
+
+alfprocess2 allows you to move into any directory containing your raw
+data file (not necessarily ~/alf_e) to process your data.  It will
+organize this data file correctly--creating the proper "Results"
+directory if necessary.  This is useful if, for example, you have
+transferred the file 910322a.alf into the scratch directory
+/home/alf_d.  You can then type:
+
+% cd /home/alf_d
+% alfprocess2 910322a
+
+And the script will copy this file over to your home directory
+~/home/alf_e/Results910322a creating the directory if necessary.  Then
+it will do all the normal alfprocess activities.
+

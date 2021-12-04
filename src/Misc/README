@@ -1,0 +1,7 @@
+Miscellaneous Routines                Simon Dear, 14 April 1992
+---------------------------------------------------------------
+
+The source modules in this directory are for commonly used
+routines. The archive misc.a should be made before any
+other programs supplied on this tape.
+

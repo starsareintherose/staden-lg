@@ -1,0 +1,154 @@
+SQUIRREL Overview (Version 1.4)      10 July 1992     Simon Dear
+================================================================
+
+0. Introduction
+
+This is intended as a brief overview for those wanting to set up
+squirrel on their system. It gives an overview of what is supplied
+in the package, what changes must be made, and places where it is
+foreseen problems may occur.
+
+
+1. Overview of the squirrel directory structure
+
+./squirrel
+	The root of the squirrel tree. To use squirrel V1.4 ensure
+that the environment variable SQUIRREL is set to be the path name of
+the top of the tree. eg
+	setenv SQUIRREL /home/BioSW/squirrel
+
+./squirrel/bin
+	Contains all of the programs required by squirrel -except- the
+assembly program(s) dap(,bap,gap).
+
+./squirrel/doc
+	All the existing documentation on squirrel. Of interest are:
+		SQUIRREL - overview of processing
+		SysManagement - how to manage squirrel's tables
+	Read them!!!
+
+./squirrel/scripts
+	All the scripts used by squirrel are here. The important one
+is `squirrel'. A copy of this should be placed in the user's project
+directory and edited so that the environment variables PROJECT and
+EDITOR reflect the project name and the user's choice of editor.
+	
+./squirrel/seqs
+	All the vector sequence files that squirrel V1.4 knows about.
+
+./squirrel/tables
+	Information about the sequencing project. See the document
+SysManagement and SQUIRREL for details.
+
+
+
+
+
+2. Changes required
+
+The following changes should be made immediately. They are the obvious
+things. There are undoubtedly more subtle changes to be made in the
+scripts.
+
+./squirrel/tables/vector-seqfiles
+	You may need to add entries to this file. V1.4 assumes that
+the files exist in the directory $SQUIRREL/seqs
+
+./squirrel/tables/databases
+	Register your users now!
+
+./squirrel/tables/seqclone-sites
+	You may need to add entries to this file. WARNING - it is
+exceedingly difficult to get the values of the cloning site and
+primer positions correct. Ensure that the associated vector file
+is in the appropriate sense.
+	Support for multiple cutters: You will need to do provide
+entries for each vector-cutter pair. Eg M13mp18-SmaI. Default values
+(eg M13mp18) should be included AFTER more specific ones. Subclones
+should include the vector-cutter pair as the sequencing vector.
+	Multiple forward or reverse primers aren't yet supported.
+
+./squirrel/tables/subclones
+	The painful bit. This information will need to be updated on a
+regular basis.
+
+./squirrel/tables/clone_types.awk
+	Information mapping clones to their cloning vector.
+
+
+
+
+
+3. Assumptions made
+
+To foresee where squirrel may go wrong, it will pay be be aware of the
+assumptions made by the script.
+
+a) Machines supported
+	Currently squirrel assumes that you have an ABI machine. The
+script has been written so that all ABI specific parts are separated.
+If other machines are to be supported, then similarly functioning
+scripts to ABI-sess-files.csh (for determining samples and experiments to
+be processed) and ABI-exp-files.csh (creation of experiment files -
+machine specific bits) will need to be written.
+
+b) Location of Results folders
+	Results folders are assumed to be in the directory called:
+		$HOME/Mac-files-$USER/"Results $MACHINE $DATE"
+where $HOME is the user's home directory, $USER is the user's is,
+$MACHINE and $DATE are the command line arguments passed to squirrel.
+This is evaluated once, in the script squirrel.
+
+c) Samples to be processed
+	V1.4 will assume that all files in the results folder matched by the
+glob "Sample [0-9][0-9]{,.[0-9]}" are to be processed.
+
+d) Experiment naming conventions
+	squirrel makes a few assumptions about the naming convention
+of experiments (samples):
+	<name> ::= <mtd><well>.<class><anything>
+where:
+             <mtd> ::= [a-z]{1,2}[0-9][0-9]
+            <well> ::= <anything>
+	   <class> ::= [fF] {forward read, double stranded}
+		     | [rR] {reverse read, double stranded}
+	             | [^rR] {forward read, single stranded}
+	<anything> ::= {any else}
+Because of the way squirrel uses lookup tables to gather its
+information, it is essential that the prefix <mtd> determines
+a unique microtitre dish. (ie can't have mtds with names "a10" and
+"a1"). I think our naming convention guarentees this. Also, being able
+to determine the direction of the read is essential for vepe to work.
+The strandedness is determined but isn't currently used. All this is
+encoded in the script `embellish-exp-files.csh'.
+
+e) Only used for shotgun stage
+	squirrel has only been tested for the shotgun stage. V1.4 is
+not guarenteed to work for the walking phase.
+
+f) Owner of directory
+	squirrel doesn't check that the user is the ower of the
+results folder or the project directory.
+
+g) Unwanted files
+	Squirrel assumes that you don't want to keep any of the files
+(ABI traces or .Seq files) in the Results folder. Traces are converted
+to SCF format by ABI-exp-files.csh. 
+
+h) Software assumptions
+	You mush have awk and assembly program (dap,bap) to run
+squirrel. All other programs are provided. squirrel assumes that you
+have a version of the assembly program that writes out reason codes
+with the assembly failures, but it doesn't complain if you don't.
+
+i) That you want to run the entirity of squirrel and not just bits of it
+	Most of the scripts in squirrel could be run as stand-alone
+programs but they weren't written with that intention. With squirrel
+you should assume you get all or nothing.
+
+
+
+
+
+
+

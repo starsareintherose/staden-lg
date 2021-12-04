@@ -1,0 +1,29 @@
+Creating SCF files from ABI 373A and Pharmacia A.L.F. trace files
+-----------------------------------------------------------------
+
+SCF files can be created from existing trace files using the program
+makeSCF. Typically, SCF files take up a mere 30% of the space of ABI
+373A traces.
+
+Usage:
+
+    makeSCF {-ABI | -ALF} tracefile -output scffile
+
+Where:
+    tracefile is the file you wish to convert
+and
+    scffile is the name of the SCF file that will be created.
+
+
+Example:
+
+To convert an ABI 373A trace:
+    makeSCF -ABI trace.abi -output trace.scf
+
+To convert a Pharmacia A.L.F. trace:
+    makeSCF -ALF trace.alf -output trace.scf
+
+
+NOTE:
+The Pharmacia A.L.F. traces referred to here are those created by
+the program alfsplit.

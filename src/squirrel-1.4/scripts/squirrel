@@ -1,0 +1,73 @@
+#! /bin/csh
+#
+# squirrel
+#     A small brown furry animal
+# 
+# Usage
+#     squirrel machine_letter date
+#
+
+#
+# Define the project
+#
+set PROJECT = TESTDB
+
+#
+# Define the database to use if different from default
+#
+#setenv SQUIRREL_SUB H4
+
+
+onintr abort
+
+# Usage
+if ( $#argv != 2 ) then
+	echo "Usage: squirrel machine_letter date"
+	exit 2
+endif
+
+set transfer_directory = "$HOME/Mac-files-$USER/Results $1 $2"
+if ( ! -d "$transfer_directory" ) then
+	echo "squirrel: Bad folder machine or date"
+	exit 1
+endif
+
+#
+# Where the brown and furry things are
+#
+if (! $?SQUIRREL) then
+	echo "Error - environment variable SQUIRREL not defined"
+	#setenv SQUIRREL /nfs/al/cb0/wormpub/BioSW/squirrel
+	exit 1
+endif
+setenv EDITOR emacs
+
+#
+# Programs and scripts
+#
+# to assemble automatically
+# 	set PROCESS = $SQUIRREL/scripts/do-it.csh
+# to process without assembly
+# 	set PROCESS = $SQUIRREL/scripts/do-it-no-assembly.csh
+set PROCESS = $SQUIRREL/scripts/do-it.csh
+
+#
+# The real work starts here
+#
+$PROCESS "$transfer_directory" $PROJECT
+if ( $status ) then
+	echo "squirrel: Error occurred during processing."
+	goto abort
+endif
+
+#
+# Successful completion
+#
+exit 0
+
+abort:
+#
+# Interruption not normal termination
+#
+
+exit 1

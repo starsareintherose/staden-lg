@@ -1,0 +1,32 @@
+Converting Sap Databases For Be Used With XDAP         SD  10 July 1991
+=======================================================================
+
+The sequence assembly programmes dap and xdap are based on the programs
+sap and xsap, with major modifications. For a concise summary of the
+new features I refer you to Rodger and my paper, "A sequence assembly
+and editing program for efficient management of large projects"
+(Nucleic Acids Research, in press)
+
+The need for storing extra information in project databases has
+resulted in the creation of two files. For users who wish you use old
+(sap) databases with xdap, additional files must be created to use all
+the new features. The program 'convert_project' does this.  It is
+interactive, and asks you for names of relevant files, version numbers
+etc. Here is a sample program dialogue:
+
+
+    % convert_project
+    Database conversion program
+    Converts *.RD? file to *.TG? and *.CC? files
+
+    Project name ? test
+    Version ? 0
+    Conversion completed.
+
+
+Further, please ensure that the file TAGDB is in your project
+directory. Copies can be found in $STADTABL.  Alternatively ensure that
+the environment TAGDB variable is set to $STADTABL/TAGDB
+
+    setenv TAGDB $STADTABL/TAGDB
+

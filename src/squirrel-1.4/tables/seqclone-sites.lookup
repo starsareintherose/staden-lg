@@ -1,0 +1,20 @@
+/^#/ {print "#";}
+/^#/ {print "# Database of sequencing clone cloning and priming sites";}
+/^#/ {print "#";}
+/^#/ {print "#    <clone> <clone-site> <forward-primer-site> <reverse-primer-site>";}
+/^#/ {print "#";}
+/^#/ {print "# NOTES:";}
+/^#/ {print "#    clone-site is defined as the base position of the 3' end";}
+/^#/ {print "#    of the cloning site";}
+/^#/ {print "#";}
+/^#/ {print "# Example:";}
+/^#/ {print "#";}
+/^#/ {print "# Our sequencing vector is M13mp18, our cloning site is SmaI and";}
+/^#/ {print "# we are using the -20 forward sequencing primer and the -21";}
+/^#/ {print "# reverse sequencing primer. With respect to the seqeunce file";}
+/^#/ {print "# $SQUIRREL/seqs/M13mp18.seq we would have:";}
+/^#/ {print "#";}
+/^#/ {print "# M13mp18 6249 41 -24";}
+/^#/ {print "#";}
+/^M13mp18/ {print "M13mp18 6249 41 -24";}
+/^pBS/ {print "pBS     2305 46 -79";}

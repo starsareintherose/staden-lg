@@ -1,0 +1,46 @@
+#
+# Database to determine clone types from clone names
+#
+# Example:
+# 
+# This is an example from the C.elegans sequencing project.
+#
+# Assumes that there is one clone name per line.
+# Outputs to stdout clone vector.
+#
+# Data in this program has been taken from "Clone types in the genome map
+# of Caenorhabditis elegans" courtesy by John Sulston. This needs
+# revision.
+#
+# Possible usage:
+#	 set clone-type = `echo $clone | awk -f clone-types.awk`
+#
+/^A/		{ print $1,"Lambda"; next; }
+/^ZL/		{ print $1,"Lambda"; next; }
+/^YSL/		{ print $1,"Lambda"; next; }
+/^[BCDERM]/	{ print $1,"pJB8"; next; }
+/^ZC/		{ print $1,"pJB8"; next; }
+/^K/		{ print $1,"LoristB"; next; }
+/^T/		{ print $1,"Lorist2"; next; }
+/^W/		{ print $1,"Lorist4"; next; }
+/^F/		{ print $1,"Lorist6"; next; }
+/^ZK/		{
+			num = substr($1,3) + 0.0;
+			if (num <   15) { print $1,"unknown"; next; }
+			if (num <=  56) { print $1,"Lorist6"; next; }
+			if (num <= 130) { print $1,"Lorist2"; next; }
+			if (num <= 164) { print $1,"Lorist6"; next; }
+			if (num <= 177) { print $1,"Lorist2"; next; }
+			if (num <= 192) { print $1,"Lorist6"; next; }
+			if (num <= 344) { print $1,"Lorist2"; next; }
+			if (num <= 354) { print $1,"Lorist6"; next; }
+			if (num <= 514) { print $1,"Lorist2"; next; }
+			if (num <= 552) { print $1,"Lorist6"; next; }
+			if (num <= 596) { print $1,"Lorist2"; next; }
+			if (num <= 616) { print $1,"Lorist?"; next; }
+			if (num <= 626) { print $1,"Lorist2"; next; }
+			if (num <= 692) { print $1,"Lorist6"; next; }
+			if (num <= 756) { print $1,"Lorist2"; next; }
+			if (num >= 757) { print $1,"Lorist6"; next; }
+		}
+/^Y/		{ print $1,"pYAC4"; next; }

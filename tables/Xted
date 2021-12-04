@@ -1,0 +1,182 @@
+!
+! Resources for the "ted" trace editor (Dec 1990)
+!
+
+! A good default font
+Xted*font: 7x13bold
+
+! default magnification
+Xted*magnif: 30
+! default enzyme string to search for as a left cutoff
+Xted*enz: CAGGTC
+
+! The application
+Xted.minWidth:  550
+Xted.minHeight: 250
+
+! Labels have no borders and are not resized
+Xted*Label.borderWidth: 0
+Xted*Label.top:         chainTop
+Xted*Label.bottom:      chainTop
+Xted*Label.left:        chainLeft
+Xted*Label.right:       chainLeft
+
+! Buttons are not resized
+Xted*Command.top:         chainTop
+Xted*Command.bottom:      chainTop
+Xted*Command.left:        chainLeft
+Xted*Command.right:       chainLeft
+
+! All the toggles are one-of-many
+Xted*Toggle.Translations: #override \n\
+         <EnterWindow>:        highlight(Always) \n\
+         <LeaveWindow>:        unhighlight()     \n\
+         <Btn1Down>,<Btn1Up>: set() notify()
+
+Xted.mainForm.title.label: Trace editor
+Xted.mainForm.version.label: \
+Dec 1990
+Xted.mainForm.seqNamePrompt.label: Input:
+Xted.mainForm.seqNamePrompt.height: 13
+Xted.mainForm.seqName.label:       NONE
+Xted.mainForm.seqName.resizable:   True
+Xted.mainForm.seqName.height: 13
+Xted.mainForm.search.label: Search
+Xted.mainForm.search.height: 13
+Xted.mainForm.NorigBasesPrompt.label: Bases:
+Xted.mainForm.NorigBases.label:
+Xted.mainForm.NorigBases.resizable:   True
+Xted.mainForm.strand.label: Strand: Top
+Xted.mainForm.strand.resizable: True
+
+! Display forms have no border
+Xted.mainForm.Form.borderWidth:     0
+
+ ! The edit mode toggles
+Xted.mainForm.Toggle.top:    chainTop
+Xted.mainForm.Toggle.bottom: chainTop
+Xted.mainForm.Toggle.left:   chainLeft
+Xted.mainForm.Toggle.right:  chainLeft
+Xted.mainForm.edmodelab.label: Mode:
+Xted.mainForm.adjustL.label:   Adj left cut
+Xted.mainForm.edSeq.label:     Edit seq
+Xted.mainForm.adjustR.label:   Adj right cut
+Xted.mainForm.edSeq.state:     True
+Xted.mainForm.adjustL.height:   13
+Xted.mainForm.edSeq.height:     13
+Xted.mainForm.adjustR.height:   13
+
+
+! The magnification slider
+Xted.mainForm.maglab.top:    chainTop
+Xted.mainForm.maglab.bottom: chainTop
+Xted.mainForm.maglab.left:   chainLeft
+Xted.mainForm.maglab.right:  chainLeft
+Xted.mainForm.maglab.label: Mag:
+Xted.mainForm.maglab.height: 13
+Xted.mainForm.magscr.top:    chainTop
+Xted.mainForm.magscr.bottom: chainTop
+Xted.mainForm.magscr.left:   chainLeft
+Xted.mainForm.magscr.right:  chainLeft
+Xted.mainForm.magscr.orientation: horizontal
+Xted.mainForm.magscr.length: 100
+Xted.mainForm.magscr.height: 13
+
+Xted.mainForm.scaleDown.label: Scale down
+Xted.mainForm.scaleDown.height: 13
+Xted.mainForm.scaleUp.label: Scale up
+Xted.mainForm.scaleUp.height: 13
+Xted.mainForm.switch.label: Switch
+Xted.mainForm.switch.height: 13
+
+
+! The main display: a viewport containing a form containing graphs
+Xted.mainForm.viewport.top:    chainTop
+Xted.mainForm.viewport.bottom: chainBottom
+Xted.mainForm.viewport.left:   chainLeft
+Xted.mainForm.viewport.right:  chainRight
+Xted.mainForm.viewport.allowHoriz: True
+Xted.mainForm.viewport.forcebars:  True
+Xted.mainForm.viewport.width:      700
+Xted.mainForm.viewport.vpForm.Graph.resizable: True
+Xted.mainForm.viewport.vpForm.Graph.top:    chainTop
+Xted.mainForm.viewport.vpForm.Graph.bottom: chainTop
+Xted.mainForm.viewport.vpForm.Graph.left:   chainLeft
+Xted.mainForm.viewport.vpForm.Graph.right:  chainRight
+Xted.mainForm.viewport.vpForm.trace.top:    chainTop
+Xted.mainForm.viewport.vpForm.trace.bottom: chainBottom
+Xted.mainForm.viewport.vpForm.Graph.font: -misc-*-bold-*15-*
+! The text graph heights are dynamically set to accomodate the font
+Xted.mainForm.viewport.vpForm.trace.height: 150
+! The graphs are dynamically initially set to fill the viewport
+Xted.mainForm.viewport.vpForm.Graph.dimBackground: grey
+Xted.mainForm.viewport.vpForm.Graph.graphColour1:  green
+Xted.mainForm.viewport.vpForm.Graph.graphColour2:  purple
+Xted.mainForm.viewport.vpForm.Graph.graphColour3:  black
+Xted.mainForm.viewport.vpForm.Graph.graphColour4:  red
+
+! Dummy widget - we only care about its width
+Xted.mainForm.dummy.top:    chainTop
+Xted.mainForm.dummy.bottom: chainBottom
+Xted.mainForm.dummy.left:   chainLeft
+Xted.mainForm.dummy.right:  chainRight
+Xted.mainForm.dummy.width:  700
+
+
+! Dialogues
+Xted*search.ioForm.ioPrompt.label:  Search string or base number
+Xted*input.ioForm.ioPrompt.label:   Input a file
+Xted*output.ioForm.ioPrompt.label:  Save a file
+Xted*check.ioForm.ioPrompt.label:   \
+The existing sequence has been altered.\n\
+Do you really want to overwrite it?
+Xted*quit.ioForm.ioPrompt.label:    \
+The existing sequence has been altered.\n\
+Do you really want to quit?
+Xted*check.ioForm..translations:   #override \n\
+         <Key>Return: CRAction()
+Xted*quit.ioForm..translations:    #override \n\
+         <Key>Return: CRAction()
+
+Xted*ioForm.namePrompt.label:       File name:
+Xted*ioForm.nameVal.width:          250
+Xted*ioForm.nameVal.translations:   #override \n\
+         <Key>Return: CRAction()
+Xted*ioForm.next.label: 
+Xted*ioForm.next.resizable:         True
+Xted*ioForm.formatPrompt.label:     File format:
+Xted*ioForm.formatBox.borderWidth:  0
+Xted*ioForm.formatBox.orientation:  horizontal
+Xted*ioForm.formatBox.plainFmt.label: Plain
+Xted*ioForm.formatBox.abiFmt.label:   ABI
+Xted*ioForm.formatBox.abiFmt.state:   True
+Xted*ioForm.formatBox.alfFmt.label:   ALF
+Xted*ioForm.formatBox.alfFmt.state:   False
+Xted*ioForm.formatBox.scfFmt.label:   SCF
+Xted*ioForm.formatBox.scfFmt.state:   False
+Xted*ioForm.formatBox.bottomFmt.label: Bottom
+Xted*ioForm.formatBox.topFmt.label:   Top
+Xted*ioForm.formatBox.topFmt.state:   True
+
+! The `default' button for the dialogue has a wider border
+Xted*input.ioForm.OK.borderWidth:     3
+Xted*output.ioForm.OK.borderWidth:    3
+Xted*check.ioForm.Cancel.borderWidth: 3
+Xted*quit.ioForm.Cancel.borderWidth:  3
+
+! Help shell widget
+Xted.Help.width:  525
+Xted.Help.height: 200
+Xted.Help.minWidth: 525
+Xted.Help.maxWidth: 525
+Xted.Help.minHeight: 150
+Xted.Help.title: ted help
+Xted.Help.form.rmButton.label:  Remove help
+Xted.Help.form.rmButton.top:    chainTop
+Xted.Help.form.rmButton.bottom: chainTop
+Xted.Help.form.rmButton.left:   chainLeft
+Xted.Help.form.rmButton.right:  chainLeft
+Xted.Help.form.text.top:    chainTop
+Xted.Help.form.text.bottom: chainBottom
+Xted.Help.form.text.left:   chainLeft
+Xted.Help.form.text.right:  chainRight

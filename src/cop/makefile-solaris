@@ -1,0 +1,115 @@
+#
+# Makefile for COP (Check Out Project) - SunOS version
+#
+
+#
+# Programs made by this makefile
+#
+PROGS = cop cop-bap
+
+#
+# Where the wild things are
+#
+SRC = .
+TEDSRC = $(SRC)/../ted
+MISCSRC = $(SRC)/../Misc
+MISCBIN = $(MISCSRC)
+CONVERTSRC = $(SRC)/../convert
+INCLUDES = -I$(SRC) -I$(TEDSRC) -I$(MISCSRC) -I$(CONVERTSRC) -I/usr/openwin/include
+
+#
+# Sun
+#
+CC = gcc
+GCCWARNINGS = -Wreturn-type -Wunused -Wswitch -Wcomment -W -Wformat \
+	      -Wuninitialized
+CFLAGS = -g -ansi -pedantic $(INCLUDES)
+# gcc2.1 -static, cc -Bstatic, else nothing
+LIBFLAGS = -static
+
+#
+# Main and miscellaneous routines
+#
+COPOBJ = \
+	cop.o
+
+COPBAPOBJ = \
+	cop-bap.o
+
+LIBS = \
+	$(MISCBIN)/misc.a
+
+#
+# For reading in xdap database
+#
+XDAPIO = \
+	dapIO.o
+
+XBAPIO = \
+	bapIO.o
+
+#
+# For reading in trace files
+#
+TRACES = \
+	getSeq.o \
+	seqIOABI.o \
+	seqIOALF.o \
+	seqIOSCF.o \
+	seqIOPlain.o \
+	opp.o \
+	seq.o \
+	fpoint.o\
+	mach-io.o
+
+#
+# For aligning sequences
+#
+ALIGN = \
+	llin.o
+
+#
+# The whole lot
+#
+OBJ = \
+	$(COPOBJ) \
+	$(XDAPIO) \
+	$(TRACES) \
+	$(ALIGN)
+
+OBJBAP = \
+	$(COPBAPOBJ) \
+	$(XBAPIO) \
+	$(TRACES) \
+	$(ALIGN)
+
+
+#
+# Cop
+#
+cop : $(OBJ)
+	$(CC) $(CFLAGS) -o cop $(OBJ) $(LIBS) $(LIBFLAGS)
+
+cop-bap : $(OBJBAP)
+	$(CC) $(CFLAGS) -o cop-bap $(OBJBAP) $(LIBS) $(LIBFLAGS)
+
+
+
+#
+# Special dependencies
+#
+
+all: $(PROGS)
+
+clean:
+	/bin/rm -f $(OBJ) $(PROGS) *~
+
+cop-bap.o: $(SRC)/cop.c
+	$(CC) -DBAP_VERSION $(CFLAGS) -o cop-bap.o -c $(SRC)/cop.c
+
+%.o: $(SRC)/%.c
+	$(CC) $(CFLAGS) -c $<
+
+%.o: $(TEDSRC)/%.c
+	$(CC) $(CFLAGS) -c $<
+

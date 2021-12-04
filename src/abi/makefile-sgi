@@ -1,0 +1,36 @@
+#
+# Makefile for abi - SGI version
+#
+
+SHELL=/bin/sh
+
+#
+# Programs made by this makefile
+#
+PROGS = getABISampleName
+
+#
+# Where the wild things are
+#
+SRC = .
+
+#
+# Sgi
+#
+CC = cc
+CFLAGS = -ansi -g -prototypes -I$(SRC)/../ted
+
+#
+# Make the programs
+#
+getABISampleName: $(SRC)/getABISampleName.c
+	$(CC) $(CFLAGS) -o getABISampleName $(SRC)/getABISampleName.c
+
+
+#
+# Special dependencies
+#
+all: $(PROGS)
+
+clean:
+	/bin/rm -f $(PROGS) *.o *~

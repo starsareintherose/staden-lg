@@ -1,0 +1,125 @@
+.para
+Preparing the PROSITE protein motif library for use by the Staden programs
+.para
+Introduction
+.para
+A library of protein motifs (in our terminology, because they include 
+variable gaps, some would be called patterns) has recently become available 
+from Amos Bairoch,Departement de Biochimie Medicale,University of Geneva
+Currently it contains 317 patterns/motifs and arrives on tape or cdrom
+in two files: 
+a .dat file and a .doc file. There is also a user documentation file 
+prosite.usr. Here I outline what is required to prepare the PROSITE library for
+use by our programs.
+.para
+Three programs need to be run SPLITP1, SPLITP2, and SPLITP3.
+.PARA
+Outline of the PROSITE files
+.para
+ A typical entry in the .dat file is shown below.
+.lit
+
+ID   2FE2S_FERREDOXIN; PATTERN.
+AC   PS00197;
+DT   APR-1990 (CREATED); APR-1990 (DATA UPDATE); APR-1990 (INFO UPDATE).
+DE   2Fe-2S ferredoxins, iron-sulfur binding region signature.
+PA   C-x(1,2)-[STA]-x(2)-C-[STA]-{P}-C.
+NR   /RELEASE=14,15409;
+NR   /TOTAL=69(69); /POSITIVE=63(63); /UNKNOWN=0(0); /FALSE_POS=6(6);
+NR   /FALSE_NEG=5(5);
+CC   /TAXO-RANGE=A?EP?; /MAX-REPEAT=1;
+CC   /SITE=1,iron_sulfur; /SITE=5,iron_sulfur; /SITE=8,iron_sulfur;
+DR   P15788, FER$APHHA , T; P00250, FER$APHSA , T; P00223, FER$ARCLA , T;
+DR   P00227, FER$BRANA , T; P07838, FER$BRYMA , T; P13106, FER$BUMFI , T;
+DR   P00247, FER$CHLFR , T; P07839, FER$CHLRE , T; P00222, FER$COLES , T;
+DO   PDOC00175;
+//
+.end lit
+.para
+Each entry has an accession number (here PS00197), a pattern definition 
+(here C-x(1,2)-[STA]-x(2)-C-[STA]-{P}-C) and a documentation file 
+cross reference (here PDOC00175).
+This pattern means: C, gap of 1 or 2, any of STA, gap of 2, C, any of STA, 
+not P, C.
+.para
+  We need to convert all of these patterns into our pattern definitions 
+(as membership of a set, with the appopriate gap ranges) and write each 
+into a separate pattern file with corresponding "membership of a set" 
+weight matrices. Each 
+pattern file is named accession_number.pat (here PS00197.PAT). The 
+corresponding matrix files are accession_number.wtsa, 
+accession_number.wtsb, etc for however many are needed (here PS00197.WTSA 
+and PS00197.WTSB): two are needed because of the variable gap. 
+.para
+In addition we can optionally
+split the .dat and .doc files into separate files, one for each 
+entry, with names accession_number.dat and accession_number.doc. Also we
+create an index for the library prosite.lis, which 
+gives a one line description of each pattern, and ends with the pattern 
+file and documentation file numbers. The start of the file is shown below.
+.lit
+
+N-glycosylation site.                                                00001,00001
+Glycosaminoglycan attachment site.                                   00002,00002
+Tyrosine sulfatation site.                                           00003,00003
+cAMP- and cGMP-dependent protein kinase phosphorylation site.        00004,00004
+
+.end lit
+So the name of the pattern file for Glycosaminoglycan attachment site is 
+PS00002.PAT, and for the documentation file PDOC00002.DOC
+.para
+Finally we
+create a file of file names for all the patterns in the library.
+.para
+To use the complete PROSITE library from program pip, select "pattern searcher"
+and choose the 
+option "use file of pattern file names", and give the file name 
+prosite.nam). For any matches found, the accession number and pattern title
+will be 
+displayed.
+
+.para
+Running the conversion programs
+.para
+
+Only SPLITP3 is necessary for using the library. The others programs
+ only make the
+original files marginally easier to browse through and produce an index.
+.para
+SPLITP1 splits the prosite.dat file to create a separate file for each 
+entry. Each file is automatically named PSentry_number.dat. In addition it 
+creates an index for the library (see above).
+.para
+SPLITP2 performs the same operation for the Prosite.doc file, except that 
+no index is created. Files are named PSentry_number.doc.
+.para
+SPLITP3 creates a separate pattern file and weight matrix files for each 
+prosite entry from the file prosite.dat. Pattern files are named 
+PSentry_number.pat, weight matrix files PSentry_number.wtsa, 
+Psentry_number.wtsb, etc. The pattern title is the one line description
+of the motif. SPLITP3 also creates a file of file names. Notice that it
+will ask for a path name so that the path can be included in the file of
+file names. This is the path to the directory in which the pattern files
+are stored.
+.para
+Notes
+.para
+Obviously the use of files of file names is a general solution, and anybody 
+could now create their own set of interesting patterns for screening, or a 
+subset of prosite.nam, etc.
+.para
+   Note that 5 of the bairoch motifs contained the symbols > or < which 
+means that the motifs must appear exactly at the N or C termini of the 
+sequences. Currently our methods have no mechanism for such definitions and, 
+for example KDEL motifs, will be permitted to occur anywhere throughout 
+a sequence.
+
+.para
+Also, of course, the library does not have to be used solely for performing 
+mass screenings: each individual entry can be used as a single pattern by 
+giving the name of its .pat file - eg pathname/ps00002.pat
+In addition more sophisticated users will wish to copy pattern files and 
+weight matrices into their own directories and modify them. For example the 
+cutoff scores are probably chosen to be quite high in order to reduce the 
+number of false positives, and some users might wish to lower them.
+

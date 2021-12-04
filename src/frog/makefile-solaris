@@ -1,0 +1,36 @@
+CC = gcc
+GCCWARNINGS = -Wreturn-type -Wunused -Wswitch -Wcomment -W -Wformat \
+	      -Wuninitialized
+CFLAGS = -g -ansi -pedantic $(GCCWARNINGS)
+# gcc2.1 -static, cc -Bstatic, else nothing
+LIBFLAGS = -static
+
+SRC = .
+PROGS = frog toad
+all: $(PROGS)
+
+FROGOBJ =\
+	frog.o\
+	mach-io.o
+
+frog : $(FROGOBJ)
+	$(CC) $(CFLAGS) -o frog $(FROGOBJ) $(LIBFLAGS)
+
+
+TOADOBJ =\
+	toad.o\
+	scfIO.o\
+	mach-io.o
+
+toad : $(TOADOBJ)
+	$(CC) $(CFLAGS) -o toad $(TOADOBJ) $(LIBFLAGS)
+
+
+#
+# Specials
+#
+%.o:$(SRC)/%.c
+	$(CC) $(CFLAGS) -c $<
+
+clean:
+	/bin/rm -f $(PROGS) $(FROGOBJ)

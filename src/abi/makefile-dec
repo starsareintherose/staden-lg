@@ -1,0 +1,34 @@
+#
+# Makefile for abi - DEC Ultrix (mips) version
+#
+
+#
+# Programs made by this makefile
+#
+PROGS = getABISampleName
+
+#
+# Where the wild things are
+#
+SRC = .
+
+#
+# Sun
+#
+CC = c89
+CFLAGS = -g -std -w0 -I$(SRC)/../ted
+
+#
+# Make the programs
+#
+getABISampleName: $(SRC)/getABISampleName.c
+	$(CC) $(CFLAGS) -o getABISampleName $(SRC)/getABISampleName.c
+
+
+#
+# Special dependencies
+#
+all: $(PROGS)
+
+clean:
+	/bin/rm -f $(PROGS) *.o *~

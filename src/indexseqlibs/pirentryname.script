@@ -1,0 +1,44 @@
+#! /bin/csh -f
+#
+# script to create an entryname index for the pir library in codata format
+#
+
+echo "pirentryname.script Version 1.0"
+echo ""
+
+set RM = "/bin/rm -f"
+set SORT = sort
+
+#
+# LIBFILE is the name youve given to the library file
+#
+set LIBFILE1 = pir1.dat
+set LIBFILE2 = pir2.dat
+set LIBFILE3 = pir3.dat
+
+pirentryname1 $LIBFILE1 pir1.list 1
+if ( $status ) goto abort
+pirentryname1 $LIBFILE2 pir2.list 2
+if ( $status ) goto abort
+pirentryname1 $LIBFILE3 pir3.list 3
+if ( $status ) goto abort
+
+${SORT} pir1.list pir2.list pir3.list >! entry.sorted
+if ( $status ) goto abort
+${RM} pir1.list pir2.list pir3.list
+
+entryname2 entry.sorted entrynam.idx
+if ( $status ) goto abort
+${RM} entry.sorted
+
+echo "Completion successful"
+echo ""
+
+exit 0
+
+#
+# Abort
+#
+abort:
+echo "pirentryname.script: aborting due to serious error"
+exit 2

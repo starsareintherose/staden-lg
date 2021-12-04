@@ -1,0 +1,44 @@
+#
+# Makefile for subclonedb
+#
+
+#
+# Programs made by this makefile
+#
+PROGS = subclonedb update_subclones
+
+SHELL=/bin/sh
+
+#
+# Where the wild things are
+#
+SRC = .
+MISCSRC = $(SRC)/../Misc
+MISCBIN = $(MISCSRC)
+INCLUDES = -I$(SRC) -I$(MISCSRC)
+
+#
+# SGI
+#
+CC = cc
+CFLAGS = -g $(INCLUDES)
+
+#
+# Here they are
+#
+subclonedb : $(SRC)/subclonedb.c $(MISCBIN)/misc.a
+	$(CC) $(CFLAGS) -o subclonedb $(SRC)/subclonedb.c $(MISCBIN)/misc.a
+
+update_subclones : $(SRC)/update_subclones.c $(MISCBIN)/misc.a
+	$(CC) $(CFLAGS) -o update_subclones $(SRC)/update_subclones.c $(MISCBIN)/misc.a
+
+#
+# Special dependencies
+#
+all: $(PROGS)
+
+clean:
+	/bin/rm -f $(PROGS)
+
+%.o: $(SRC)/%.c
+	$(CC) $(CFLAGS) -c $<

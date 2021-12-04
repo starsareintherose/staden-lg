@@ -1,0 +1,63 @@
+#! /bin/csh -f
+#
+# script to create an entryname index for the genbank library
+#
+# NOTE only active for primate file
+#
+
+echo "genbentryname.script Version 1.0"
+echo ""
+
+set RM = "echo /bin/rm -f"
+set SORT = "sort -T tmp"
+
+#
+#
+#
+
+genbentryname1 gbbct.seq gbbct.list 1
+if ( $status ) goto abort
+genbentryname1 gbinv.seq gbinv.list 2
+if ( $status ) goto abort
+genbentryname1 gbmam.seq gbmam.list 3
+if ( $status ) goto abort
+genbentryname1 gborg.seq gborg.list 4
+if ( $status ) goto abort
+genbentryname1 gbphg.seq gbphg.list 5
+if ( $status ) goto abort
+genbentryname1 gbpln.seq gbpln.list 6
+if ( $status ) goto abort
+genbentryname1 gbpri.seq gbpri.list 7
+if ( $status ) goto abort
+genbentryname1 gbrna.seq gbrna.list 8
+if ( $status ) goto abort
+genbentryname1 gbrod.seq gbrod.list 9
+if ( $status ) goto abort
+genbentryname1 gbsyn.seq gbsyn.list 10
+if ( $status ) goto abort
+genbentryname1 gbuna.seq gbuna.list 11
+if ( $status ) goto abort
+genbentryname1 gbvrl.seq gbvrl.list 12
+if ( $status ) goto abort
+genbentryname1 gbvrt.seq gbvrt.list 13
+if ( $status ) goto abort
+
+${SORT} gbpri.list gbrod.list gbmam.list gbvrt.list gbinv.list gbpln.list gborg.list gbbct.list gbrna.list gbvrl.list gbphg.list gbsyn.list gbuna.list >! entry.sorted
+if ( $status ) goto abort
+${RM} gbpri.list gbrod.list gbmam.list gbvrt.list gbinv.list gbpln.list gborg.list gbbct.list gbrna.list gbvrl.list gbphg.list gbsyn.list gbuna.list 
+
+entryname2 entry.sorted entrynam.idx
+if ( $status ) goto abort
+${RM} entry.sorted
+
+echo "Completion successful"
+echo ""
+
+exit 0
+
+#
+# Abort
+#
+abort:
+echo "genbentryname.script: aborting due to serious error"
+exit 2

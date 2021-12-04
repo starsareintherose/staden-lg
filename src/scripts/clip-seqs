@@ -1,0 +1,42 @@
+#!/bin/csh -f
+#
+# clip-seqs
+#
+# clip all sequences in a file of file names on quality
+#
+# Usage:
+#   clip-seqs fof
+#
+onintr abort
+
+if ( $#argv != 1 ) then
+	echo Usage: clip-seqs fof
+	exit 2
+endif
+
+if (! -f "$1") then
+	echo clip-seqs: file "$1" does not exist
+	exit 1
+endif
+
+
+foreach file ( `cat "$1"`)
+	/bin/rm -f tmp.$$
+	awk -f clip-seq.awk $file > tmp.$$
+	if ( $status ) then
+		echo clip-seqs: error while clipping $file
+		goto abort
+	endif
+	/bin/mv $file ${file}~
+	/bin/mv tmp.$$ $file
+end
+
+
+
+exit 0
+
+abort:
+
+echo aborted `date`	
+/bin/rm -f tmp.$$
+exit 1

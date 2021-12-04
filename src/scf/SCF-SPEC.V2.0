@@ -1,0 +1,218 @@
+	  A Proposed Standard File Format for Chromatograms
+		       (Version 2, Revision 0)
+				   
+			      Simon Dear
+			(sd@mrc-lmb.cam.ac.uk)
+		       Medical Research Council
+		   Laboratory of Molecular Biology
+			   18 November 1992
+
+
+
+
+0. Introduction
+
+We seek to establish a standard chromatogram file format that will be
+supported by all sequencing machine manufacturers and software
+developers.  Our software supports data in this format. We will
+encourage other software developers to do the same, and equipment
+manufacturers to provide either files in the format, or conversion
+software to produce them.
+
+
+1. The Header Record
+
+The file begins with a 128 byte header record that describes the
+location and size of the chromatogram data in the file. Nothing is
+implied about the order in which the components (samples, sequence and
+comments) appear. The version field is a character string
+respresenting the version and revision of the SCF format. The current
+value of this field is "2.00"
+
+/*
+** Type definition for the Header structure
+*/
+#define SCF_MAGIC (((((long)'.'<<8)+(long)'s'<<8)+(long)'c'<<8)+(long)'f')
+typedef struct {
+	long magic_number;
+	long sample;             /* Number of elements in Samples matrix */
+	long samples_offset;     /* Byte offset from start of file */
+	long bases;              /* Number of bases in Bases matrix */
+	long bases_left_clip;    /* Number of bases in left clip (vector)*/
+	long bases_right_clip;   /* Number of bases in right clip (unreliable) */
+	long bases_offset;       /* Byte offset from start of file */
+	long comments_size;      /* Number of bytes in Comment section */
+	long comments_offset;    /* Byte offset from start of file */
+	char version[4];	 /* "version.revision" */
+	long sample_size;	 /* Size of samples in bytes 1=8bits, 2=16bits*/
+	long code_set;	 	 /* code set used */
+	long spare[20];          /* Unused */
+} Header;
+
+NOTE: Features new to version 2
+
+For versions of SCF files 2.0 or greater (Header.version >= "2.00"),
+the version number, precision of data, the uncertain code set are
+specified in the header.  Otherwise, the precision is assumed to be 1
+byte, and the code set to be the default code set.
+
+The following uncertainty code sets are recognised. People wishing to
+use others with the SCF format should register them with the author of
+this document.
+
+	0	{A,C,G,T,-} (default)
+	1	Staden
+	2	IUPAC (NC-IUB)
+	3	Pharmacia A.L.F. (NC-IUB)
+	4	{A,C,G,T,N} (ABI 373A)
+	5	IBI/Pustell
+	6	DNA*
+	7	DNASIS
+	8	IG/PC-Gene
+	9	MicroGenie
+
+
+2. The Sample Points.
+
+The trace information is stored at byte offset Header.samples_offset
+from the start of the file. For each sample point there are values for
+each of the four bases. Header.sample_size holds the precision of the
+sample values. The precision must be one of "1" (unsigned byte) and
+"2" (unsigned short). The sample points need not be normalised to any
+particular value, though it is assumed that they represent positive
+values. This is, they are of unsigned type.
+
+/*
+** Type definition for the Sample data
+*/
+
+typedef struct {
+	unsigned char sample_A;           /* Sample for A trace */
+	unsigned char sample_C;           /* Sample for C trace */
+	unsigned char sample_G;           /* Sample for G trace */
+	unsigned char sample_T;           /* Sample for T trace */
+} Samples1;
+typedef struct {
+	unsigned short sample_A;           /* Sample for A trace */
+	unsigned short sample_C;           /* Sample for C trace */
+	unsigned short sample_G;           /* Sample for G trace */
+	unsigned short sample_T;           /* Sample for T trace */
+} Samples2;
+
+NOTE: Features new to version 2
+The samples are no longer restricted to 8 bit values.
+
+
+3. Sequence Information.
+
+Information relating to the base interpretation of the trace is stored
+at byte offset Header.bases_offset from the start of the file. Stored
+for each base are: its character representation and a number (an index
+into the Samples data structure) indicating its position within the
+trace. The relative probabilities of each of the 4 bases occuring at
+the point where the base is called can be stored in prob_A, prob_C,
+prob_G and prob_T.
+
+The Amersham FilmReader uses Bases.spare[0] to store the confidence
+level of the base. The value ranges from 0 (low confidence) to 8
+(high), and 9 indicating the base has been manually edited.
+
+/*
+** Type definition for the sequence data
+*/
+typedef unsigned char byte;
+typedef struct {
+	long peak_index;        /* Index into Samples matrix for base position */
+	byte prob_A;            /* Probability of it being an A */
+	byte prob_C;            /* Probability of it being an C */
+	byte prob_G;            /* Probability of it being an G */
+	byte prob_T;            /* Probability of it being an T */
+	char base;              /* Called base character        */
+	byte spare[3];          /* Spare */
+} Base;
+
+
+
+4. Comments.
+
+Comments are stored at offset Header.comments_offset from the start of
+the file. Lines in this section are of the format:
+
+	<Field-ID>=<Value>
+
+<Field-ID> can be any string, though several have special meaning and
+their use is encouraged.
+
+ID	Field					Example
+----    ------------------------                ----------------
+MACH	Sequencing machine model                MACH=Pharmacia A.L.F.
+TPSW	Trace processing software version       TPSW=A.L.F. Analysis Program, Version=1.67
+BCSW	Base calling software version           BCSW=A.L.F. Analysis Program, Version=1.67
+DATF	Data source format                      DATF=AM_Version=2.0
+DATN	Data source name			DATN=a10c.alf
+CONV	Format conversion software              CONV=makeSCF v2.0
+
+Other fields might include:
+
+ID	Field					Example
+----    ------------------------                ----------------
+OPER	Operator				OPER=sd
+STRT	Time run started			STRT=Aug 05 1991  12:25:01
+STOP	Time run stopped			STOP=Aug 05 1991  16:26:25
+PROC	Time processed				PROC=Aug 05 1991  18:50:13
+EDIT    Time edited                             EDIT=Aug 05 1991  19:06:18
+NAME	Sample name				NAME=a21b1.s1
+SIGN	Average signal strength			SIGN=A=56,C=66,G=13,T=18
+SPAC	Average base spacing			SPAC=12.04
+SCAL	Factor used in scaling traces           SCAL=0.5
+
+
+/*
+** Type definition for the comments
+*/
+typedef char Comments;            /* Zero terminated list of \n separated entries */
+
+Appendix: Byte ordering and integer representation
+
+"Forward byte and reverse bit" ordering will be used for all integer
+values. This is the same as used in the MC680x0 and SPARC processors,
+but the reverse of the byte ordering used on the VAX and Intel 80x86
+processors.
+
+
+	 Off+0   Off+1  
+       +-------+-------+  
+Short  |  MSB  |  LSB  |  
+       +-------+-------+  
+
+	 Off+0   Off+1   Off+2   Off+3
+       +-------+-------+-------+-------+
+Long   |  MSB  |  ...  |  ...  |  LSB  | 
+       +-------+-------+-------+-------+
+
+
+
+To read integers on systems with any byte order use something like this:
+
+short read_short(FILE *fp)
+{
+    unsigned char buf[sizeof(short)];
+
+    fread(buf, sizeof(buf), 1, fp);
+    return (short)
+        (((unsigned short)buf[1]) +
+         ((unsigned short)buf[0]<<8));
+}
+
+long read_long(FILE *fp)
+{
+    unsigned char buf[sizeof(long)];
+
+    fread(buf, sizeof(buf), 1, fp);
+    return (long)
+        (((unsigned long)buf[3]) +
+         ((unsigned long)buf[2]<<8) +
+         ((unsigned long)buf[1]<<16) +
+         ((unsigned long)buf[0]<<24));
+}
+

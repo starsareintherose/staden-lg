@@ -1,0 +1,13 @@
+#
+# Database of sequences to screen against clones
+#
+# Format:
+#
+#     <clone> <sequence-file>
+#
+# Example:
+#
+# We wish to screen our cosmid CLONE against yeast chromosome 3.
+#
+# CLONE scchrIII.seq
+#

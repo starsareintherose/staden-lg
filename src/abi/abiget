@@ -1,0 +1,38 @@
+#! /bin/csh
+# shell script to get a batch of ABI data via NCSA telnet
+# it transfers the data into ~/Mac-files-$USER/'Results date',
+# where date is e.g. 10_28_90.
+# Currently I assume that the data are on abi2mac (2nd ABI machine)
+#
+# RMD 29/6/91
+#
+
+switch ($#argv)
+  case "1": 
+	breaksw
+  default: 
+	echo 'Usage: abiget date' ; exit 2
+endsw
+
+set putdir = $HOME/Mac-files-$USER/"Results $1" 
+if (-d "$putdir") then
+  echo -n "Results directory already exits - proceed? "
+  set answer = $<
+  if ($answer == "n" || $answer == "N") then
+    exit 1
+  endif
+else
+  mkdir "$putdir"
+endif
+
+cd "$putdir"
+#sed s/date/$1/g < /nfs/cele/home2/public/BioSW/abi/ftprun > ./ftprun
+cp /nfs/cele/home2/public/BioSW/abi/ftprun .
+echo "Use the 'Select Transfer Directory...' option of the File Menu"
+echo "on the Mac to select the data folder (go to it then click on"
+echo -n "'Set Directory').  Then hit return in this window."
+set answer = $<
+ftp -in abi2mac < ftprun
+\rm ftprun
+ls -xsF
+exit 0

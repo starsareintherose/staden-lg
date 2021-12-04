@@ -1,0 +1,37 @@
+Cosmid Subclone Libraries
+
+The cosmid subclone library is a file of the following format:
+
+<file>                 ::= <line> <file> |
+<line>                 ::= <microtitre-dish-no>
+			   <cosmid>
+			   <size-range>
+			   <fragmentation-method>
+			   <vector>
+			   <comment-list>
+			   <opt-info>
+<microtitre-dish-no>   ::= <string>
+<cosmid>               ::= <string>
+<size-range>           ::= <number>..<number>
+<fragmentation-method> ::= <string>
+<vector>               ::= <string>
+<comment-list>         ::= <comment> <comment-list> |
+<comment>              ::= ( <string> )
+<opt-info>             ::= <info> | 
+<info>                 ::= # <user-id> <host-id> <date>
+
+where:
+
+<string>  ::= any series of characters terminated by white space
+<number>  ::= integer number
+<user-id> ::= user id of person who created entry
+<host-id> ::= from where entry was created
+<date>    ::= date the entry was created
+
+
+Here (at MRC):
+
+<microtitre-dish-no> ::= <string><letter><digit><digit>
+
+
+

@@ -1,0 +1,84 @@
+-1 0 21 2 T General
+-1 0 21 2 X General
+-2 0 50 2 T Screen control
+-2 0 71 2 X Screen
+-3 0 98 2 T Modification
+-3 0 98 2 X Modification
+0 -1 116 332 T BAP
+0 -1 116 332 X BAP
+17 1 17434 18 T Screen against enzymes
+17 1 17434 18 X Screen against enzymes
+18 1 18477 23 T Screen against vector
+18 1 18477 23 X Screen against vector
+20 3 19859 121 T Auto assemble
+20 3 19859 121 X Auto assemble
+28 1 26426 43 T Highlight disagreements
+28 1 26426 43 X Highlight disagreements
+32 3 28846 17 T Extract gel readings
+32 3 28846 17 X Extract gel readings
+1 0 29607 3 T Help
+1 0 29607 3 X Help
+2 0 29676 5 T Quit
+2 0 29676 5 X Quit
+3 1 29869 230 T Open a database
+3 1 29869 230 X Open a database
+4 3 41499 320 T Edit contig
+4 3 41499 320 X Edit contig
+5 1 56688 43 T Display a contig
+5 1 56688 43 X Display a contig
+6 1 58990 6 T List a text file
+6 1 58990 6 X List a text file
+8 1 59248 93 T Calculate a consensus
+8 1 59248 93 X Calculate a consensus
+25 1 63707 41 T Show relationships
+25 1 63707 41 X Show relationships
+23 3 65650 11 T Complement a contig
+23 3 65650 11 X Complement a contig
+22 3 66173 59 T Join contigs
+22 3 66173 59 X Join contigs
+24 1 69194 11 T Copy the database
+24 1 69194 11 X Copy the database
+19 1 69740 43 T Check database
+19 1 69740 43 X Check database
+29 1 71898 82 T Examine quality
+29 1 71898 82 X Examine quality
+26 3 75715 84 T Alter relationships
+26 3 75715 84 X Alter relationships
+27 1 79641 17 T Set display parameters
+27 1 79641 17 X Set display parameters
+30 3 80503 7 T Shuffle pads
+30 3 80503 7 X Shuffle pads
+10 2 80866 3 T Clear graphics
+10 2 80866 3 X Clear graphics
+11 2 80931 3 T Clear text
+11 2 80931 3 X Clear text
+12 2 80996 12 T Draw a ruler.
+12 2 80996 12 X Draw a ruler.
+14 2 81730 38 T Reposition plots
+14 2 81730 38 X Reposition plots
+15 2 84069 28 T Label a diagram
+15 2 84069 28 X Label a diagram
+16 2 85174 3 T Display a map
+16 2 85174 3 X Display a map
+7 1 85228 12 T Redirect output
+7 1 85228 12 X Redirect output
+13 2 85731 43 T Use crosshair
+13 2 85731 43 X Use crosshair
+33 2 87876 12 T Plot single contig
+33 2 87876 12 X Plot single contig
+34 2 88578 10 T Plot all contigs
+34 2 88578 10 X Plot all contigs
+31 3 89160 21 T Disassemble readings
+31 3 89160 21 X Disassemble readings
+35 3 90372 94 T Find internal joins
+35 1 90372 94 T Find internal joins
+35 3 90372 94 X Find internal joins
+35 1 90372 94 X Find internal joins
+36 3 96201 30 T Double strand
+36 3 96201 30 X Double strand
+37 3 97555 64 T Auto-select oligos
+37 3 97555 64 X Auto-select oligos
+38 1 100421 30 T Check assembly
+38 1 100421 30 X Check assembly
+39 1 102178 90 T Find read pairs
+39 1 102178 90 X Find read pairs

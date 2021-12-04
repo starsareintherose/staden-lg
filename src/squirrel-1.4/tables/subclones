@@ -1,0 +1,15 @@
+#
+# Database of subclone libraries:
+#
+# Format:
+#
+#   <microtitre-dish> <clone> <size-range> <frag method vector>
+#
+# Example:
+#
+# Microtitre dish a01 contains a subclone library for clone CLONE.
+# It was created by shearing then cloning into M13mp18. Fragment
+# size if selected on range 1000 to 2000 bases.
+#
+# a01 CLONE 1000..2000 shear M13mp18
+#

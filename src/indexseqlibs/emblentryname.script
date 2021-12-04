@@ -1,0 +1,69 @@
+#! /bin/csh -f
+#
+# script to create an entryname index for the embl newdata library
+#
+
+echo "emblentryname.script Version 1.0"
+echo ""
+
+set RM = "/bin/rm -f"
+set SORT = sort
+
+#
+#
+#
+
+emblentryname1 bb.dat bb.list 1
+if ( $status ) goto abort
+emblentryname1 fun.dat fun.list 2
+if ( $status ) goto abort
+emblentryname1 inv.dat inv.list 3
+if ( $status ) goto abort
+emblentryname1 mam.dat mam.list 4
+if ( $status ) goto abort
+emblentryname1 org.dat org.list 5
+if ( $status ) goto abort
+emblentryname1 patent.dat patent.list 6
+if ( $status ) goto abort
+emblentryname1 phg.dat phg.list 7
+if ( $status ) goto abort
+emblentryname1 pln.dat pln.list 8
+if ( $status ) goto abort
+emblentryname1 pri.dat pri.list 9
+if ( $status ) goto abort
+emblentryname1 pro.dat pro.list 10
+if ( $status ) goto abort
+emblentryname1 rod.dat rod.list 11
+if ( $status ) goto abort
+emblentryname1 syn.dat syn.list 12
+if ( $status ) goto abort
+emblentryname1 una.dat una.list 13
+if ( $status ) goto abort
+emblentryname1 vrl.dat vrl.list 14
+if ( $status ) goto abort
+emblentryname1 vrt.dat vrt.list 15
+if ( $status ) goto abort
+
+# sort on entry name
+${SORT} bb.list fun.list inv.list mam.list org.list patent.list phg.list pln.list pri.list pro.list rod.list syn.list una.list vrl.list vrt.list >! entry.sorted
+if ( $status ) goto abort
+${RM} bb.list fun.list inv.list mam.list org.list patent.list phg.list pln.list pri.list pro.list rod.list syn.list una.list vrl.list vrt.list
+
+
+
+# create index file
+entryname2 entry.sorted entrynam.idx
+if ( $status ) goto abort
+${RM} entry.sorted
+
+echo "Completion successful"
+echo ""
+
+exit 0
+
+#
+# Abort
+#
+abort:
+echo "emblentryname.script: aborting due to serious error"
+exit 2

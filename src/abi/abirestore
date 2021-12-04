@@ -1,0 +1,45 @@
+#!  /bin/sh
+#
+# shell script to transfer abi data files back from a project directory
+# to the Mac-files-{user name} region.
+#
+
+case $# in
+  2) ;;
+  *) echo 'Usage: abirestore project date' 1>&2; exit 2
+esac
+
+if test ! -d $HOME/$1
+  then echo "Bad project" ; exit 1
+  fi
+cd $HOME/$1
+
+fnfile=${2}fn
+if  test ! -f $fnfile
+  then echo "Bad date" ; exit 1
+  fi
+
+dir=$HOME/Mac-files-$USER/restored.$2
+if test -d $dir
+  then
+    echo -n "Directory $dir already exists.  Shall I overwite it (y/n): " 
+    read answer
+    if test answer = "n"
+      then exit 1
+      fi
+  else
+    mkdir $dir
+    mkdir $dir/.rsrc
+  fi
+
+for i in `cat $fnfile`
+  do
+    if test -f ${i}RES
+      then cp ${i}RES $dir ; 
+	cp /home/BioSW/abi/big1.rsrc $dir/.rsrc/${i}RES
+      fi
+  done
+
+exit 0
+
+

@@ -1,0 +1,132 @@
+
+ @-1. TX   0 @General
+
+ @-2. TX   0 @Screen control
+
+ @-3. TX   0 @Statistical analysis
+
+ @-1. TX   0 @General
+
+ @-2. TX   0 @Screen control
+
+ @-3. TX   0 @Statistical analysis
+
+ @0.  TX  -1 @NIPF
+
+ @1.  TX 1 @ Help
+
+ @2.  TX 1 @ Quit
+
+ @3.  TX 1 @ Read new sequence
+
+ @4.  TX 1 @ Redefine active region
+
+ @5.  TX 1 @ List the sequence
+
+ @6.  TX 1 @ List a text file
+
+ @7.  TX 1 @ Direct output to disk
+
+ @8.  TX 1 @ Write active sequence to disk
+
+ @9.  TX 1 @ List a translation
+
+ @32. TX 1 @ List showing base differences
+
+ @37. TX 1 @ List showing translation
+
+ @33. TX 1 @ List showing amino acid differences
+
+ @10. TX 2 @ Clear graphics
+
+ @11. TX 2 @ Clear text
+
+ @12. TX 2 @ Draw a ruler
+
+ @13. TX 2 @ Use cross hair
+
+ @14. TX 2 @ Reset margins
+
+ @15. TX 2 @ Label diagram
+
+ @16. TX 2 @ Display a map
+
+ @17. TX 3 @ Set comparison mode
+
+ @18. TX 3 @ Set sort mode
+
+ @21. TX 3 @ Count base changes
+
+ @22. TX 3 @ Count codon changes
+
+ @23. TX 3 @ Count genetic events
+
+ @24. TX 3 @ Show table of base changes
+
+ @36. TX 3 @ Show table of expressed base changes
+
+ @39. TX 3 @ Show table of silent base changes
+
+ @38. TX 3 @ Estimate mutation rate
+
+ @25. TX 3 @ Plot base changes
+
+ @26. TX 3 @ Plot expressed changes per base
+
+ @27. TX 3 @ Plot silent changes per base
+
+ @28. TX 3 @ Count expressed changes per base
+
+ @29. TX 3 @ Count silent changes per base
+
+ @30. TX 3 @ Count changed amino acids
+
+ @31. TX 3 @ Plot amino acid variability
+
+ @ end of help
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

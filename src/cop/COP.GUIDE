@@ -1,0 +1,79 @@
+		  Checking Xdap Databases For Errors
+			Using COP Version 1.1
+
+			      Simon Dear
+			    16 March 1992
+
+
+0. Introduction
+
+The program cop checks for editing errors in xdap project databases.
+It uses a robust method that can detect insertions, deletions and
+changes that have been inadvertently made. In later versions places
+where there is reliant on traces of insufficient quality will be
+detectable also.
+
+
+1. Usage
+
+The program allows the user to specify, the project name, the project
+version, the consensus calculation cutoff percentage and a search path
+for where traces are to be found:
+
+	cop [-p project]
+	    [-v version]
+	    [-c consensus_cutoff_percentage] 
+	    [-r raw_data_search_path]
+	    [-h]
+
+An example: cop can be run on F59B2.??0 with the command:
+
+	cop -p f59b2 -v 0 -r ~mmm/F59B2 -c 66
+
+If the project and/or version are not specified, the user is prompted
+for them. The default consensus cutoff percentage is 100%
+
+If a trace file cannot be found in the current working directory and
+the -r option is not used, the environment variable RAWDATA is used to
+find the file.
+
+
+2. How cop works
+
+Cop works on a problem exclusion principle. It ignores problem areas
+(places where there are insertions, deletions, changes, or where the
+trace quality is poor) and concentrates on identifying places where
+the coverage is good. It then reports regions where coverage is poor.
+Unfortunately it isn't possible to provide explanations using this
+approach.
+	     
+The algorithm is as follows, and is performed on each contig.
+
+a) The consensus for the contig is calculated and a "coverage"
+array (to record areas of good coverage) is initialised.
+
+b) Each gel reading in the contig is investigated. Information about
+the trace file (its name, and size of cutoffs) is read from the
+database. The trace file is read in.
+
+c) The consensus of the region in which the gel reading lies is
+aligned with the clipped trace sequence. If necessary, the consensus
+is complemented. The alignment is performed using Myers and Miller's
+algorithm [1], in the incarnation supplied in the fasta package.
+
+d) A map is made relating the bases in the raw sequence and the bases
+in the consensus. Places where trace quality is poor are removed from
+this map.  For each region in the consensus where there is perfect
+alignment (with no deletions, insertions, changes but are mapped) the
+coverage array is updated.  Each entry in this array represents a pairs
+of adjacent bases, and both must be adjacent in the alignment for the
+entry to be marked as covered.
+
+e) Once all the readings in the contig have been processed, all gaps
+in the coverage are reported.
+
+
+A. References
+
+[1] Myers, E.W. and Miller, W. 1988. Optimal alignments in linear
+space. CABIOS 4(1):11-17.

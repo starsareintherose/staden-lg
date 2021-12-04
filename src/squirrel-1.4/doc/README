@@ -1,0 +1,44 @@
+ Dir: $SQUIRREL/doc/
+Date: Fri May 07 11:16:27 BST 1993
+
+Here is the documentation on squirrel.
+
+
+DISCLAIMER -
+	Please read first!
+
+SQUIRREL - An overview of squirrel
+	A quick guide to the processing phases involved in squirrel.
+	Example session files, experiment files, reports and squirrel
+	databases (tables) are given.
+
+SysManagement - Maintaining the squirrel databases
+	An in depth guide into how to maintain the information squirrel
+	needs to process automatically.
+
+Porting.Overview - Getting squirrel working on your system
+	A brief overview for those wanting to set up squirrel on their
+	system. It gives an overview of what is supplied in the
+	package, what changes must be made, and places where it is
+	foreseen problems may occur. 
+
+ExperimentFile.format - A guide to experiment files
+	Experiment files are the mechanism information is transferred
+	between programs in squirrel. Future versions of the Staden
+	assembly program will read in experiment files directly. This
+	document is useful for those wanting to produce compatible
+	files but who do not wish to use squirrel.
+	
+NOTES - General comments
+	Not much here, though an important note for those adding new
+	cloning vector files to their squirrel databases.
+
+
+-----
+
+Further information should be sought from the author.
+
+
+
+Simon Dear
+sd@mrc-lmb.cam.ac.uk

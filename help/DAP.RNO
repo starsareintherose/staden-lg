@@ -1,0 +1,2724 @@
+.npa
+.left margin1
+@-1. TX  0 @General
+.sp
+@-2. T   0 @Screen control
+.sp
+@-2. X   0 @Screen
+.sp
+@-3. TX  0 @Modification
+.sp
+@0.  TX -1 @SAP
+.left margin2
+.PARA
+This is help information for the X Windows version of SAP.
+Currently it is being brought up to date with the new features in XDAP.
+The accuracy of this help should therefore not be assumed.
+.PARA
+This is an interactive program whose primary use is
+for managing shotgun sequencing projects, but it can also be used for 
+handling alignments of other sequences, including those of proteins. 
+Currently the maximum 'gel reading' length is set to 4096 characters. 
+Almost all of the information below describes the use of the program for 
+shotgun projects, but those using the programs for handling other 
+sequence 
+alignments should interpret it accordingly.
+The data for such a project is stored in a special type of database. The 
+program
+ contains the tools that are required to type in gel readings,
+screen them against vector sequences and restriction sites; 
+enter new gel 
+readings into the database (automatically comparing and aligning
+them). In addition it contains editors and functions to examine the quality 
+of the aligned sequences.
+.para
+ There are three main menus: "general", "screen" and  "modification", 
+and some functions have submenus.
+.left margin2
+.lit
+  The general menu contains the following options:
+
+       Open a database
+       Display a contig
+       List a text file
+       Direct output
+       Calculate a consensus
+       Screen against restriction enzymes
+       Screen against vector
+       Check database
+       Copy database
+       Show relationships
+       set parameters
+       Highlight disagreements
+       Examine quality
+       Find internal joins
+
+The graphics menu contains:
+
+       Clear graphics
+       Clear text
+       Draw ruler
+       Use cross hair
+       Change margins
+       Label diagram
+       Plot map
+       Plot single contig
+       Plot all contigs
+
+
+The modification menu contains:
+
+       Edit contig
+       Auto assemble
+       Join contigs
+       Complement a contig
+       Alter relationships
+       Extract gel readings
+
+
+The alter relationships menu contains:
+
+       Cancel
+       Line change
+       Edit single gel reading
+       Delete contig
+       Shift
+       Move gel reading
+       Rename gel reading
+       Break contig
+       Alter raw data parameters
+
+.END LIT
+.SK1
+.para
+Overview of the methodology
+.para
+The shotgun sequencing strategy
+.para
+               In the shotgun sequencing procedure
+the sequence to be determined is randomly broken into fragments of 
+about 
+400 nucleotides in length. These fragments are cloned and then 
+selected randomly and their
+
+          sequences   determined.    The  relationship  between  any  pair  of
+
+          fragments is not known beforehand
+but is found by comparing their  sequences.
+
+          If  the  sequence  of  one found to be wholly or partially contained
+
+          within that of another  for  sufficient  length  to  distinguish  an
+
+          overlap  from  a repeat then those two fragments can be joined.  
+The
+
+          process of select, sequence and compare is continued until the 
+whole
+
+          of  the  DNA  to  be  sequenced is in one continuous well 
+determined
+
+          piece.
+
+.para
+          Definition of a contig
+
+.para
+               A CONTIG is a set of gel  readings  that  are  related  to  one
+          another  by  overlap of their sequences.  All gel readings belong to
+          a contig and each contig contains at  least  one  gel
+          reading.   The  gel  readings in a contig can be summed to produce 
+a continuous consensus sequence and the length of this sequence is 
+the length  of the contig.  The rules used to perform this summation are
+          given under "the consensus algorithm".
+          At any stage
+          of  a  sequencing project the data will comprise a number of 
+contigs;
+when  a  project  is
+
+          complete  there  should be only one contig and its consensus will be
+          the finished sequence. Note that since being introduced and 
+defined as above the word "contig" has been taken up by those involved in 
+genomic mapping. In that context the consensus with a  precise length is not 
+defined.
+
+.SK1
+.LEFT MARGIN2
+Introduction to the computer method
+.LEFT margin2
+.PARA
+It is useful to consider the objectives of a sequencing project before 
+outlining how we use the computer to help achieve them. The aim of a 
+shotgun sequencing project is to 
+produce an accurate consensus sequence from many overlapping gel 
+readings.
+It is necessary to know, particularly at the latter
+stages of the project, how accurate the 
+consensus sequence is. This enables us to know which regions of the
+ sequence require further work and also to know when the project is 
+finished.
+To show the quality of the consensus, the programs described here
+produce displays like that shown below.
+.sk1
+.lit
+
+                           10        20        30        40        50
+   -6  HINW.010    GCGACGGTCTCGGCACAAAGCCGCTGCGGCGCACCTACCCTTCTCTTATA
+       CONSENSUS   GCGACGGTCTCGGCACAAAGCCGCTGCGGCGCACCTACCCTTCTCTTATA
+
+                           60        70        80        90       100
+   -6  HINW.010    CACAAGCGAGCGAGTGGGGCACGGTGACGTGGTCACGCCGCGGACACGTC
+   -3  HINW.007                                            GGCACA*GTC
+       CONSENSUS   CACAAGCGAGCGAGTGGGGCACGGTGACGTGGTCACGCCG-G-ACA-GTC
+
+                          110       120       130       140       150
+   -6  HINW.010    GATTAGGAGACGAACTGGGGCG3CGCC*GCTGCTGTGGCAGCGACCGTCG
+   -3  HINW.007    GATTAG4AGACGAACTGGGGCGACGCCCG*TGCTGTGGCAGCGACCGTCG
+   -5  HINW.009                                        GGCAGCGACCGTCG
+   17  HINW.999                                           AGCGACCGTCG
+       CONSENSUS   GATTAGGAGACGAACTGGGGCGACGCC-G-TGCTGTGGCAGCGACCGTCG
+
+                          160       170       180       190       200
+   -6  HINW.010    TCT*GAGCAGTGTGGGCGCTG*CCGGGCTCGGAGGGCATGAAGTAGAGC*
+   -3  HINW.007    TCT*GAGCAGTGTGGGCGCTGC*CGGGCTCGGAGGGCATGAAGTAGAGC*
+   -5  HINW.009    TCT*GAGCAGTGTGGGCG*T*G*CGGGCTCGGAGGGCATGAAGTAGAGC*
+   17  HINW.999    TCTCGAGCAGTGTGGGCGCTG**CGGGCTCGGAGGGCATGAAGTAGAGCG
+   12  HINW.017                                              GTAGAGC*
+       CONSENSUS   TCT*GAGCAGTGTGGGCGCTG-*CGGGCTCGGAGGGCATGAAGTAGAGC*
+.END LIT
+.para
+                This is an example showing the left  end  of  a  contig  from
+          position  1 to 200.  Overlapping this region are gel readings 
+numbered 6, 3, 5, 17 and 12;
+6, 3 and 5 
+are in reverse orientation to their original reading (denoted by a minus  
+sign). Each gel reading also has a name (eg HINW.010). It can be seen that 
+in a number of places the sequences contain characters other than A,C,G 
+and 
+T. Some of these extra characters have been used by the sequencer to 
+indicate regions of uncertainty in the initial interpretation of the gel 
+reading, but the asterisks (*) have been inserted by the automatic 
+assembly function in order to align the sequences. Underneath each 50 
+character block of gel reading sequences is the consensus derived from 
+the 
+sequences aligned above (the line labelled CONSENSUS). For most of its 
+length the consensus has a definite nucleotide assignment but in a few 
+positions there is insufficient agreement between the gel readings and
+so a dash (-) appears in the sequence. This display contains all the 
+evidence needed to assess the quality of the consensus: the number of 
+times 
+the sequence has been determined on each strand of the DNA, and the 
+individual nucleotide assignments given for each gel reading.
+.para
+So the aim is to produce the consensus sequence and, equally important, 
+a display of the experimental results from which it was derived.
+.para
+In order to achieve this the following operations need to be performed:
+.left margin2
+1) Put individual gel readings into the computer.
+This might involved the manual interpretation of autoradiographs
+or the transfer and process of machine-readable files from fluorescent
+sequencing machines.
+.left margin2
+2) Check each gel reading to make sure it is not simply part of one of the 
+vectors used to clone the sequence.
+.left margin2
+3) Check each gel reading to make sure that those fragments that span 
+the 
+ligation point used prior to sonication are not assembled as single 
+sequences.
+.left margin2
+4) Compare all the remaining gel readings with one another to assemble 
+them 
+to produce the consensus sequence.
+.left margin2
+5) Check the quality of the consensus and edit the sequences.
+.left margin2
+6) When all the consensus is sufficiently well determined, produce a copy 
+of 
+it for processing by other analysis programs.
+.para
+It is very unlikely that this procedure will only be passed through once.
+Usually steps 1 to 5 are cycled through repeatedly, with step 4 just 
+adding 
+new sequences to those already assembled. Generally step 6 is also used 
+in 
+order to analyse imperfect sequence to check if it is the one the project 
+intended to sequence, or to look for interesting features. Analysis of 
+the consensus, such as 
+searches for protein coding regions,
+can also help to find errors in the sequence. The display of the 
+overlapping gel readings shown above can be used to indicate, not only 
+the 
+poorly determined regions, but also which clones should be resequenced 
+to 
+resolve ambiguities, or those which can usefully be extended or 
+sequenced 
+in the reverse direction, to cover 
+difficult regions.
+
+.PARA
+The original
+individual gel readings for a sequencing project are each stored in 
+separate files. As the gel readings are entered into the computer
+(usually in batches, say 10 
+from a film), the file names they are given are stored in 
+a further file, called a file of file names. Files of file names  
+enable gel readings to be processed in batches. 
+.para
+For each sequencing project 
+we start a project database. This database has a structure specifically 
+designed for
+dealing with shotgun sequence data. 
+In order to arrive at the final consensus sequence many operations will 
+be 
+performed on the sequence data. Individual fragments must be 
+sequenced and 
+compared in both senses (i.e. both orientations) with all the other 
+sequences. When an overlap between a new gel reading and a contig are 
+found 
+they must be aligned and the new gel reading added to the contig. If a 
+new 
+gel reading overlaps two contigs they must be aligned and joined. Before 
+the two contigs are joined one of them may need to be turned around 
+(reversed and complemented) so they are both in in the same orientation. 
+.para
+Clearly, keeping track of all these manipulations is quite complicated,
+and to be able to perform the operations 
+quickly requires careful choice of data 
+structure and algorithms. For these reasons it is not practicable to store 
+the gel readings aligned as shown in the display above. Rather, it is more 
+convenient to store the sequences unassembled, and to record sufficient 
+information for programs to assemble them during processing. The 
+data used to assemble the sequences is called relational information. 
+.left margin2
+.PARA
+ The database comprises five files and they are described under the 
+section entitled "open database".
+.PARA
+Before entry into the project database 
+each new gel reading must be compared to look for overlaps 
+with all the data already contained 
+within the database. This last point is 
+important: all searching for overlaps is between individual new gel 
+readings and the data already in the database. There is no searching for 
+overlaps between sequences within the database; overlaps must be found 
+before new gel readings are entered into the database.
+.para
+Below I give an introduction to how the sequences are processed by 
+being 
+passed from one function to the next.
+.para
+This program is used to start a 
+database for the project and 
+then the following procedure is used.
+.para
+Data in the form of individual gel readings are entered into the computer
+ 
+and stored in separate files using either program this program or the digitizer 
+
+program. Batches 
+of these gel readings 
+are passed to the screening functions in this program to search for overlaps 
+
+with vector sequences ("screen against vector") or for matches to 
+
+restriction enzyme sites  that should not be
+ 
+present ("screen against enzymes"). 
+Each run of these screening functions passes on only those gel
+ 
+readings that do not contain unwanted sequences. Sequences are passed 
+
+via 
+files of file names and eventually are processed by the automatic 
+assembly function ("auto assemble"). This function compares each gel 
+reading with a consensus of all the previous gel readings 
+stored in the database.
+If it finds any 
+overlaps
+ it aligns the overlapping sequences by inserting padding characters, 
+and then adds the new gel reading to the database. 
+Gels that overlap are added to existing contigs and gels that do not 
+overlap any data in the database start 
+new contigs. If a new gel overlaps two contigs they are joined. 
+Any gel readings that appear to overlap but which
+cannot be aligned sufficiently well are not entered and have 
+their names written to a file of failed gel reading names.
+.PARA
+Generally data is entered 
+into the database in batches as just described. The program
+ is also used to examine
+
+the data in the database, to enter gel readings that the automatic
+ 
+assembly function cannot align ("auto assemble"),
+
+ and to make final edits. Edits to whole contigs 
+
+can  be made in several ways.
+A mouse-driven editor ("edit contig") is used to perform all edits manually.
+Disagreements between gel readings 
+
+in contigs and their consensus 
+
+sequences can be highlighted by use of the function "highlight
+ 
+disagreements". 
+.PARA
+Editing the sequences is obviously an essential part of managing a
+
+sequencing project. 
+Editing is required when new 
+
+sequences are added, when contigs are joined, and when sequences are 
+
+corrected.
+A basic part of the strategy
+
+used here is that new
+ 
+gel readings should be correctly aligned throughout their whole length
+
+when 
+they are entered into the database, and that when contigs are joined they
+ 
+are edited so that they are well aligned in the region of overlap.
+
+ Alignment can be achieved by
+
+adding padding characters to the sequences, and this is the way "auto
+ 
+assemble"  
+operates when adding new sequences to the database.
+
+.para
+In order to search 
+for overlaps that may have been missed due to errors in 
+
+the gel readings, the function "extract gel readings" can be used to take 
+
+copies of the gel
+ 
+readings at the ends of contigs, and write them out as separate files.
+ 
+These can then be compared with the database consensus using the "auto 
+
+assemble" function in a mode that forbids entry of data into the 
+database,
+and any gel reading matching two contigs will indicate a join that has 
+
+been 
+missed. The joins can then be made interactively using "join contigs". 
+
+Missed matches can be 
+
+found at this stage because the errors in the sequences may have been 
+
+corrected by new data.
+
+.para
+Generally the users need not concern themselves with how the relational 
+information is used by the program, but it is necessary to know
+how contigs are identified. Because contigs are constantly being changed and 
+reordered the program identifies them by the numbers of the gel readings 
+they contain. Whenever users need to identify a contig they need only 
+know 
+the number or name of one of the gel readings it contains. Whenever the 
+program asks users to identify a contig or gel reading they can type its 
+number or its archive name. If they type its archive name they must precede 
+the name by a slash "/" symbol to denote that it is a name rather than a 
+number. E.g if the  archive
+name is fred.gel with number 99, users should
+type /fred.gel or 99 when asked to identify the contig. Generally,
+ when it asks for the gel reading to be identified,
+the program will offer the user a default name,
+ and if the user types only return, that 
+contig will be accessed. When a database is opened the default contig will 
+be the longest one, but if another is accessed, it will subsequently  become 
+the current default.
+.para
+Further information is located in the following places. 
+The database files are described under "open database". The format 
+for 
+vector and consensus sequences is given under "calculate a consensus", as are 
+the 
+uncertainty codes used in gel readings. 
+.left margin2
+.para
+There are two programs,
+other than this, relevant to sequencing are the digitizer 
+program  and the trace editor program, both is outlined briefly below.
+.para
+         The digitiser program
+is used for the initial input of gel readings
+and for writing a file of file names. The program
+uses a digitizer for data entry.
+A digitizer is
+  a  two  dimensional  surface such as a light box
+which is such that if a special pen is pressed onto it, the pens 
+coordinates are recorded by a computer.
+These coordinates
+          can be interpreted by a program.
+.para
+               In order to read an autoradiograph placed on the light box
+the user  need  only  define the bottom of
+the four sequencing lanes and the bases
+          to which they correspond and then use  the  pen  to  point  to  each
+          successive  band progressing up the gel.  The program examines 
+the
+          coordinates of each pen position to see in which of the  four  
+lanes
+          it  lies  and  assigns  the  corresponding  base to be stored in the
+          computer.  Each time the pen tip is depressed to point to a position
+          on  the  surface of the digitizer the program sounds the bell on the
+          terminal to indicate to the user that a point has been recorded.  As
+          the  sequence  is read the program displays it on the screen.
+.para
+	The trace editor program
+is used for the initial processing of data obtained from
+fluorescent sequencing machines. It allows the user to visually
+select left and right cutoff positions to denote the start and end of good
+data. Users may also edit the sequence at this point.
+Output from ted is a sequence file in Staden format with headers that
+describe to xdap the cutoff information.
+
+.left margin1
+@17. TX 1 @Screen against enzymes
+.left margin2
+.PARA
+Used to compare gel readings against any restriction enzyme recognition
+ 
+sequences that may have been used  during cloning and which should not 
+
+be present in the data. Works on single gel readings or processes batches
+ 
+accessed through files of file names. The algorithm looks for exact 
+
+matches to recognition sequences stored in a file. 
+
+.para
+The file containing the recognition sequences must be identified. The
+user 
+must choose between employing a file of file names, or typing in the
+
+ 
+names of individual gel reading files. If a file of file names is used the
+
+
+program will also create a new file of file names. When the option has
+ 
+finished operating this new file will contain the names of all those gel
+ 
+readings that did not match any of the recognition sequences. Hence it
+ can 
+be used for further processing of the batch. The recognition sequences 
+
+should be stored in a simple text file with one recognition sequence per 
+
+line.
+.left margin1
+@18. TX 1 @Screen against vector
+.left margin2
+.PARA
+Used to compare gel readings against any vector sequences that may have 
+
+been picked up during cloning. Works on single gel readings or processes 
+
+batches accessed through files of file names. The algorithm looks for
+exact 
+matches of length "minimum match length" and displays the overlapping 
+
+sequences.
+.para
+The file containing the vector sequence must be identified. The user must
+
+choose between employing a file of file names, or typing in the names of
+ 
+individual gel reading files. If a file of file names is used the program 
+will 
+also create a new file of file names. When the option has finished 
+
+operating  this new file will contain the names of all those gel readings
+
+that did not match the vector sequence. Hence it can be used for further 
+
+processing of the batch. The vector sequence should be stored in a simple
+ 
+text file with up to 80 characters of data per line. More than one vector
+ 
+can be stored in a single file. If so each should be preceded by a 20 
+
+character title of the form <---m13mp8.001-----> where the < and >
+ signs 
+and the number like .001 are obligatory. The number must be preceded 
+
+by a dot (.) and be 3 digits long. The total sequence in the file must be <
+
+50,001 characters in length.
+
+.left margin1
+@20. TX 3 @Auto assemble
+.left margin2
+.PARA
+Compares gel readings against the current contents of the database and 
+
+produces  alignments. In its normal mode of operation 
+("entry permitted"), the function
+will automatically enter the gel readings into the database, but if entry 
+is not permitted it will only produce alignments. It works on 
+
+single gel readings or processes batches of gel readings accessed through 
+
+files of file names. It is the usual way to enter data into the database.
+
+.para
+The function will check the database for logical consistency and will
+ only 
+proceed if it is OK. Choose if gel readings should be entered into the
+ 
+database, or if they should only be compared. Choose between using a file 
+
+of file names or typing file names on the keyboard. If so selected, supply 
+
+the file of file names. Also supply a file of file names to contain the names of
+ 
+all the gel readings that fail to get entered. 
+Select the entry mode. Normal assembly is appropriate for all but special 
+cases, as is "permit joins". Uses for the other modes are not documented 
+here.
+Define a minimum initial
+ 
+match length. Define a minimum alignment block (the default value is
+ 
+taken in all but exceptional circumstances). Define the maximum number
+ 
+of padding characters allowed to be used in each gel reading to help
+
+achieve alignment, and the same for the number allowed in the contig for
+ 
+each gel reading. Finally define the maximum percentage mismatch to
+be allowed for any gel reading to be entered into the database. If
+ 
+for any gel reading, either of these last three values is exceeded the gel
+ 
+reading will not be entered into the database.
+
+.para
+In operation the function takes a batch of gel readings (probably  passed
+
+          on  as  a file of file names from one of the screening routines) and 
+enters them into a
+          database for a sequencing project.  It takes each  gel reading
+  in  turn,
+          compares  it with the current consensus for the database, it then
+          produces an  alignment  for  any  regions  of  the  consensus  it
+          overlaps;   if  this alignment is sufficiently good it then edits
+          both the new gel reading and the sequences it overlaps  and  adds  
+the
+          new  gel reading to the database.  The program then updates the 
+consensus
+          accordingly and carries on to the next  gel  reading.
+.para
+          All alignments are displayed and any gel readings 
+that do match but  that
+
+          cannot be aligned sufficiently well have their names written to a
+          file of failed gel reading names.  The function works without  any
+
+          user intervention and can process any number of gel readings in a
+          single run.  Those gel readings that fail can be recompared using
+
+          the same function (to find the current overlap position) and  the
+  
+user  can enter them into the database
+
+          manually  using  the   "enter new gel reading" option.
+.para
+Typical dialogue and output from the function is shown below. (Note that 
+output for gel readings 2 - 9 has been deleted to save space).
+.lit
+Automatic sequence assembler
+Database is logically consistent
+? (y/n) (y) Permit entry 
+? (y/n) (y) Use file of file names 
+? File of gel reading names=demo.nam
+? File for names of failures=demo.fail
+Select entry mode
+X  1 Perform normal shotgun assembly 
+   2 Put all sequences in one contig 
+   3 Put all sequences in new contigs
+? Selection  (1-3) (1) =
+? (y/n) (y) Permit joins 
+? Minimum initial match (12-4097) (15) =
+? Minimum alignment block (2-5) (3) =
+? Maximum pads per gel (0-25) (8) =
+? Maximum pads per gel in contig (0-25) (8) =
+? Maximum percent mismatch after alignment (0.00-15.00) (8.00) =
+  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  Processing           1 in batch
+  Gel reading name=HINW.004                                
+  Gel reading length=   283
+  Searching for overlaps
+  Strand     1
+  Strand     2
+  No matches found
+  Total matches found           1
+  Padding in contig=    0 and in gel=    1
+  Percentage mismatch after alignment =  1.8
+  Best alignment found
+         1         11         21         31         41         51
+         TTTTCCAGCG TGCGTCTGAC GCTGTCTTGC TTAATGATCT CCATCGTGTG CCTAGGTCTG
+         ********** ********** ********** ********** ********** **********
+         TTTTCCAGCG TGCGTCTGAC GCTGTCTTGC TTAATGATCT CCATCGTGTG CCTAGGTCTG
+         1         11         21         31         41         51
+        61         71         81         91        101        111
+         TTGCGTTGGG CCGAGCCCAA CTTTCCCAAA AACGTATGGA TCTTACTGAC GTACA-GTTG
+         ********** ********** ********** ********** ********** ***** ****
+         TTGCGTTGGG CCGAGCCCAA CTTTCCCAAA AACGTATGGA TCTTACTGAC GTACACGTTG
+        61         71         81         91        101        111
+       121        131        141        151        161        171
+         CTTACCAGCG TGGCTGTCAC GGCGTCAGGC TTCCACTTTA GTCATCGTTC AGTCATTTAT
+         ********** ********** ********** ********** ********** **********
+         CTTACCAGCG TGGCTGTCAC GGCGTCAGGC TTCCACTTTA GTCATCGTTC AGTCATTTAT
+       121        131        141        151        161        171
+       181        191        201        211        221        231
+         GCCATGGTGG CCACAGTGAC G-TATTTTGT TTCCTCACGC TCGCTACGTA TCTGTTTGCC
+         ********** ********** * ******** ********** ********** **********
+         GCCATGGTGG CCACAGTGAC GCTATTTTGT TTCCTCACGC TCGCTACGTA TCTGTTTGCC
+       181        191        201        211        221        231
+       241        251        261        271        281
+         CGCG--GTGG AATTACAGCG TTCCCTATTG ACGGGCGCAT CCAC
+         ****  **** ********** ** * ***** ********** ****
+         CGCGACGTGG AATTACAGCG TT,CDTATTG ACGGGCGCAT CCAC
+       241        251        261        271        281
+          Batch finished
+          9 sequences processed
+          0 sequences entered into database
+          0 joins made
+
+.end lit
+
+.para
+Note that "auto assemble" cannot align protein sequences.
+.left margin1
+@28. TX 1 @Highlight disagreements
+.left margin2
+.para
+Used in the latter stages of a project
+to highlight disagreements between individual gel readings
+and their consensus sequences. Characters that agree with the
+ 
+consensus are shown as : symbols for the plus strand and . for the minus
+ 
+strand. Characters that disagree with the consensus are left unchanged 
+
+and so stand out clearly. The results of this analysis are written to a 
+file.
+
+.para
+Before selecting this option create a file of the display of the contig to 
+be 
+"highlighted". The option will ask for the name of this file. Select
+ symbols 
+to denote "agreeing" characters on each strand, the defaults are : and ., 
+
+but any others can be used. Supply the name of a file in which to put
+ 
+the output.
+.para
+The display file needed as input for this option is created by selecting 
+
+"Redirect output",  followed immediately by  "display contig", and then 
+"Redirect output" again. The 
+
+cutoff score used in the consensus calculation can be set by option "set
+
+display parameters". Note that for the highlight function
+there is a limit of 50 for the number of gel 
+readings that are aligned at any position - ie the contig must be less 
+than 51 gel readings deep at its thickest point. I hope that those performing
+shotgun sequencing never reach this limit, but those using the program for
+comparing sequence families might.
+.para
+Typical output from this function is shown below.
+.lit
+                                                                     
+                          210       220       230       240       250
+    1  HINW.004    :C::::::::::::::::::::::::::::::::::::::::::AC::::
+    7  HINW.018    :*::::::::::::::::::::::::::::::::::::::::::CA::::
+   -4  HINW.017                                 ...............AC....
+                   G-TATTTTGTTTCCTCACGCTCGCTACGTATCTGTTTGCCCGCG--GTGG
+                                                                     
+                          260       270       280       290       300
+    1  HINW.004    ::::::::::::*:D:::::::::::::::::::
+    7  HINW.018    ::::::::::::::::::::CA:::::T:*:::*::::::::::::CA:
+   -4  HINW.017    ..............................................A...
+    3  HINW.009    :::::::::::::::V::::::::::::::::::::::::::::*AV:::
+   -6  HINW.028                            ......................A...
+                   AATTACAGCGTTCCCTATTGACGGGCGCATCCACGCTGATTCTCTT-CTG
+                                                                     
+.end lit
+.left margin1
+@32. TX 3 @Extract gel readings
+.left margin2
+.para
+Used to make copies of the aligned gel readings in a database,
+to write them into separate files, and to write a 
+
+corresponding file of file names. It operates in two modes: either all gel
+ 
+readings are extracted, or only those at the ends of contigs. 
+
+.para
+Choose which mode of operation is required and supply a file of file 
+
+names. 
+.para
+The gel readings are given their original 
+
+names. 
+If used to extract the gel readings from the ends of contigs the function
+ is 
+useful for checking for missed contig joins: the file of file names can be 
+
+used with the auto assemble function to recompare these gel readings, 
+
+and each should only overlap one contig. Any that overlap two contigs
+
+will identify possible joins.
+.para
+If the option is used to extract all the gel readings from a database, a 
+
+subsequent run of "auto assemble" can reconstitute a database which has
+
+been corrupted. This  rarely occurs and is usually necessitated by a
+ 
+user  employing "alter relationships"  incorrectly without first having
+ 
+made a copy. 
+.left margin1
+@1. TX 0 @Help
+.left margin2
+.PARA
+Help is available on the following topics :
+
+.LEFT MARGIN1
+@2. TX 0 @Quit
+.LEFT MARGIN2
+.PARA
+This command stops the program and is the only safe way to terminate a 
+
+run 
+of the program that has altered the contents of the database in any way.
+
+.left margin1
+@3. TX 1 @Open a database
+.LEFT MARGIN2
+.PARA
+Opens existing databases or allows new ones to be started. The function
+ is 
+automatically called into operation 
+when the program is started but can also be selected 
+
+from the general menu.
+.para
+Choose to open an existing database or start a new one, or if ! is typed 
+when the program is first started, enter the program without opening a 
+database. Supply a project
+ 
+database name, and if it already exists, the "version". If starting a new
+
+database define the database size and if it is for DNA or protein sequences.
+The database size is an initial size for the database. It can be increased 
+later during the project. It is the sum of the number of gel
+readings plus the number of contigs.
+.para
+Database names can have from one to 12 letters and must not include full
+ 
+stop (.). The database is made from five separate files. If the database
+ is 
+called FRED then version 0 of database FRED comprises files FRED.AR0, 
+
+FRED.RL0, FRED.SQ0, FRED.TG0 and FRED.CC0. The version is the last symbol in the file names.
+
+Only this program
+ can read these files. If the "copy database" option is used it
+ 
+will ask the user to define a new "version". 
+.para
+For normal use the maximum gel reading length is set to 512 characters,
+
+but when a database is started the user may choose lengths of either
+
+ 512, 
+1024, 1536..., 4096. Normally the program is used to handle DNA 
+
+sequences but many of the functions also work on protein sequences. The
+ 
+choice of sequence type is made when the database is started.
+
+.para
+The contigs are not stored on the disk as the user sees them displayed on
+
+the screen. Each gel reading is stored with sufficient information about
+ 
+how it overlaps other gel readings so that the program can work out how
+ 
+to 
+present them aligned on the screen. We refer to this extra data as "the 
+relationships" and it is explained below.
+ 
+The database comprises 5 separate files.
+
+.left margin2
+          1.  a working version of each gel reading.  This is the  version  of
+          the  gel  reading
+that is in the database and initially it is an exact copy of
+          the original sequence (known as the archive)
+ but it is edited and manipulated to align  it
+          with other gel readings.
+
+.left margin2
+          2.  the file of  relationships.   This  file  contains  all  of  the
+
+          information  that  is required to assemble the working versions 
+into
+
+          contigs during processing;  any manipulations on the data  use  this
+
+          file   and  it  is  automatically  updated  at  any  time  that  the
+
+          relationships are changed.  The  information  in  this  file  is  as
+
+          follows:
+.left margin2
+          (A) Facts about  each  gel reading  and  its  relationship  to  
+others  
+("gel
+
+          descriptor lines"):
+
+.left margin2
+             (a) the number of the gel 
+reading   (each gel reading   is given a number  as  it  is
+
+          entered into the database)
+
+.left margin2
+             (b) the length of the sequence from this gel reading  
+
+.left margin2
+             (c) the position of the left end of this gel 
+reading   relative to the left
+
+          end of the contig of which it is a member
+
+.left margin2
+             (d) the number of the next gel 
+reading   to the left of this gel reading  
+
+.left margin2
+             (e) the number of the next gel reading   to the right
+
+.left margin2
+             (f) the relative strandedness of this gel 
+reading  , ie whether  it  is  in
+
+          the same sense or the complementary sense as its archive.
+
+.left margin2
+          (B) Facts about each contig ("contig descriptor lines"):
+
+.left margin2
+             (a) the length of this contig
+
+.left margin2
+             (b) the number of the leftmost gel 
+reading   of this contig
+
+.left margin2
+             (c) the number of the rightmost gel reading   of this contig.
+
+.left margin2
+          (C) General facts:
+
+.left margin2
+             (a) the number of gel readings in the database
+
+.left margin2
+             (b) the number of contigs in the database.
+
+.left margin2
+          3.  the file of archive names.  This is simply a list of  the  names
+
+          of each of the archive files in the database but on line number 
+
+          1000 we also store the size of the database. ie the number of lines 
+
+          of information allowed in the database files. This file always has 
+
+          1000 lines but the length of the file of relationships and the file 
+
+          of working versions can be set by the user when creating a 
+database
+
+          or when copying from one to another.
+.left margin2
+	  4. the file of tags (annotation). 
+This consists of linked lists of tag information for each sequences in the
+database.
+Tags are created by the user as annotation, or by xdap as records of edits or
+for storing cutoff information.
+As the number of tags can grow without limit, so can this file.
+For each gel there is a header record, which contains the record number of
+the start of the linked list for that gel. On line IDBSIZ there is a record
+containing information about the file such as its present length and if there
+are any free "tag" slots to be reused in the file.
+
+	  5. the file of comments (annotation).
+This consists of linked lists of comment fragments.
+Comments are created by the user as a message attached to annotation,
+or by the system to store cutoff information.
+Comments are character strings of any length.
+Comments longer than 40 characters are broken up into fragments, each 40
+characters long, and are chained together in a link list.
+As the number of comments can grow without limit, so can this file.
+
+.para
+          Structure of the database files
+.para
+          1.  The file of relationships
+.para
+	      The file contains IDBSIZ lines of data:
+          the general data are stored on line IDBSIZ;   data about  gel 
+readings  are
+          stored  from  line 1 downwards;  data about contigs are stored from
+          line IDBSIZ-1 upwards. A database of 500 lines containing 25 gel 
+readings and 4 contigs would have a file 
+          of relationships as is shown below.
+.lit
+
+
+                  ---------------------------------------------
+                     1  Gel descriptor record
+                     2   "      "       "
+                     3   "      "       "
+                     4   "      "       "
+                     5   "      "       "
+                     '   '      '       '
+                     '   '      '       '
+                    25   "      "       "
+                    26  Empty record
+                     '    '     '
+
+                     '    '     '
+                   495    '     '
+                   496  Contig descriptor record
+                   497    "        "        "   
+                   498    "        "        "
+                   499    "        "        "
+                   500   Number of gel readings=25, Number of contigs=4
+                  ---------------------------------------------
+
+          The arrangement of the data in the file of relationships
+
+.end lit
+As each new gel reading   is added into the database a new line is  added
+          to  the  end  of  the  list  of gel descriptor
+ lines.  If this new gel  reading  does not
+          overlap with any gel readings
+ already in the database a new contig  line  is
+          added  to  the top of the list of contig lines.  If it overlaps with
+          one contig then no new contig line need be added but if it  overlaps
+          with  two  contigs  then  these  two  contigs must be joined and the
+          number of contig lines will be reduced by one. Then the list of 
+contig
+          lines is compressed  to  leave  the empty line at the top of the list.
+          Initially the two types of line will move towards  one  another  but
+          eventually,  as  contigs  are joined, the contig descriptor lines will
+          move in the same direction as the  gel descriptor
+ lines.   At  the  end  of  a
+          project  there should  be only one contig line.  The database is thus
+          capable of handling a project of 998 gels.
+.para
+          2.  Structure of the working versions file
+.para    
+        The working versions of gel readings are stored in  a  file  of
+          IDBSIZ lines each containing 512 characters.  Gel reading 
+number 1 is stored on line
+          1, gel reading number  2 on line 2 and so on.
+.para
+          3.  Structure of the archive names file
+.para
+          This file, unlike the others, always has 1000 lines each 10
+          characters in length. Its length is fixed because line 1000 is used 
+          to store IDBSIZ the database size and the programs need a definite
+          location from which to read this number.
+.para
+          4.  Structure of the tag file
+.para
+This file initially starts with IDBSIZ lines, and is expanded as new tags are
+created.
+Information about the length of the file, and which tag records are reusable
+is stored on line IDBSIZ.
+A database of 500 lines would have a file of tags as shown below.
+.lit
+
+                  ---------------------------------------------
+                     1  Tag descriptor record
+                     2   "      "       "
+                     3   "      "       "
+                     4   "      "       "
+                     5   "      "       "
+                     '   '      '       '
+                     '   '      '       '
+                   497   "      "       "   
+                   498   "      "       "
+                   499   "      "       "
+                   500   Length of file=N, Free list=0
+		   501  Tag record
+		   502   "   "
+		   503   "   "
+		     '   '   '
+		     '   '   '
+		   N-2   "   "
+		   N-1   "   "
+		     N  Tag record
+                  ---------------------------------------------
+
+          The arrangement of the data in the file of relationships
+
+.end lit
+As each new tag is added to the database, a check is made in the
+file descriptor record at line IDBSIZ. If the list of reusable records is 0,
+the file is extended by one line. Otherwise the new tag is assigned to
+record at the head of the freelist.
+When tags are deleted, they are added to the free list in the file descriptor
+record.
+.para
+          5.  Structure of the comment file
+.para
+This file initially starts with 1 line, and is expanded as new annotation is
+created.
+Information about the length of the file, and which comment records are reusable
+is stored on the first line.
+.lit
+
+                  ---------------------------------------------
+                     1  Length of file=N, Free list=0
+                     2  Comment fragment
+                     3   "       "
+                     4   "       "
+                     '   '       '
+                     '   '       '
+		   N-2   "       "
+		   N-1   "       "
+		     N  Comment fragment
+                  ---------------------------------------------
+
+          The arrangement of the data in the file of relationships
+
+.end lit
+As each new comment is added to the database, a check is made in the file
+descriptor record at line 1. If the list of reusable records is 0,
+the file is extended to hold the new comment. Otherwise the new comments is
+assigned to records starting with the head of the freelist.
+When comments are deleted, the discarded records are added to the free list in
+the file descriptor record.
+.para
+  There  are  various  checks  within  the  programs  to
+          protect users from themselves:-
+.left margin2
+               1.  All user input is checked for errors - e.g.   reference  to
+               non-existent  gel 
+readings or  contigs,  incorrect  positions in the
+               contig or gel readings.
+.left margin2
+               2.  Before entering a gel reading the system checks to see if a
+               file of the same name has already been entered.
+.left margin2
+               3.  Join will not allow the circularising of a contig.
+.left margin2
+               4.        Both enter and join  functions  restrict  the  region
+               that  the  user  is  allowed to edit (using edit contig) to the
+               region of overlap.
+.left margin2
+5. Users may escape from any point in the program.
+.left margin2
+6. Help is available from all points in the program.
+.SK2
+.LEFT MARGIN2
+IT IS ESSENTIAL THAT USERS DO NOT KILL THE PROGRAM WHILE IT IS 
+DOING 
+ANYTHING THAT INVOLVES CHANGING THE CONTENTS OF THE 
+DATABASE. I.E DURING AUTO ASSEMBLE,
+COMPLETE ENTRY, COMPLETE JOIN, COMPLEMENT CONTIG, EDIT CONTIG, AND SCREEN 
+EDIT.
+This could 
+corrupt the database so badly that it is impossible to fix. The program 
+should always be left using the QUIT option.
+
+.left margin1
+@4. TX 3 @Edit contig
+.LEFT MARGIN2
+.PARA
+The Contig Editor is a mouse-driven editor that can insert,
+delete and change gel reading sequences.
+.para
+The Contig Editor allows scrolling from one end of a contig to the other
+using the scroll bar and scroll buttons. Action of mouse button presses
+when the mouse pointer is in the scroll bar:
+.sk1
+.lit
+    Middle Mouse Button      Set editor position
+    Left   Mouse Button      Scroll forward one screenful
+    Right  Mouse Button      Scroll backwards one screenful
+.end lit
+.sk1
+The four scroll buttons operate as follows:
+.sk1
+.lit
+    "<<"                     Scroll left half a screenful
+    "<"                      Scroll left one character
+    ">"                      Scroll right one character
+    ">>"                     Scroll right half a screenful
+.end lit
+.para
+The Editor cursor can be positioned anywhere in the edit window by
+moving the mouse pointer over the character of interest, then pressing the
+left mouse button. The Editor cursor can also be moved by using the
+direction arrow keys.
+.para
+The editor operates in two main edit modes - Replace and Insert. Replace allows
+a character to be replaced by another. Insert allows characters to be
+inserted into a gel reading sequence. Characters are entered by typing
+them from the keyboard. Only valid characters are permitted.
+Characters can be deleted by positioning the cursor one character to the right,
+then pressing the delete key.
+Normally Insert and Delete apply to the consensus line of the contig ONLY. 
+This restraint can be overridden by using the "Super Edit" mode of
+operation, THOUGH IT IS NOT RECOMMENDED.
+.para
+Edits can also be performed on the consensus, though they are
+restricted to insertion and deletion of padding characters ("*").
+These edits also have special meanings.
+A deletion will delete ALL characters at the position to the left
+of the cursor in the contig, and move the relative positions of all
+sequences starting to the right of the cursor position left one
+character.
+An insertion will insert the character typed ("*") into ALL gel
+reading sequences at the cursors position in the contig, and move the
+relative positions of all sequences starting to the right of the cursor
+position right one character.
+.para
+The effect of the last edit can be undone by pressing the "Undo" button
+at the top of the editor window.
+.para
+The cursor will automatically be positioned at the next problem when the
+"Find Next Problem" button is selected. The next problem is where the
+consensus shows either an ambiguity ("-") or a pad ("*") character.
+.para
+The edits to the contig can be saved by pressing the "Leave Editor"
+button and replying "Yes" to the prompt to "Save changes?". As no changes
+are made to the working copy of your database til this point it
+is possible to abort the editor if
+the edit session ends up in an unsatisfactory state (ie if you've
+stuffed it up!)
+.left margin1
+.sk3
+Displaying Traces
+.left margin2
+.para
+The original data from which the gel reading sequences where derived can
+be seen by double clicking (two quick clicks) with the middle mouse button
+on the area of interest. The trace will be displayed with the point
+clicked at the centre of the trace viewport.
+.para
+All traces that are displayed are maintained in one window, called the Trace
+Manager. The Trace Manager will only display four traces maximum. When four
+traces are already being managed and a new one is requested, the one at the top
+of the Trace Manager is removed and the new one is added to the bottom.
+Traces can be removed individually by using the "quit" button in the panel next
+to the trace.
+.left margin1
+.sk3
+Extending Reads Using Cutoff Information
+.left margin2
+.para
+Sequence data read in from Automated Fluorescent sequencing machines
+trace files processed through the program ted
+will have the discarded sequence (vector at start and poor read at
+end) available to the contig editor. To display the cutoff
+information, press the "Display Cutoff" button at the top of the
+editor window.
+The cutoff sequence appears in grey. This sequence can be incorporated
+into the editable sequence, by moving the cutoff position. This is
+done by positioning the cursor at the end of the gel sequence, and
+using Meta-Left-Arrow and Meta-Right-Arrow to adjust the point of cutoff.
+The Meta key is a diamond on the Sun keyboard.
+.left margin1
+.sk3
+Pop-up menu
+.left margin2
+.para
+A pop-up menu is revealed by depressing the "Control" key on the keyboard
+and at the same time pressing the left mouse button. The menu has the following
+functions:
+.lit
+
+    Search
+    Save Contig
+    Create Tag
+    Edit Tag
+    Delete Tag
+
+.end lit
+"Save Contig" is described above.
+Searching and operations on tags are described below.
+.left margin1
+.sk3
+Searching
+.left margin2
+.para
+Selecting "Search" brings up a
+window which can remain present during normal editor operation. The
+window allows the user to select the direction of search, the type of
+search and a value to search on.  The value is entered into the value
+text window. Then pressing the "search" button
+performs the search. If successful, the cursor is positioned and
+centred accordingly. An audible tone indicates failure.  Pressing the
+"ok" button removes the search window. The search window is
+automatically removed when the contig editor is exited.
+.sk1
+There are seven different search modes:
+.sk1
+1. Search by position
+.sk1
+This positions the cursor at the numeric position specified in the
+value text window. Eg a value of "1234" causes the cursor to be placed
+at base number 1234 in the contig. Positioning withing a gel reading is
+achieved by prefixing the number with the "@" character, eg "@123"
+positions the cursor at base 123 of the sequence in which the cursor
+lies. Relative positions can be specified by prefixing the number with
+a plus or minus character. Eg "+1234" will advance the cursor 1234
+bases. If possible, the cursor is positioned within the same sequence.
+The direction buttons have no effect on the operation of "search
+by position".
+.sk1
+2. Search by reading name
+.sk1
+This positions the cursor at the left end of the gel reading specified
+in the value text window. If the value is prefixed with a slash is is
+assumed to be a gel reading name. Otherwise it is assumed to be a gel
+reading number. Eg "123" positions the cursor at the left end of gel
+reading number 123. "/a16a12.s1" positions at the start of reading
+a16a12.s1. If the value was "/a16" the cursor is positioned at the
+first reading which starts with "a16".  The direction buttons have no
+effect on the operation of "search by position".
+.sk1
+3. Search by tag type.
+.sk1
+This positions the cursor at the start of the next tag which has the
+the same type as specified by the type value menu. To change the type,
+select off the menu that pops up when the mouse is clicked on the
+button labeled "Type:". The search can be performed either forwards
+or backwards of the current cursor position. To find all tags, use
+"search by annotation", with a null text value string.
+.sk1
+4. Search by annotation.
+.sk1
+This positions the cursor at the start of the next tag which has a
+comment containing the string specified in the value text window. The
+search performed is a regular expression search, and certain
+characters have special meaning. Be careful when your value string
+contains ".", "*", "[", "^" or "$". The search can be performed either
+forwards or backwards from the current cursor position.
+.sk1
+5. Search by sequence.
+.sk1
+This positions the cursor at the start of the next piece of sequence
+that matches the value specified in the text value window. The search
+is for an exact match, which means the case of value string is
+important. The search is performed on the gel readings themselves,
+rather than the consensus sequence. The search can be performed either
+forwards or backwards from the current cursor position.
+.sk1
+6. Search by problem.
+.sk1
+This positions the cursor at the next place in the consensus sequence
+which is not an "A", "C", "G" or "T". The search can be performed
+either forwards or backwards from the current cursor position.
+.sk1
+7. Search by quality
+.sk1
+This positions the cursor at the next place in the consensus sequence
+where the consensus calculation for each strand disagrees. When only
+sequences on one strand is present, the search will stop at every
+base. The search can be performed either forwards or backwards from the
+current cursor position.
+.left margin1
+.sk3
+Annotation
+.left margin2
+.para
+Parts of a sequence can be annotated, to record the positions of primers used
+for walking, or to mark sites, such as compressions that have caused problems
+during sequencing.
+The consensus sequence CANNOT be annotated.
+.para
+To annotate a piece of sequence first select the part of sequence
+using the mouse buttons. Use the left mouse button to position the start of the
+selection, and while this button is being held down, move the mouse to extend.
+The selection can be extended further using the right mouse button.
+.para
+To create annotation, invoke the pop-up menu, and select the "Create Tag"
+function. A small "tag editor" will appear which
+allows you to select the type of the
+annotation from a pull-down menu, and specify a comment if desired.
+To select a new type pull down the Type menu, and select the entry desired.
+To enter a comment, simply type into the text window in the tag editor.
+The annotation is created when the "Leave" button on the tag editor,
+and is displayed in the colour defined in the tag database file (TAGDB).
+.para
+To edit existing annotation,
+position the cursor with the left mouse button
+on the tag, and select the
+"Edit Tag"
+off the pop-up menu.
+This invokes the tag editor, and changes to the type and comment of the
+annotation can be made. The tag is updated when the "Leave" button is pressed.
+.para
+To delete an existing annotation,
+position the cursor with the left mouse button
+on the tag, and select the
+"Delete Tag"
+off the pop-up menu.
+.left margin1
+.sk3
+NOTE:
+.left margin2
+.para
+As the Contig Editor is a very powerful tool, it is possible that the alignment
+of the gel reading sequences has unexpectedly been disrupted.
+This can easily happen to parts of the contig that lie to the right
+of the screen if excessive use has been made of the "Super Edit" facility.
+Until familiar with "Super Edit" it would benefit the sequencer to quickly
+scan through the contig after editing to check that bad alignments have not
+been created.
+.left margin1
+@9. T 3 @Screen edit
+.LEFT MARGIN2
+.para
+THIS OPTION IS NO LONGER AVAILABLE IN XDAP. USE EDIT CONTIG
+.para
+Gives access to the system editor on the machine (for example EDT on a VAX) 
+and allows users to edit contigs. The contigs are presented as for
+"display contig" and the program will 
+reconstitute the contig's sequences and relationships  when the editor is 
+exited.
+.para
+To screen edit a contig set the line length to 50 characters,
+select the contig to edit, and supply the name of a temporary file in which 
+the editing will be performed.
+After a short pause the system 
+editor will present the first page of the file. Edit the file obeying the 
+rules given below. Exit from the editor and affirm the intention of 
+returning the contig to the database. The program will put the contig 
+back into the database.
+.para
+Rules for screen editing
+.para
+There are some limitations on the changes that can be made to the contigs 
+when using the screen editor. Users are unlikely to want to break the 
+rules 
+in order  to achieve changes to contigs, but nevertheless the 
+constraints need to be defined and they are given below.
+.para
+Alignments must be maintained during editing.
+Whole lines of sequence should not be deleted or added unless the 
+order 
+of the gel readings in the contig is preserved.
+Each line in the 
+contig display consists of gel reading numbers, their names and 50 
+character sections of sequence. Insertions are limited in the following 
+way.
+No line of sequence can be extended rightwards more than 10 characters
+beyond the end of a full length line (a full length line is 50 characters 
+long). Only one character can be added to the left end of full length 
+lines, but sections of sequence beginning further into a line
+ can be extended leftwards up to an equivalent position. Do not delete any 
+non-sequence lines in the file.
+.para
+Before returning the contig to the database the program checks that the 
+rules have been obeyed. If an error is found the number of the erroneous 
+line in the 
+file is displayed and the contig will not be changed.
+.left margin1
+@5. TX 1 @Display a contig
+.LEFT MARGIN2
+.para
+Used to show the aligned gel readings for any part of a contig. The 
+
+number, name and strandedness of each gel reading is shown and the 
+
+consensus is written below.
+.para
+If required identify the contig,  and then the start and end points of the
+ 
+region to display.
+.para
+The display can be directed to a disk file using "direct output to disk".
+ 
+These files are required by options: "screen edit" and "highlight 
+
+disagreements", and printed copies of them
+are very useful for marking corrections prior to 
+
+using the editors.
+.para
+                Below is an example showing the left  end  of  a  contig  from
+          position  1 to 200.  Overlapping this region are gels 6,3,5,17and 12;
+6, 3 and 5 
+are in reverse orientation to their archives (denoted by a minus  sign)
+          There are a few uncertainty codes and a few padding
+          characters in the working versions, but the consensus  (shown  
+below
+          each page width) has a definite assignment for almost every 
+position.
+.lit
+
+                           10        20        30        40        50
+   -6  HINW.010    GCGACGGTCTCGGCACAAAGCCGCTGCGGCGCACCTACCCTTCTCTTATA
+       CONSENSUS   GCGACGGTCTCGGCACAAAGCCGCTGCGGCGCACCTACCCTTCTCTTATA
+
+                           60        70        80        90       100
+   -6  HINW.010    CACAAGCGAGCGAGTGGGGCACGGTGACGTGGTCACGCCGCGGACACGTC
+   -3  HINW.007                                            GGCACA*GTC
+       CONSENSUS   CACAAGCGAGCGAGTGGGGCACGGTGACGTGGTCACGCCG-G-ACA-GTC
+
+                          110       120       130       140       150
+   -6  HINW.010    GATTAGGAGACGAACTGGGGCG3CGCC*GCTGCTGTGGCAGCGACCGTCG
+   -3  HINW.007    GATTAG4AGACGAACTGGGGCGACGCCCG*TGCTGTGGCAGCGACCGTCG
+   -5  HINW.009                                        GGCAGCGACCGTCG
+   17  HINW.999                                           AGCGACCGTCG
+       CONSENSUS   GATTAGGAGACGAACTGGGGCGACGCC-G-TGCTGTGGCAGCGACCGTCG
+
+                          160       170       180       190       200
+   -6  HINW.010    TCT*GAGCAGTGTGGGCGCTG*CCGGGCTCGGAGGGCATGAAGTAGAGC*
+   -3  HINW.007    TCT*GAGCAGTGTGGGCGCTGC*CGGGCTCGGAGGGCATGAAGTAGAGC*
+   -5  HINW.009    TCT*GAGCAGTGTGGGCG*T*G*CGGGCTCGGAGGGCATGAAGTAGAGC*
+   17  HINW.999    TCTCGAGCAGTGTGGGCGCTG**CGGGCTCGGAGGGCATGAAGTAGAGCG
+   12  HINW.017                                              GTAGAGC*
+       CONSENSUS   TCT*GAGCAGTGTGGGCGCTG-*CGGGCTCGGAGGGCATGAAGTAGAGC*
+.END LIT
+.left margin1
+@6. TX 1 @List a text file
+.LEFT MARGIN2
+.PARA
+This option allows users to list text files on the screen. It can be used 
+to read a file containing notes, for checking files written to disk etc. The 
+user is asked to type the name of the file to list.
+.left margin1
+@8. TX 1 @Calculate a consensus
+.LEFT MARGIN2
+.para
+          Calculates a consensus sequence  either for  the whole database or 
+
+for selected contigs. The consensus is written to a file named by the
+ user.
+.left margin2
+Supply a file name, choose between  whole database or selected contigs.
+.para
+          Symbols for uncertainty in gel readings
+.para
+In  order  to  record uncertainties when reading gels the codes shown
+ 
+below can  be  used. Use  of these codes permits us to extract the
+
+maximum amount of data from each gel and yet record any doubts  by
+ 
+choice  of  code.   The program can deal with all of these codes and any 
+ 
+other  characters  in  a  sequence  are  treated  as  dash  (-) characters.
+
+
+.lit
+
+       SYMBOL                  MEANING
+
+         1             PROBABLY        C
+         2                "            T
+         3                "            A
+         4                "            G
+         D                "            C       POSSIBLY        CC
+         V                "            T          "            TT
+         B                "            A          "            AA
+         H                "            G          "            GG
+         K                "            C          "            C-
+         L                "            T          "            T-
+         M                "            A          "            A-
+         N                "            G          "            G-
+         R             A OR G
+         Y             C OR T
+         5             A OR C
+         6             G OR T
+         7             A OR T
+         8             G OR C
+         -             A OR G OR C OR T
+         a             A set by auto edit
+         c             C set by auto edit
+         g             G set by auto edit
+         t             T set by auto edit
+         *             padding character placed by auto assembler 
+          else = -
+
+.end lit
+
+.LEFT MARGIN2
+                           The DNA consensus algorithm
+.para
+The "calculate consensus" function, the "display  contig" routine and the
+ 
+"show quality" option use  the rules  outlined  here  to  calculate  a 
+ 
+consensus  from aligned gel readings.  Note that "display contig" 
+calculates 
+a consensus for  each  page  width  it displays  (it  does  not use the
+
+consensus sequence file calculated by the consensus function). 
+
+.LEFT MARGIN2
+.para
+We have 6 possible symbols in the consensus sequence: A,C,G,T,* and -. The 
+last symbols is assigned if none of the others makes up a sufficient 
+proportion of the aligned characters at any position in the contig. The 
+following calculation is used to decide which symbol to place in the 
+consensus at each position.
+.para
+Each uncertainty code contributes a score
+to one of A,C,G,T,*  and also to the total at each point. Symbols like R
+and Y which don't correspond to a single base type contribute only to the
+total at each point. The scores are shown below.
+.lit
+              definite assignments ie A,C,G,T,B,D,H,V,K,L,M,N,a,c,g,t,* =1
+
+              probable assignments ie 1,2,3,4 = 0.75
+
+              other uncertainty codes including R,Y,5,6,7,8,- = 0.1
+.end lit
+.para
+A cutoff score of 51% to 100% is supplied by the user. (When the program 
+starts this is set to 75%. See "set display parameters").
+At each position in the contig we calculate the total score for each of 
+the 5 symbols 
+A,C,G,T and * (denote these by Xi, where i=A,C,G,T or *), 
+and also the sum of these totals 
+(denote this by S). Then if 100 Xi / S > the cutoff for any i, symbol i is 
+placed in the consensus; otherwise - is assigned.
+.para
+Notice that S does not equal the number of times the sequence has been 
+determined, but is the score total, and hence we are less likely to put a - 
+in the consensus. For the "examine quality" algorithm each strand is
+treated separately but the calculation is the same. (It was originally
+different).
+.para
+Format of the consensus sequence ( and vector sequences).
+.para
+A consensus sequence file may contain the consensus for several contigs
+ 
+and so we identify each of them by preceding them by a 20 character
+ 
+title. The title is of the form <---LAMBDA.076-----> ( where LAMBDA is 
+
+the project name and gel reading number 
+
+
+          76 is the leftmost gel 
+reading to contribute to  this  consensus  sequence).
+
+
+          The  angle  brackets  <>  and the three digit number precede by a . 
+
+are important to some processing programs.
+.left margin1
+@25. TX 1 @Show relationships 
+.LEFT MARGIN2
+.para
+   Used to show the relationships of the gel readings in the database in 
+
+three ways -
+.LEFT MARGIN2
+               (a) All contig descriptor lines followed by all gel  descriptor
+               lines.
+.LEFT MARGIN2
+               (b) All contigs one after the  other  sorted,  i.e.   for  each
+               contig  show its  contig descriptor line followed by all its
+               gel descriptor lines sorted on position from left to right
+.LEFT MARGIN2
+               (c) Selected contigs:  show the contig  line  and,  in  order,
+               those gel readings that cover a user-defined region.
+               Note that this output can be directed to a disk file by 
+               prior selection of "disk output".
+.LEFT MARGIN2
+.para
+                Below is an example showing a contig from position
+          1 to 689.  The left gel reading  is number 6 and has archive 
+name HINW.010, the 
+rightmost gel  reading is number 2 and is has archive name HINW.004.
+On each gel  descriptor  line  is  shown:
+          the name of the archive version, the gel number, the position of the
+          left end of the gel reading  relative to the left  end  of  the  contig,  the
+          length  of  the gel 
+reading  (if this is negative it means that the gel reading  is in
+          the opposite orientation to its archive), the number of the  gel
+reading   to
+          the left and the number of the gel reading  to the right.
+.lit
+
+
+ CONTIG LINES
+ CONTIG      LINE  LENGTH               ENDS
+                                     LEFT   RIGHT
+               48     689               6       2
+ GEL LINES
+ NAME      NUMBER POSITION LENGTH     NEIGHBOURS
+                                     LEFT   RIGHT
+ HINW.010       6        1   -279       0       3
+ HINW.007       3       91   -265       6       5
+ HINW.009       5      137   -299       3      17
+ HINW.999      17      140    273       5      12
+ HINW.017      12      193    265      17      18
+ HINW.031      18      385   -245      12       2
+ HINW.004       2      401   -289      18       0
+
+.end lit
+.left margin1
+@21.  TX 3 @Enter new gel reading 
+.LEFT MARGIN2
+.para
+THIS OPTION IS NO LONGER AVAILABLE IN XDAP. USE AUTO ASSEMBLE
+.para
+Used to enter new gel readings into the  
+database. The new gel reading must have previously been compared with 
+the 
+contents of the database by use of " auto assemble"  in order to ascertain 
+if it overlaps any previously entered data. 
+.para
+The user is expected to know: if 
+the gel reading overlaps; if so which contig it overlaps; if so where it 
+overlaps. The program takes the user through a series of question to 
+establish the nature of the overlap and then displays the overlap. The 
+user 
+is then offered a number of options, including editors for the new gel 
+reading and the contig, to enable the correct alignment of the gel reading 
+throughout its whole length.
+.left margin2
+
+Supply the name of the gel reading file.
+If the gel 
+reading  has  been entered before the program will  not permit 
+
+entry. 
+The program gives the gel reading a unique number and asks if the 
+
+sequence overlaps any data already in the database (reported by "auto 
+
+assemble").
+
+If it does not, entry is complete.
+If it does overlap the
+ 
+dialogue 
+continues with the program asking if the gel readings overlaps "in the
+ 
+normal sense", if not it will automatically complement the sequence.
+
+Then supply the number of the contig the gel reading overlaps (as
+ 
+reported by "auto assemble").
+.para
+Overlaps are divided into two types: those for which the new gel reading
+ 
+protrudes from the left end of the contig it overlaps, and those for which
+ 
+it does not. The program asks about this with the question "Left end of
+gel 
+reading is inside contig". If this is true the program will go on to ask for
+ 
+the position in the contig of the left end of the new gel reading. If it is
+ not 
+true the program will ask for the position in the new gel reading of the
+
+left end of the contig. 
+.para
+Once this is completed the program will display the first 50 bases of
+ 
+the overlap. 
+The gel readings in the contig and their consensus are displayed with the 
+
+new gel reading underneath. The mismatches are shown by *'s on the 
+next 
+line down. 
+For example:
+.lit
+
+
+                           60        70        80        90       100
+   -6  HINW.010    CACAAGCGAGCGAGTGGGGCACGGTGACGTGGTCACGCCGCGGACACGTC
+   -3  HINW.007                                            GGCACA*GTC
+       CONSENSUS   CACAAGCGAGCGAGTGGGGCACGGTGACGTGGTCACGCCG-G-ACACGTC
+       NEWGEL      CACAAGCGAGCGAGAGGGGCACCGTGACGTGGTCACGCCGGGGACACGTC
+       MISMATCH                  *                         * *       
+                           10        20        30        40        50
+
+.end lit
+.para
+The program then needs to know if the position of the  left end of the 
+overlap is correct.
+
+If it is the user should type return, if not, 1 and the program will ask for 
+the 
+new position and display it.
+
+.LEFT MARGIN2
+The program now offers a number of  options  to  allow  the
+               user  to align the new gel reading 
+correctly over its whole length with
+               the  data  already  in  the  contig.   It  is  important   that
+               sufficient  edits  are  made  to the new gel reading 
+or the sequences in the
+               contig at this stage to get the alignment correct, because  once
+               entry  is completed, the alignment is fixed and cannot easily be
+               changed (see "alter relationships"). 
+  Alignment  can  be  achieved  
+by  making
+               insertions  or  deletions  but  deletion  of  data requires the
+               original gels to be checked.   For  this  reason  at  entry  we
+               usually make only insertions to achieve alignment.  We use X or
+               asterisks (*) as padding characters to achieve alignment  and 
+ so  can, if required,
+               distinguish  padding  characters  from characters assigned from
+               reading gels.  
+.LEFT MARGIN2
+.para
+The options available are:
+.lit
+   ? = HELP
+   ! = Give up
+   3 = Complete entry
+   4 = Edit contig
+   5 = Display overlap
+   6 = Edit new gel reading
+
+.end lit
+
+.sk1
+.para
+1. HELP gives this information.
+.para
+2. Give up allows users to change their minds about entering the new gel 
+reading. The program will ask the user to 
+confirm this choice.
+.para
+3. Complete entry is the command to add the new gel reading to the 
+contig. The 
+program updates the relationships accordingly. The user is asked to 
+confirm 
+this command.
+.para
+4. Edit contig gives the user access to a simple editor that allows 
+insertions, deletions and changes to be made to the contig. The editor 
+maintains alignments by making the same number of insertions or 
+deletions 
+in all sequences covering the edit position.
+The  program
+               protects the user          by  allowing edits only within
+               the region of overlap.
+.para 
+5. Display allows display of the region of overlap only.  This
+               is defined by the relative positions in the contig. The 
+               default is the whole of the region of overlap.
+.para
+6. Edit new gel reading allows the new gel reading to be edited using a 
+simple editor. 
+.left margin1
+@23. TX 3 @         Complement a contig
+.LEFT MARGIN2
+.PARA
+               This function will complement and reverse all of the gel 
+readings in  a
+          contig.    It   automatically  reverses  and  complements  each  gel
+          reading sequence, reorders left and right neighbours, recalculates  
+relative
+          positions and changes each strandedness.
+.PARA
+               The only user  input  required  is  to  identify the  contig  to
+          complement  by  the  number or name of a gel reading it contains.
+DO NOT KILL THE 
+PROGRAM DURING THIS STEP!
+.left margin1
+@22. TX 3 @          Join contigs
+.LEFT MARGIN2
+.PARA
+This function joins contigs interactively using a mouse driven editor.
+The operation of this editor is very similar to the Contig Editor
+described in "@4 Edit".
+
+.para
+It allows the
+user  to align the ends of the two contigs by editing each
+contig separately.  It is important that the alignment  achieved  is
+correct because once the join is completed the alignment is fixed.
+The program needs to know which two contigs to join.
+.para
+First specify which two contigs are to be joined.
+The user should identify the two 
+contigs. First the left contig and then the right.
+The program checks that the two contig numbers are different (it will not 
+allow circles to be formed!)
+.para
+The Join Editor consists of two Contig Editors in between which is sandwiched
+a disagreement box. This disagreement box shows exclamation marks to
+denote mismatches between the two consensuses.
+.para
+For example, the display will look something like this:
+.lit
+
+                         1460      1470      1480      1490      1500
+   56  HINW.100    TCT*GAGCAGTGTGGGCGCTG*CCGG
+   33  HINW.300    TCT*GAGCAGTGTGGGCGCTGC*CGGGCTCGGAGGG
+  -25  HINW.090    TCT*GAGCAGTGTGGGCG*T*G*CGGGCTCGGAGGG
+   19  HINW.123    TCTCGAGCAGTGTGGGCGCTG**CGGGCTCGGAGGGCATGAAGTAGAGCG
+       CONSENSUS   TCTCGAGCAGTGTGGGCGCTG-CCGGGCTCGGAGGGCATGAAGTAGAGCG
+       MISMATCH                         !                      !!!!!! 
+                           10        20        30        40        50
+   -6  HINW.010    TCTCGAGCAGTGTGGGCGCTGCCCGGGCTCGGAGGGCATGAAGTTAGAGC
+   -3  HINW.007                TGGGCGCTGCCCGGGCTCGGAGGGCATGAAGT*AGAGC
+   -5  HINW.009                              GCTCGGAGGGCATGAAGT*AGAGC
+       CONSENSUS   TCTCGAGCAGTGTGGGCGCTGCCCGGGCTCGGAGGGCATGAAGTTAGAGC
+
+.END LIT
+.para
+.para
+The best strategy for joining is to
+identify the exact position of overlap. This is defined as
+the position in the left contig that the leftmost character of the right
+contig overlaps.
+The overlap must be of at least one character.
+Use the scroll bar and the scroll buttons (`<<',`<',`>',and`>>')
+for positioning the relative positions of the two contigs.
+.para
+The join position can be fixed in position
+by pressing the `lock' button at the top of the Join Editor.
+Locking allows the two contigs to be scrolled as one when using the scroll bar
+and buttons, the left ends always in the same position relative to each
+other.
+.para
+Once locked, it is best to proceed to the right along the contigs, inserting
+padding characters (`*') into the consensuses to minimise the
+disagreements.
+.para
+It is essential that the user aligns the two contigs throughout the whole 
+region of overlap before completing the join because it is only at this 
+stage that the two contigs can be edited independently. Once the join is 
+completed the alignment can only be altered using the routines supplied 
+by "alter relationships".
+.para
+The join can be completed by pressing the `Leave Editor' button. The
+percentage mismatch is displayed, and the user is required to confirm that
+they want to perform the join.
+.left margin1
+@24. TX 1 @               Copy the database
+.LEFT MARGIN2
+.PARA
+Used to make a copy of the database. If required the database size can be 
+
+altered using this option. The "version" of a database is  encoded as the
+ 
+last letter in the names of the five files that contain the database.
+
+.para
+Supply a "version" number (the default is version 1), and if required
+
+select a new size for the database. The size of a database is the number
+ of 
+lines of information it can hold. It needs a line for each gel reading and
+ 
+another for each contig.
+.left margin1
+@19. TX 1 @               Check database
+.LEFT MARGIN2
+.para
+Used to perform a check on  the  logical  consistency  of  the
+          database. No user intervention is required.
+.para
+  The following relationships are checked:
+.LEFT MARGIN2
+               1.       If gel reading A thinks gel reading B is its left
+ neighbour
+ 
+does B think A  is
+               its right neighbour?
+                The error message is
+.left margin2
+"Hand holding problem for gel reading A"
+.left margin2
+followed by  the
+               gel descriptor lines for gel readings A and B.
+.LEFT MARGIN2
+               2.       Are there any contig lines with no left or right
+end gel readings?
+                The error message is
+.left margin2
+"Bad contig line number A"
+.LEFT MARGIN2
+               3.       Do the gel readings that are described as left ends on  
+contig
+               lines agree that they are left ends?
+                The error message is
+.left margin2
+"The end gel readings of contig A have outward neighbours"
+.LEFT MARGIN2
+               4.       Are there gel readings that are in more than one contig?
+                The error message is
+.left margin2
+" Gel number A is used N times"
+.LEFT MARGIN2
+               5.       Are there gel readings that are not in any contig?
+                The error message is
+.left margin2
+" Gel number A is not used"
+.LEFT MARGIN2
+               6.       Do the relative positions of  gel readings  agree  with  
+their
+               position as defined by left and right neighbourliness?
+                The error message is
+.left margin2
+" Gel number A with position X is left neighbour of  gel  number  B  with 
+position Y"
+.LEFT MARGIN2
+               7.       Are there any loops in  contigs?   If  so  no  further
+               checking is done.
+                The error message is
+.left margin2
+" Loop in contig n no further checking done, but gel reading numbers follow"
+.left margin2
+   The
+               program  then  prints the gel reading numbers in the looped 
+contig up 
+to
+               the start of the loop.
+.LEFT MARGIN2
+8. Are there any contigs of length <1? The error message is
+.left margin2
+" The contig on line 
+number x has zero length"
+.LEFT MARGIN2
+9. Are there any gel readings (used in only one contig) that have zero 
+
+length? The error 
+message is
+.left margin2
+" Gel number N has zero length"
+.left margin2
+Note that "auto assemble"  also uses this logical consistency check and
+ will 
+only tolerate a "Gel number N
+ is not used" error. Any other error will cause it to 
+
+give up.
+
+.left margin1
+@29. TX 1 @               Examine quality 
+.LEFT MARGIN2
+.para
+Analyses the quality of the data in a contig. It reports on the proportion
+ 
+of the consensus that is "well determined" and will display a sequence of
+ 
+symbols that indicate the quality of the consensus at each position.
+
+.para
+Identify the contig to analyse, and the section of interest. The current
+ 
+consensus calculation cutoff score will be used to decide if each position 
+is 
+"well determined". In general the quality of a reading deteriorates along
+the length of the gel and so it is also possible to use a length cutoff for
+the quality calculation. Only the data from the first section of each reading
+will be included in the quality calcualtion. The length is altered under
+"set parameters" and is initially set to the maximum reading length.
+A summary showing the percentage of the consensus
+that falls into each category of quality is shown. Choose whether or not to 
+have the quality codes for each position of the consensus displayed. 
+They can be displayed as either graphics or text.
+.para
+The quality of the data depends on the number of times it has been
+
+sequenced and the particular uncertainty codes  used  in each  gel
+
+reading.  This function divides the data into five categories, assigning
+
+each 
+a symbol or code: 
+.LEFT MARGIN2
+                1.  Well determined on both strands and they agree.  code=0
+.LEFT MARGIN2
+                2.  Well determined on the plus strand only.  code=1
+.LEFT MARGIN2
+                3.  Well determined on the minus strand only.  code=2
+.LEFT MARGIN2
+                4.  Not well determined on either strand.  code=3
+.LEFT MARGIN2
+                5.  Well determined on both strands but they disagree.  code=4
+.LEFT MARGIN2
+ A position is "well determined" if it is assigned one of the symbols 
+A,C,G,T when the algorithm described in the section "calculate a 
+consensus".
+The calculation is performed
+separately for each strand.
+.para
+If the user chooses to have the data displayed graphically the following 
+scheme is used. A rectangular box is drawn so that the x coordinate
+represents the length of the contig. The box is notionally
+divided vertically into 
+5 possible levels which are given the y values: -2,-1,0,1,2.
+The quality codes attributed to each base position are plotted as 
+rectangles.
+Each rectangle represents a region in 
+which the quality codes are identical, so a single base having a different 
+code from its immediate neighbours will appear as a very narrow rectangle.
+.lit
+  
+  Rectangle bottom and top y values
+
+     Quality 0 rectangle from 0 to 0
+     Quality 1 rectangle from 0 to 1
+     Quality 2 rectangle from 0 to -1
+     Quality 3 rectangle from -1 to 1
+     Quality 4 rectangle from -2 to 2
+.end lit
+.para
+Obviously a single line at the midheight shows a perfect sequence.
+.para
+Typical dialogue is shown below.
+.lit
+
+   41.47% OK on both strands and they agree(0)
+   55.48% OK on plus strand only(1)
+    2.08% OK on minus strand only(2)
+    0.97% Bad on both strands(3)
+    0.00% OK on both strands but they disagree(4)
+  ? (y/n) (y) Show sequence of codes 
+
+           10         20         30         40         50
+   1111111111 1111111111 1111111111 1111111111 1111111111
+
+           60         70         80         90        100
+   1111111111 1111111111 1111111111 3111111111 1111111111
+
+          110        120        130        140        150
+   1111111111 1111131111 1111111111 1111111111 1111111111
+
+          160        170        180        190        200
+   1111111111 1111111111 1111111111 1111111111 1111111133
+
+          210        220        230        240        250
+   1311111111 1111111111 1111111110 0000000000 0000220000
+
+          260        270        280        290        300
+   0000000000 0020000000 2200000202 0002000000 0000222200
+
+.end lit
+.left margin1
+@26. TX 3 @              Alter relationships
+.LEFT MARGIN2
+.para
+Used to make what are normally illegal changes to the database. That is
+
+the normal checks are not done and any item in the database can be 
+changed independently of all others. Users need to know what they are
+ 
+doing because it is very easy to make a horrible mess. Always start by
+ 
+making a copy!
+.para
+By using the options here users can edit individual gel readings in contigs, 
+move one section of a contig relative to another, break contigs, remove 
+contigs, remove gel readings, etc. To give flexibility most
+ of the commands do only one thing. This means that several commands 
+may 
+have to be executed to complete any change. At the end of this help 
+section 
+there are notes on removing gel readings from the database.
+.para
+The following options are offered:
+.lit
+
+   Cancel
+   Line change
+   Edit single gel reading
+   Delete contig
+   Shift
+   Move gel reading
+   Rename gel reading
+   Break a contig
+   Alter raw data parameters
+
+.end lit
+.left margin2
+1. QUIT returns to the main options of SAP.
+.left margin2
+
+2. Line change 
+.left margin2
+            allows the user to change the contents  of  any line in the
+                
+file of relationships.  The line is selected by number, the
+ 
+               program prints the current line and prompts for the new  line.
+
+.left margin2
+3.   Edit      
+.left margin2
+allows  the  user  to   edit   an   individual   gel reading
+               independently of any others it may be related to. The edit 
+positions are relative to 
+               the contig. The effect of this editing on the length of the
+               gel reading is taken care of but, if it changes the length of
+ a contig,
+               or its relationship to others, this must be accounted for (if 
+               necessary) by use of the "line change" function.
+
+.left margin2
+4.  Delete  contig 
+.left margin2
+is a function that deletes a contig line  by moving down  
+               all  the  contig lines above by one position.  It prompts only 
+               for the line to delete.  It does not  delete  any  of  the gel 
+readings
+               or gel reading 
+lines for the deleted contig but it does reduce the 
+               number of contigs on line IDBSIZ by 1.
+
+.left margin2
+5.  Shift   
+.left margin2
+   allows the user to change all the relative  positions of  a  
+               set  of  neighbouring gel 
+readings by some fixed value, i.e.  it will
+               shift related gel readings
+ either left or right.  It can therefore
+               be  used  to  change the alignment of the gel 
+readings in a contig 
+               or as part of the process of breaking a contig into two parts 
+               (see below).  It prompts for the number of the first gel 
+reading to 
+               shift and  then  for the  distance  to  move  them (Note a 
+               negative value will move the gel readings
+ left and a positive value 
+               right).   It  then chains rightwards (ie follows right 
+               neighbours) and shifts each gel 
+reading,  in  turn,  up to the  end  
+               of the contig.  (This means that only those gel readings
+ from the first
+               to shift to the rightmost are moved). It updates the length of 
+               the contig accordingly.
+
+.left margin2
+6. Move gel reading
+.left margin2
+    is a function to renumber a gel reading. It moves all the information 
+               about a gel 
+reading on to another line. The user must specify the 
+number
+               of the gel  reading 
+to move and the number of the line to place it. It 
+               takes care of all the relationships. Of course gel 
+readings must not be
+               moved to lines occupied by other gel 
+readings! It can be used as part 
+               of the process of removing a gel 
+reading from the database (see below).
+
+.left margin2
+7.  Rename gel reading
+.left margin2
+ is a function that is used to  rename  the archive  names  of  
+               gel 
+readings  in the database;  it only changes the name in the .ARN 
+               file of the  database.
+
+.sk1
+.LEFT MARGIN2
+8. Break contig
+.LEFT MARGIN2
+.PARA
+Occasionally it is necessary to break a contig into two parts and this can be 
+achieved using this option. The program needs only the number of a gel 
+reading. This is the gel  reading that will become a left end after the 
+break. That 
+is, the break is made between this gel 
+reading and its left neighbour. A new contig 
+line is created so ensure that there is sufficient space in the database.
+.left margin2
+Removing gel readings from contigs
+.left margin2
+.PARA
+Gel 
+readings can be removed from contigs if they are not essential for holding the 
+contig together (ie are not the only gel reading covering a particular region). 
+Suppose the gel reading to remove is gel number 
+b with left neighbour a and right 
+neighbour c.
+Using "line change" change the right neighbour of a to c, and the left 
+neighbour of c to a. To tidy things up: suppose there are x gel 
+readings in the 
+database; then, using "move gel reading" move gel x to line b; then, using 
+"line change" 
+decrease the number of gel 
+readings in the database (stored in the last line) by 1.
+.sk1
+.LEFT MARGIN2
+8. Alter raw data parameters
+.LEFT MARGIN2
+.PARA
+Allows the user to edit the individual raw data parameters, such as
+the left and right cutoff lengths and the name of the machine readable trace
+file.
+The user must specify the gel line to modify, and provide new values for
+the length of the raw sequence including cutoff lengths, the left cutoff position, the length of the original working sequence, the machine type, and the name
+of the raw data file, where these values change.
+.left margin1
+@27. TX 1 @  Set display parameters
+.LEFT MARGIN2
+.para
+Used to redefine the parameters that control the cutoff employed by the
+
+consensus calculation and quality examiner, the maximum length of each
+reading to include in the quality calculation, the line length used by
+
+the display function, the text window length used by the graphics 
+options, and the graphics window length used by the graphics options.
+.para
+The default cutoff score is 75%. The default line length is 50 characters. 
+For protein sequences the cutoff is always 100%.
+.para
+The text window used by the graphics options controls the amount of 
+sequence listed at the crosshair position. The graphics window controls the 
+"zoom" function. Both these windows are defined as the number of bases that 
+should be shown, to both left and right of the crosshair.
+.left margin1
+@30. TX 3 @  Auto edit a contig
+.left margin2
+.para
+This function automatically changes characters in gel readings to make 
+
+them agree with the consensus sequence. If employed as is intended, use 
+
+of this function is not a criminal activity but a method that saves a large 
+
+amount of work. All characters changed by the auto editor will appear in 
+
+the gel readings as lowercase letters. The current consensus calculation 
+cutoff score is used.
+.para
+Identify the contig and the section to edit. The program will display a 
+
+summary of changes made. Note that it is important to understand both 
+
+what the auto editor does and the order in which it does it. Before 
+
+employing the auto editor users should note all the corrections that they 
+require, so that  after it has been used the corrections can be checked. 
+
+.para
+ The 
+general strategy employed when collecting shotgun sequence data is to let 
+the contigs get fairly deep, to get a printout of a contig, 
+check problems against the 
+films, note corrections on the printout, and
+make the changes using an interactive editor.  
+In general the consensus is correct except for places where padding 
+characters have been used to accommodate a single gel with an extra 
+character, or where the consensus is dash. The important point for the 
+auto  
+editor is that
+most edits simply make the 
+gel readings conform to the consensus, or remove columns of pads.
+.para
+The new editor does the following.
+.para
+1) calculates a consensus for the contig (or part of a contig) to be 
+edited, and then uses this consensus to direct the editing of the contig
+in 3 stages
+.para
+2) stage 1: find and correct all places where, if the order of two adjacent 
+characters is swapped, they will both agree with the consensus (given 
+that 
+they did not match the consensus before). These corrections are termed 
+"transpositions"
+.para
+3)  stage 2: find and correct all places where there is a definite consensus 
+but the gel reading has a different character. These corrections are 
+termed 
+"changes".
+.para
+4) stage 3: delete all positions in which padding is the consensus. These 
+corrections are termed "deletions".
+.para
+All changed characters are shown in lowercase letters so it will be 
+obvious which 
+characters have been assigned by the program (except for deletions). The 
+number of each type of correction will be displayed.
+
+.LEFT MARGIN1
+@10. TX 2 @Clear graphics
+.LEFT MARGIN2
+.para
+ Clears graphics from the screen.
+.left margin1
+@11. TX 2 @Clear text
+.LEFT MARGIN1
+.para
+ Clears  text from the screen.
+.left margin1
+@12. TX 2 @Draw a ruler.
+.LEFT MARGIN2
+.para
+This option
+allows the user to draw a ruler or scale along the x axis of the screen to 
+help identify the coordinates of points of interest. The user can define 
+the position of the first base to be marked (for example if the active 
+region is 1501 to 8000, the user might wish to mark every 1000th base 
+starting at either 1501 or 2000 - it depends if the user wishes to treat 
+the active region as an independent unit with its own numbering starting 
+at 
+its left edge, or as part of the whole sequence). The user can also define 
+the separation of the ticks on the scale and their height. If required the 
+labelling routine can be used to add numbers to the ticks.
+.left margin1
+@14. TX 2 @Reposition plots
+.LEFT MARGIN2
+.para
+The positions of each of the plots is defined relative to a users drawing 
+board which has size 1-10,000 in x and 1-10,000 in y.
+Plots for
+each option are drawn in a window defined by x0,y0 and xlength,ylength. 
+Where x0,y0 is the position of the bottom left hand corner of the window,
+  and xlength is the width of the window and ylength the 
+height of the window.
+.lit
+   --------------------------------------------------------- 10,000
+   1                                                       1
+   1       --------------------------------------   ^      1
+   1       1                                    1   1      1
+   1       1                                    1   1      1
+   1       1                                    1 ylength  1
+   1       1                                    1   1      1
+   1       1                                    1   1      1
+   1       --------------------------------------   v      1
+   1  x0,y0^                                               1
+   1       <---------------xlength-------------->          1
+   ---------------------------------------------------------      1
+   1                                                   10,000
+
+.end lit
+All values are in drawing board units (i.e. 1-10,000, 1-10,000).
+The default window positions are read from a file "ANALMARG" when the 
+program is started. Users can have their own file if required.
+As all the plots start 
+at the same position in x and have the same width, x0 and xlength are the 
+same for all options. Generally users will only want to change the start 
+level of the window y0 and its height ylength. 
+ This option 
+allows users to change window positions whilst running the program.
+The routine prompts first for the number of the option that the users 
+wishes 
+to reposition; then for the y start and height; then for the x start and 
+length. Note that changes to the x values affect all options. If the user 
+types only carriage return for any value it will remain unchanged. 
+Note that, unlike all the other programs, the boxes used to contain 
+analytical results (eg plot quality) should not be made to overlap one 
+another, as the function of the crosshair routine depends on which box the 
+crosshair is in!
+.LEFT MARGIN1
+@15. TX 2 @Label a diagram
+.LEFT MARGIN2
+.para
+This routine allows users to label any diagrams they have produced. They 
+are asked to type in a label. When the user types carriage return to finish 
+typing the label the cross-hair appears on the screen. The user can 
+position it anywhere on the screen. If the user types R (for right justify)
+the label will be 
+written on the diagram with its right end at the cross-hair position. 
+If the user types L (for left justify) the label will be written on the 
+diagram with its left end at the cross hair position.
+The 
+cross-hair will then immediately reappear. The user may put the same 
+label 
+on another part of the diagram as before or if he hits the space bar he 
+will be asked if he wishes to type in another label.
+.para
+Typical dialogue follows.
+.lit
+? Menu or option number=15
+Type label then drive cross hair to left or right end
+of label position then hit  "L"  to  write label left
+justified or  "R"  to  write label right justified or
+the space bar to quit
+ 
+ 
+? Label=delta gene
+
+ missing graphics 
+
+? Label=
+ 
+.end lit
+.left margin1
+@16. TX 2 @Display a map
+.LEFT MARGIN2
+.para
+This draws a map 
+of any sequence features selected by the user.
+These features may be protein coding regions (CDS), tRNA genes (TRNA), 
+promoter positions (PRM), etc. Users may define their own feature table 
+key 
+names. For example I find it convenient to split CDS lines into CDS1, 
+CDS2 
+and CDS3 each of which contains only those sequences that code in the 
+reading frames 1, 2 or 3. Then I can plot them at different heights on 
+the screen ( suitable heights can be determined by using the cross-hair).
+The coordinates must be stored in a file in the format of an EMBL feature 
+table. 
+.para
+Typical dialogue follows.
+.lit
+? Menu or option number=16
+ Display a map using an EMBL feature table file
+? map file name=hsegl1.ft
+? feature code(e.g. CDS) =CDS
+X 1 + strand
+  2 - strand
+  3 both strands
+? 0,1,2,3 =
+? level (0-9480) (256) =4000
+
+ missing graphics 
+ 
+? feature code(e.g. CDS) =
+
+.end lit
+.left margin1
+@7. TX 1 @Redirect output
+.LEFT MARGIN2
+.para
+Used to direct output that would normally appear on the screen to a file. 
+.para
+Select redirection of either text or graphics, and 
+supply the name of the file that the output should be written to.
+.para
+ The results from the next options selected will not appear on the screen 
+but will be written to the file. When option 7 is selected again
+the file will be 
+closed and output will again appear on the screen.
+.left margin1
+@13. TX 2 @Use crosshair
+.left margin2
+.para
+This option puts a steerable cross on the screen which the user 
+drives around 
+by using the arrow keys (or mouse). When the crosshair is 
+visible a number of options are available if the user types one of a 
+set of special keyboard characters. Any other characters will cause 
+an exit from the crosshair option. The special keys are:
+.lit
+
+    I = Identify the nearest gel reading
+    Z = Zoom in
+    Q = plot Quality
+    S = display the aligned Sequences at the crosshair position
+    N = list the Names and Numbers of the sequences at the crosshair
+.end lit
+.para
+In order for any of these special keys to operate, the crosshair 
+must be in an appropriate display box, and the precise function of 
+the keys will also depend on which box the crosshair is in.
+.para
+ If the 
+crosshair is in the "plot all contigs" box, Z will cause a new box to 
+appear showing all the readings for the nearest contig; Q will give 
+the same as Z but will also produce an extra box showing the 
+"quality" plot.
+.para
+ If Z is hit in the "plot single contig" box, the contig will be zoomed 
+to the current graphics window size. The zoom will be roughly 
+centred on the crosshair position. Because of this it is possible to 
+step along a contig by repeatedly zooming with the crosshair near 
+to one end of the single contig display box. If I is hit the crosshair 
+must be close to a gel reading line. If Q is hit, the quality plot will 
+be produced for the region shown in the plot single contig box. In 
+all cases when the "plot all contigs" box is shown, a vertical line will 
+bisect the line the represents the relevant contig, at the current 
+position.
+.para
+If the crosshair is in the plot quality box only the character "s" will operate 
+as a special symbol.
+.para
+The number of bases shown in the N and S options is controlled by 
+the current graphics text window size, and the size of the zoom 
+window by the current graphics window size. Both are set by the 
+parameter setting function of the general menu.
+.left margin1
+@33. TX 2 @Plot single contig
+.left margin2
+.para
+This option produces a schematic of a selected region of a single 
+contig by drawing a horizontal line to represent each of its gel 
+readings. The lines show the relative positions of each reading and 
+also their sense. The plot is divided vertically into two sections by 
+a line that is identified by an asterisk drawn at each end. All lines  
+that lie above this line represent readings that are in their original 
+sense, all lines below show readings that are in the 
+complementary sense to their original. By use of the crosshair 
+function the plot can be stepped through and examined in more 
+detail. See help on crosshair.
+.left margin1
+@34. TX 2 @Plot all contigs
+.left margin2
+.para
+This option produces a schematic of all the contigs in a database. It 
+does this by drawing a horizontal line to represent each of them. 
+In order to show the ends of each contig it draws the lines for 
+contigs at alternate heights: the first at height one, the 
+second at height two, the third at height one, etc. The order of the 
+contigs in the display is the same as their order in the database. 
+By use of the crosshair function the plot can be stepped 
+through and examined in more detail. See help on crosshair.
+.left margin1
+@31. TX 3 @ Type in gel readings
+.left margin2
+.para
+THIS OPTION IS NO LONGER AVAILABLE IN XDAP.
+.para
+This option allows gel readings to be typed in at the keyboard. It creates 
+a separate file for each gel reading and a file of file names for the 
+batch. The sequences from each batch may be listed when they have all been 
+entered. Users may choose to employ special keys to identify the 4 bases 
+A,C,G and T. By default these special keys are N M , . but any other four 
+characters may be used. If special keys are used the characters are 
+automatically translated to A C G T before being stored on the disk.
+
+.left margin1
+@35. TX 1 3 @Find internal joins
+.left margin2
+.para
+The purpose of this function is to use data already in the database to
+find possible joins between contigs.
+Joins may have been missed due to poor data or may have not been made
+due to repeated sequences. Where appropriate, it may be 
+possible to find potential
+joins by using the data clipped off readings prior to their entry into the
+database.
+.left margin2
+The database is checked for logical consistency. Supply a minimum initial
+match length, a minimum alignment block, the maximum pads per sequence,
+the maximum percent mismatch after alignment, the probe length. Choose
+if clipped data is to be used, if so define the window size for finding good
+data and the number of dashes allowed in the window. Processing will commence.
+Most of these values are used in an identical way in the autoassemble 
+function. The others are defined below. 
+.left margin2
+The program strategy
+.left margin2
+Take the first contig and calculate its consensus. If clipped data is being
+used examine all readings that
+are in the complementary orientation, and sufficiently near to the contigs left
+end, to see if they have good clipped sequence which if present, would 
+protrude 
+from the left end of the contig. If found add the longest such sequence to the 
+left end of the consensus. Do the same for the right end by examining  
+readings that are in their
+original orientation. If any are found add the longest extension to the 
+right end of
+the consensus. Repeat the consensus calculations and extensions 
+for all contigs hence producing an extended consensus. If clipped data is not
+being used simply calculate the consensus for the whole database. Now
+look for possible joins by processing the extended consensus in the following
+way. Take the last, say 100, bases (termed the "probe length" by the program)
+of the rightmost consensus, compare it both
+orientations with the extended consensus of all the other contigs. Display
+any sufficiently good alignments. Repeat with the left end of the rightmost
+contig. Do the same for the ends of all the entended contigs, always only
+comparing with the contigs to their left, so that the same matches do not 
+appear twice.
+.left margin2
+Good cliped data is defined by sliding a window of "Window size for good data
+scan" bases outwards
+along the sequence and stopping when "Maximum number of dashes in scan window"
+ or more dashes appear in the window.
+Note that
+it is advisable to have some sort of cutoff because if we simply take all the
+data it might be so full of rubbish that we wont find any good matches. For
+the same reason it is worth trying the procedure with different cutoffs. An
+initial run using no clipped data is also recommended.
+Sufficiently good
+alignments are defined by criteria equivalent to those used in autoassemble,
+however here we only display alignments that pass all tests.
+.left margin2
+Bugs
+.left margin2
+If a small contig is wholly contained within a larger one, such that its
+ends are further than ("Probe length" - "Minimum initial match length")
+from the ends of the larger contig, and the consensus for the small 
+contig lies to the left
+of the consensus for large contig, the overlap will not be discovered. (See
+the search stratgey).
+.left margin2
+ All numbering is
+relative to base number one in the contig: matches to the left (i.e. in
+the clipped data) have negative
+positions, matches off the right end of the contig (i.e. in the clipped
+data) have positions 
+greater than that of the contig length.
+The convention for reporting the positions of overlaps is as follows: if neither
+contig needs to be complemented the positions are as shown. If the program says
+"contig x in the - sense" then the positions shown assume contig x has been 
+complemented. For example in the results given below the positions for the 
+first overlap are as reported, but those for the second assume that the contig
+in the minus sense (i.e. 443) has been complemented.
+.lit
+
+
+ Possible join between contig   445 in the + sense and contig   405
+ Percentage mismatch after alignment =  4.9
+        412        422        432        442        452        462
+     405  TTTCCCGACT GGAAAGCGGG CAGTGAGCGC AACGCAATTA ATGTGAG,TT AGCTCACTCA
+           ********* * ********  ***** *** ********** ********** **********
+     445  -TTCCCGACT G,AAAGCGGG TAGTGA,CGC AACGCAATTA ATGTGAG-TT AGCTCACTCA
+       -127       -117       -107        -97        -87        -77
+        472        482        492        502        512
+     405  TTAGGCACCC CAGGCTTTAC ACTTTATGCT TCCGGCTCGT AT
+          ********** ********** ********** ********** **
+     445  TTAGGCACCC CAGGCTTTAC ACTTTATGCT TCCGGCTCGT AT
+        -67        -57        -47        -37        -27
+ Possible join between contig   443 in the - sense and contig   423
+ Percentage mismatch after alignment = 10.4
+         64         74         84         94        104        114
+     423  ATCGAAGAAA GAAAAGGAGG AGAAGATGAT TTTAAAAATG AAACG-CGAT GTCAGATGGG
+          **** ***** ********** ********** ******  ** ***** **** ********* 
+     443  ATCG,AGAAA GAAAAGGAGG AGAAGATGAT TTTAAA,,TG AAACGACGAT GTCAGATGG,
+       3610       3620       3630       3640       3650       3660
+        124        134        144        154        164
+     423  TTG-ATGAAG TAGAAGTAGG AG-AGGTGGA AGAGAAGAGA GTGGGA
+          *** ****** ********** ** *******  *** ***** ** ** 
+     443  TTGGATGAAG TAGAAGTAGG AGGAGGTGGA ,GAG,AGAGA GTTGG-
+       3670       3680       3690       3700       3710
+
+
+.end lit
+.left margin1
+@ end of help

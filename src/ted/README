@@ -1,0 +1,32 @@
+ted - trace editor
+------------------
+This is the source directory for the ted trace editor.
+As well as the sources you should find a makefile,
+a manual page "ted.manpage", documentation  "ted.tex"
+(this preprint is still in review and should be treated
+as confidential until it has been accepted for publication)
+a help file "ted.help" and a default resources file "Xted".
+
+The "ted.help" and "Xted" files should be placed in the
+"/usr/lib/X11/app-defaults" directory. The "ted.manpage"
+file should be placed in "/usr/man/manl/ted.l", or wherever
+local manual pages are stored on your system.
+
+The "ted" application can be constructed by simply typing
+"make ted". The "ted" application can then be placed in
+a generally accessible directory of binaries, perhaps
+"/usr/local/bin".
+
+
+
+sample files
+------------
+
+A sample ABI file is also included in this directory, trace.abi, which
+ can be opened using the following command:
+		ted -ABI trace.abi
+
+A sample ALF file is also included in this directory, trace.alf, which
+ can be opened using the following command:
+		ted -ALF trace.alf
+

@@ -1,0 +1,47 @@
+#! /bin/csh -f
+#
+# getMCHfof
+#    Run all the files in a file of file names through "getMCH -SCF"
+#
+#    This program was written for Bill Rawlinson, and is intended for
+#    his use only.
+#
+#    Usage: getMCHfof file_of_file_names
+#
+
+if ( $#argv != 1 ) then
+	echo "Usage: getMCHfof file_of_file_names"
+	exit 2
+endif
+
+if (! -e $1 ) then
+	echo "No such file of file names"
+	exit 2
+endif
+
+echo "Processing a file of file names through getMCH"
+echo ""
+
+# New fofn
+set seq_fofn = ${1:r}.fofn
+if (-e $seq_fofn) /bin/mv $seq_fofn ${seq_fofn}.$$
+touch $seq_fofn
+
+echo "Processing:"
+foreach x ( `cat $1` )
+	# This file of file name contains the sequence file names
+	# Determine chromatogram file
+	echo -n "   " $x
+	set trace = ${x}.scf
+	if (-e $x) /bin/mv $x ${x}.$$
+	getMCH -SCF $trace -output $x -header 1
+	if ($status != 0) then
+		echo " - error in getMCH\!"
+	else
+		echo " - done"
+		echo $x >> $seq_fofn
+	endif
+end
+
+echo
+echo "File of file names created:" $seq_fofn

@@ -1,0 +1,13 @@
+/^#/ {print "#";}
+/^#/ {print "# Database of sequences to screen against clones";}
+/^#/ {print "#";}
+/^#/ {print "# Format:";}
+/^#/ {print "#";}
+/^#/ {print "#     <clone> <sequence-file>";}
+/^#/ {print "#";}
+/^#/ {print "# Example:";}
+/^#/ {print "#";}
+/^#/ {print "# We wish to screen our cosmid CLONE against yeast chromosome 3.";}
+/^#/ {print "#";}
+/^#/ {print "# CLONE scchrIII.seq";}
+/^#/ {print "#";}

@@ -1,0 +1,52 @@
+prokaryotic wts for promoters 
+-35 region:
+P -50-49-48-47-46-45-44-43-42-41-40-39-38-37-36-35-34-33-32-31-30-29-28-27-26
+  107109109110110110110110110111111110111112112112112112112112112112112112112
+T  41 33 32 25 34 22 35 35 42 27 32 42 47 14 92 94 11 19 15 37 46 34 38 48 34
+C  22 27 18 29 20 14 20 12 22 23 16 25 10 43  7  6 11 18 60  8 25 23 23 17 20
+A  28 38 30 37 35 56 42 42 37 42 39 18 25 26  2  6  2 72 26 50 26 34 25 26 31
+G  16 11 29 19 21 18 13 21  9 19 24 26 29 29 11  6 88  3 11 17 15 21 26 21 27
+-10 region:
+P -23-22-21-20-19-18-17-16-15-14-13-12-11-10 -9 -8 -7 -6 -5
+  112112112112112112112112112112112112112112112112112112112
+T  35 28 28 27 39 51 34 43 26 31 89  3 49 15 19108 31 29 21
+C  34 21 24 27 12 25 20 25 20 27 10  2 16 14 22  3 13 16 30
+A  20 39 33 33 39 23 29 16 23 19  2106 29 66 57  1 35 23 31
+G  23 24 27 25 22 13 29 28 43 35 11  1 18 17 14  0 33 24 30
++ region:
+P -2 -1  1  2  3  4  5  6  7  8  9 10
+  86 88 88 88 88 88 88 88 88 88 88 88
+T 16 22  2 42 27 23 20 25 27 15 16 29
+C 29 49  4 25 25 13 18 22 17 17 16 17
+A 20  9 45 16 24 25 28 24 24 32 35 26
+G 21  8 37  5 12 27 22 17 20 24 21 16
+Notes:
+D. K. and McClure, R., nar 11 2237-2255 (1983)
+
+E. coli promoters have been shown to contain 2 regions of conserved sequence
+located about 10 and 35 bases upstream of the transcription startsite. These
+are TATAAT and TTGACA with an allowed spacing of 15 to 21 bases between. The
+spacing with maximum efficiency was 17 bases and all but 12 of the 112 
+sequences could be aligned with a separation of 17 +or-1 bases. The standard
+promoter has spacing 7 and 17 bases between the startsite and the -10 region,
+and the -10 and -35 regions, respectively. The spacing between the -10 region
+and the startsite is usually 6 or 7 bases but varies between 4 and 8 bases.
+There is an AT rich region of 8 to 10 bases upstream of the -35 region.
+Iniation with a purine is highly prefered with G being used if A is not
+present.
+Gap penalties:
+	15 0.02   (only exists as mutant)
+	16 0.2
+	17 1.0
+	18 0.2
+	19 0.05   (guess)
+	20 0.02   (guess)
+	21 0.01   (guess)
+Two processes in volved: 1) recognition
+			 2) melting (needs recognition for initiation
+				     and then AT richness)
+
+factor of about 1 order of magnitude difference for all AT against all GC
+in terms of activity.
+Andrew Travers says there are upstream regions that resemble -35 and -10
+regions (on both strands).

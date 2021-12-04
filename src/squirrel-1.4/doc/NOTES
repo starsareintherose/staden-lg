@@ -1,0 +1,14 @@
+NOTES (C.elegans project)
+
+1. Sequence files, cloning sites and vepe
+
+When vepe excises cloning vector, it does not make allowances for the
+vector being circular. It also makes no assumptions about the locations
+of the splice sites. It is important when setting up the sequence files
+($SQUIRREL/seqs) to make allowances for these factors - DO NOT LET THE
+SPICE SITE BE TOO NEAR EITHER END OF THE FILE. You may need to edit the
+sequence file so that the site lies near the centre of the sequence.
+
+2. Cosmids and cloning sites
+Lorist2    BamHI/G'GATCC//
+

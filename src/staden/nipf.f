@@ -1,0 +1,2110 @@
+C NIPF
+      SUBROUTINE FMAIN()
+      PARAMETER (MAXSEQ=400000,MAXFIL=200,MAXCOM=20000)
+      CHARACTER SEQ(MAXSEQ),PAA(5,5,5)
+      INTEGER BOTOPT,TOPOPT
+      PARAMETER (NAMLEN = 60)
+      CHARACTER*(NAMLEN) HELPF,POINTF,FILMAR,FILNAM,NAMES(MAXFIL)
+      INTEGER STARTS(MAXFIL),ST(MAXFIL),LE(MAXFIL)
+      INTEGER SUMCOD(4096),MTT(64,3)
+      REAL MT(4,4),ET(4,4)
+      INTEGER COUNTS(MAXCOM),POINTS(MAXCOM),TOTCOU,SUMCS,DIFFER(MAXSEQ)
+      REAL WORKR(MAXSEQ)
+      PARAMETER (BOTOPT=-10,TOPOPT=70,
+     +           MAXMEN=-3,
+     +           MAXOPT=39,
+     +           MAXDEV=9,
+     +           IDM = 5)
+      PARAMETER (
+     +             HELPF='NIPFHELP',
+     +             POINTF='NIPFHPNT',
+     +             FILMAR='NIPFMARG')
+      INTEGER HELPS(BOTOPT:TOPOPT),HELPE(BOTOPT:TOPOPT),DEVNOS(MAXDEV)
+      INTEGER OPT,MARGB(MAXOPT),MARGT(MAXOPT)
+      INTEGER BATCH,AVALL,FVREST,ON,OFF,SORT,GRAPH,BCHANG(5,5)
+      PARAMETER (AVALL = 1, FVREST = 2, OFF = 1, ON = 2)
+      CHARACTER CHRSET(IDM),ACID,CANACD,TRANF
+      PARAMETER (MAXPRM = 28)
+      CHARACTER PROMPT(2)*(MAXPRM)
+      INTEGER AMINOP,FACID(22),FBASE(5),CTONUM,BCHAMG(5,5,3)
+      EXTERNAL IMAXA,IMINA,TRANF,VARIM,AMINOP,FINF,CTONUM,RMAXA,RMINA
+      EQUIVALENCE (WORKR,DIFFER)
+      DATA CHRSET/'T','C','A','G','-'/
+      DATA PAA/'F','F','L','L','-','S','S','S','S','S',
+     1'Y','Y','*','*','-','C','C','*','W','-',
+     1'-','-','-','-','-','L','L','L','L','L',
+     1'P','P','P','P','P','H','H','Q','Q','-',
+     1'R','R','R','R','R','-','-','-','-','-','I','I','I','M','-',
+     1'T','T','T','T','T',
+     1'N','N','K','K','-','S','S','R','R','-','-','-','-','-','-',
+     1'V','V','V','V','V','A','A','A','A','A','D','D','E','E','-',
+     1'G','G','G','G','G',
+     1'-','-','-','-','-','-','-','-','-','-',
+     1'-','-','-','-','-','-','-','-','-','-',
+     1'-','-','-','-','-','-','-','-','-','-'/
+C   Initialise help
+      CALL INTHLP('nipf', TOPOPT)
+C   GET DEVICE NUMBERS
+      CALL UNITNO(KBIN,KBOUT,DEVNOS,MAXDEV)
+      CALL OPENGR(DEVNOS(3))
+      IGORT = 0
+      MTCALL = 0
+      WRITE(KBOUT,1000)
+1000  FORMAT(
+     +' NIPF  v1.0 Copyright Rodger Staden'/)
+C   READ IN THE POINTERS TO THE HELP FILE
+      IDEVH = DEVNOS(4)
+      CALL SETHLP(HELPS,HELPE,BOTOPT,TOPOPT,POINTF,IDEVH,KBOUT)
+      CALL INITGR(KBIN,KBOUT,HELPS(0),HELPE(0),HELPF,IDEVH)
+      IOK=0
+      CALL INITLU(IDM)
+C   GET SCREEN AND MARGIN SIZES
+      CALL GETMRG(ISXMAX,ISYMAX,MARGL,MARGR,MARGB,MARGT,
+     +MAXOPT,DEVNOS(1),FILMAR)
+      IDEV=KBOUT
+      MOPT=0
+      IDIMT = 0
+      CALL EMT(MTT)
+C
+C
+1     CONTINUE
+C
+C
+C      IF(IOK.NE.0)GO TO 9999
+C   give menu, get option
+C
+      IDEV=KBOUT
+      LINLEN=60
+      PROMPT(1) = 'Use file of file names'
+      PROMPT(2) = 'Type in a pair of file names'
+      IB = 1
+      CALL RADION('Select input mode',PROMPT,2,IB,
+     +  IHELPS,IHELPE,HELPF,IDEVH,KBIN,KBOUT)
+      IF(IB.LT.1) GO TO 999
+      IF(IB.EQ.1) THEN
+        CALL GETSQS(DEVNOS(1),DEVNOS(2),SEQ,MAXSEQ,
+     +  STARTS,NAMES,
+     +  FILNAM,NFILE,MAXFIL,MAXNAM,KBIN,KBOUT,
+     +  IHELPS,IHELPE,HELPF,IDEVH)
+        SORT = ON
+        BATCH = FVREST
+      ELSE
+C
+C Read in the two sequences
+C   
+        CALL TGETF(DEVNOS(1),FILNAM,KBIN,KBOUT,
+     +  SEQ,MAXSEQ,STARTS,NAMES,MAXFIL,MAXNAM,NFILE,IOK,
+     +  IHELPS,IHELPE,HELPF,IDEVH)
+        SORT = OFF
+        BATCH = FVREST
+      END IF
+      WRITE(KBOUT,*)'Working with ',NFILE,' files'
+C
+C   SET DEFAULTS FOR ACTIVE REGION
+C
+C ST(I) contains the active region start for sequence I relative to its start
+C LE(I) contains the active region end of sequence I
+C STARTS(I) contains the start for sequence I in seq
+C
+      DO 2 I=1,NFILE
+        ST(I) = 1
+        LE(I) = STARTS(I+1) - STARTS(I)
+ 2      CONTINUE
+        LONGS = IMAXA(ST,NFILE)
+        LONGE = IMINA(LE,NFILE)
+      I1=1
+      N1=IDIM1
+      I2=1
+      N2=IDIM2
+      IDIM3=N1-I1+1
+      IDIM4=N2-I2+1
+      IDIML=MIN(IDIM3,IDIM4)
+      BATCH = FVREST
+ 100  CONTINUE
+      CALL BPAUSE(KBIN,KBOUT,IOK)
+      CALL MENU(OPT,KOPT,MOPT,MAXOPT,MAXMEN,KBIN,KBOUT,
+     +HELPS(0),HELPE(0),HELPF,DEVNOS(4))
+C      IF(0.EQ.0) GO TO 99
+C
+C stop
+C
+      IF(OPT.EQ.2) GO TO 999
+C
+C  type text
+C
+      IF(OPT.EQ.6) THEN
+        CALL TTEXT(DEVNOS(1),FILNAM,KBIN,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4))
+        GO TO 100
+      END IF
+C
+C   help
+C
+      IF(OPT.EQ.1) THEN
+        CALL HELP(HELPS,HELPE,BOTOPT,TOPOPT,HELPF,DEVNOS(4),
+     +  KBIN,KBOUT)
+        GO TO 100
+      END IF
+C
+C   clear all
+C
+      IF(OPT.EQ.10) THEN
+        CALL CLEARG
+        GO TO 100
+      END IF
+C
+C  ruler
+C
+      IF(OPT.EQ.12)THEN
+        CALL RULER(LONGS,LONGE,MARGL,MARGR,
+     +  MARGB(OPT),MARGT(OPT),ISXMAX,ISYMAX,KBIN,KBOUT,1,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4))
+        GO TO 100
+      END IF
+C
+C   xhairs
+C
+      IF(OPT.EQ.13) THEN
+        XMAX = LONGE
+        XMIN = LONGS
+        YMAX=ISYMAX
+        YMIN=0.
+        IIIIX=0
+        IIIIY=0    
+        CALL CLEARV
+        CALL XHAIRN(XMAX,XMIN,YMAX,YMIN,
+     +  MARGL,MARGR,MARGB(OPT),MARGT(OPT),
+     +  ISXMAX,ISYMAX,IIIIX,IIIIY,N,KBOUT,
+     +  SEQ(LONGS),LONGS,LONGE-LONGS+1,
+     +  SEQ(LONGS),LONGS,LONGE-LONGS+1,1)
+        GO TO 100
+      END IF
+C
+C   clear vt100
+C
+      IF(OPT.EQ.11)THEN
+        CALL CLEARV
+        GO TO 100
+      END IF
+C
+C   CHANGE MARGINS
+C
+      IF(OPT.EQ.14)THEN
+        CALL MARGC(ISXMAX,ISYMAX,MARGL,MARGR,MARGB,MARGT,
+     +  HELPS(OPT),HELPE(OPT),MAXOPT,HELPF,IDEVH,KBIN,KBOUT)
+        GO TO 100
+      END IF
+C
+C  WRITE LABELS
+C
+      IF(OPT.EQ.15) THEN
+        CALL LABLER(KBIN,KBOUT,ISXMAX,ISYMAX,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4))
+        GO TO 100
+      END IF
+C
+C   GET DISK OUTPUT FILE ON UNIT DEVNOS(2) IF REQUIRED
+C
+      IF(OPT.EQ.7)THEN
+        CALL REDIR(IDEV,DEVNOS(2),DEVNOS(3),IGORT,FILNAM,KBIN,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,IDEVH,KOPT)
+        GO TO 100
+      END IF
+      IF(OPT.EQ.5)THEN
+        LINLEN=60
+        CALL LISTN(SEQ,MAXSEQ,STARTS,NFILE,LINLEN,LONGS,LONGE,
+     +  IDEV,KBOUT,NAMES,MAXFIL)
+        GO TO 100
+      END IF
+      IF(OPT.EQ.32)THEN
+        LINLEN=60
+        CALL LISTND(SEQ,MAXSEQ,STARTS,NFILE,LINLEN,LONGS,LONGE,
+     +  IDEV,KBOUT,NAMES,MAXFIL)
+        GO TO 100
+      END IF
+      IF(OPT.EQ.9)THEN
+        LINLEN=60
+        CALL LISTNT(SEQ,MAXSEQ,STARTS,NFILE,LINLEN,LONGS,LONGE,
+     +  IDEV,KBOUT,NAMES,MAXFIL,PAA)
+        GO TO 100
+      END IF
+      IF(OPT.EQ.33)THEN
+        LINLEN=60
+        CALL LISTNV(SEQ,MAXSEQ,STARTS,NFILE,LINLEN,LONGS,LONGE,
+     +  IDEV,KBOUT,NAMES,MAXFIL,PAA)
+        GO TO 100
+      END IF
+      IF ((OPT.EQ.37).AND.(NFILE.EQ.2)) THEN
+        LINLEN=60
+        CALL TRAN(SEQ(STARTS(1)),MAXSEQ,ST(1),LE(1),
+     +  SEQ(STARTS(2)),MAXSEQ,ST(2),LE(2),
+     +  KBIN,KBOUT,IDEV,LINLEN,PAA)
+        GO TO 100
+      END IF
+      IF(OPT.EQ.4)THEN
+        ISTART = 1
+        IEND = STARTS(2) - 1
+        DO 7 I=1,NFILE
+          CALL GTREG(KBIN,KBOUT,ISTART,IEND,ST(I),LE(I),
+     +    'Define active region',
+     +    HELPS(OPT),HELPE(OPT),HELPF,IDEVH,IOK)
+          ST(I+1) = ST(I)
+          LE(I+1) = LE(I)
+          IF(IOK.NE.0) GO TO 100
+ 7        CONTINUE
+C
+C Get max values
+C
+        LONGS = IMAXA(ST,NFILE)
+        LONGE = IMINA(LE,NFILE)
+        GO TO 100
+      END IF
+      IF(OPT.EQ.17) THEN
+        PROMPT(1) = 'All versus all'
+        PROMPT(2) = 'First versus rest'
+        IB = BATCH
+        CALL RADION('Select comparison mode',PROMPT,2,IB,
+     +  HELPS(OPT),HELPE(OPT),HELPF,IDEVH,KBIN,KBOUT)
+        IF(IB.LT.1) GO TO 100
+        BATCH = IB
+        GO TO 100
+      END IF
+      IF(OPT.EQ.18) THEN
+        PROMPT(ON) = 'Sort on'
+        PROMPT(OFF) = 'Sort off'
+        IB = ON
+        CALL RADION('Select sort mode',PROMPT,2,IB,
+     +  HELPS(OPT),HELPE(OPT),HELPF,IDEVH,KBIN,KBOUT)
+        IF(IB.LT.1) GO TO 100
+        SORT = IB
+        GO TO 100
+      END IF
+C
+C start of batch processing
+C
+      ICOUNT = 0
+      TOTCOU = 0
+      SUMCS = 0
+C
+C need to allow different batch comparison modes
+C
+      IF(BATCH.EQ.AVALL) THEN
+        KFILES = 1
+        KFILEE = NFILE-1
+        NEEDS = (NFILES-1)*NFILES/2
+        IF (NEEDS.GT.MAXCOM) THEN
+          WRITE(*,*)'Sorry unsufficient space for this comparison'
+          GO TO 100
+        END IF
+      ELSE IF(BATCH.EQ.FVREST) THEN
+        KFILES = 1
+        KFILEE = KFILES
+      ELSE
+        WRITE(*,*)'Batch mode not set!!'
+        GO TO 100
+      END IF
+      IF((OPT.EQ.24).OR.(OPT.EQ.35).OR.(OPT.EQ.36).OR.(OPT.EQ.39)) THEN
+        DO 111 I=1,5
+          DO 111 J=1,5
+            BCHANG(I,J) = 0
+            DO 111 K = 1,3
+             BCHAMG(I,J,K) = 0
+ 111        CONTINUE
+      END IF
+      IF(OPT.EQ.38) THEN
+        CALL INITMT(MT,SUMCOD,MTCALL)
+        MTCALL = MTCALL + 1
+      END IF
+      GRAPH = -1
+      IF((OPT.EQ.25).OR.(OPT.EQ.26).OR.(OPT.EQ.27).OR.(OPT.EQ.31)
+     +.OR.(OPT.EQ.34)) THEN
+        PROMPT(1) = 'List results'
+        PROMPT(2) = 'Plot results'
+        GRAPH = ON
+        CALL RADION('Select output mode',PROMPT,2,GRAPH,
+     +  HELPS(OPT),HELPE(OPT),HELPF,IDEVH,KBIN,KBOUT)
+        IF(GRAPH.LT.1) GO TO 100
+        CALL FILLI(DIFFER,LONGE-LONGS+1,0)
+      END IF
+      IF(OPT.EQ.31) THEN
+        IPOSM = (LONGE-LONGS+1)/3
+        CALL FILLR(WORKR,IPOSM,0.0)
+        IW = 0
+        DO 600 IPOS = LONGS,LONGS-1+IPOSM*3,3
+          CALL FILLI(FACID,22,0)
+          DO 500 IFILE = KFILES,KFILEE
+            CANACD = TRANF(SEQ(STARTS(IFILE)+IPOS-1),PAA)
+            DO 450 JFILE = IFILE+1,NFILE
+              ACID = TRANF(SEQ(STARTS(JFILE)+IPOS-1),PAA)
+              IF(CANACD.NE.ACID) 
+     +        FACID(AMINOP(ACID)) = FACID(AMINOP(ACID)) + 1
+ 450          CONTINUE
+ 500          CONTINUE
+            IW = IW + 1
+            WORKR(IW) = VARIM(FACID)
+ 600      CONTINUE
+          IF(GRAPH.EQ.ON) THEN
+            XMIN = 1.
+            XMAX = REAL(LONGE - LONGS + 1)/3.
+            YMIN = 0.
+            YMAX = RMAXA(WORKR,IPOSM)
+            CALL GETRL(0.,9999.,YMAX,'Maximum Y value for plotting',
+     +      VAL,KBIN,KBOUT,HELPS(OPT),HELPE(OPT),HELPF,IDEVH,IOK)
+            IF(IOK.NE.0) GO TO 100
+            YMAX = VAL
+            CALL PLTR(WORKR,IPOSM,
+     +      XMAX,XMIN,YMAX,YMIN,
+     +      MARGL,MARGR,MARGB(OPT),MARGT(OPT),ISXMAX,ISYMAX)
+            GO TO 100
+          END IF
+          IF(GRAPH.EQ.OFF) THEN
+            WRITE(IDEV,6667)
+     +      (LONGS+3*(KKKK-1),WORKR(KKKK),KKKK=1,IPOSM)
+ 6667       FORMAT(I6,F10.3)
+            GO TO 100
+          END IF
+        END IF
+      IF(OPT.EQ.34) THEN
+        IPOSM = LONGE-LONGS+1
+        CALL FILLR(WORKR,IPOSM,0.0)
+        IW = 0
+        DO 700 IPOS = LONGS,LONGE
+          CALL FILLI(FBASE,5,0)
+          DO 650 JFILE = 1,NFILE
+C            WRITE(*,*)JFILE
+            I = CTONUM(SEQ(STARTS(JFILE)+IPOS-1))
+            FBASE(I) = FBASE(I) + 1
+ 650      CONTINUE
+            IW = IW + 1
+            WORKR(IW) = FINF(FBASE)
+ 700      CONTINUE
+          IF(GRAPH.EQ.ON) THEN
+            XMIN = 1.
+            XMAX = REAL(LONGE - LONGS + 1)
+            YMIN = RMINA(WORKR,IPOSM)
+            YMAX = RMAXA(WORKR,IPOSM)
+            CALL GETRL(-9999.,9999.,YMAX,'Maximum Y value for plotting',
+     +      VAL,KBIN,KBOUT,HELPS(OPT),HELPE(OPT),HELPF,IDEVH,IOK)
+            IF(IOK.NE.0) GO TO 100
+            YMAX = VAL
+            CALL PLTR(WORKR,IPOSM,
+     +      XMAX,XMIN,YMAX,YMIN,
+     +      MARGL,MARGR,MARGB(OPT),MARGT(OPT),ISXMAX,ISYMAX)
+            GO TO 100
+          END IF
+          IF(GRAPH.EQ.OFF) THEN
+            WRITE(IDEV,6667)
+     +      (LONGS+KKKK-1,WORKR(KKKK),KKKK=1,IPOSM)
+            GO TO 100
+          END IF
+        END IF
+      DO 300 IFILE = KFILES,KFILEE
+        DO 200 JFILE = IFILE+1,NFILE
+          IF(OPT.EQ.21)THEN
+C
+C           MISMAT NUMBER OF BASE DIFFERENCES
+C
+            CALL BSCHN1(
+     +      SEQ(STARTS(IFILE)),STARTS(IFILE+1)-STARTS(IFILE),
+     +      ST(IFILE),LE(IFILE),
+     +      SEQ(STARTS(JFILE)),STARTS(JFILE+1)-STARTS(JFILE),
+     +      ST(JFILE),LE(JFILE),
+     +      MISMAT,IDEV)
+         END IF
+          IF(OPT.EQ.22)THEN
+C
+C           CODON CHANGES
+C
+            CALL COCHAN(
+     +      SEQ(STARTS(IFILE)),STARTS(IFILE+1)-STARTS(IFILE),
+     +      ST(IFILE),LE(IFILE),
+     +      SEQ(STARTS(JFILE)),STARTS(JFILE+1)-STARTS(JFILE),
+     +      ST(JFILE),LE(JFILE),
+     +      ICONSA,ISAME,ICONSC,MISMAT,IDEV,SUMCOD)
+C           CONSERVED ACIDS             ICONSA=KSUM
+C           CONSERVATIVE CHANGES        ICONSC=SUMC
+C           UNCHANGED CODONS            ISAME=ISUM
+            SUMCS = SUMCS + ICONSC
+          END IF
+          IF(OPT.EQ.23)THEN
+C           NUMBER OF GENETIC EVENTS
+            CALL BSCHN2(
+     +      SEQ(STARTS(IFILE)),STARTS(IFILE+1)-STARTS(IFILE),
+     +      ST(IFILE),LE(IFILE),
+     +      SEQ(STARTS(JFILE)),STARTS(JFILE+1)-STARTS(JFILE),
+     +      ST(JFILE),LE(JFILE),
+     +      MISMAT,IDEV)
+          END IF
+          IF(OPT.EQ.24)THEN
+C   MISMAT NUMBER OF BASE DIFFERENCES
+            CALL BSCHN3(
+     +      SEQ(STARTS(IFILE)),STARTS(IFILE+1)-STARTS(IFILE),
+     +      ST(IFILE),LE(IFILE),
+     +      SEQ(STARTS(JFILE)),STARTS(JFILE+1)-STARTS(JFILE),
+     +      ST(JFILE),LE(JFILE),BCHANG)
+          END IF
+          IF(OPT.EQ.35)THEN
+C   MISMAT NUMBER OF BASE DIFFERENCES
+            CALL BSCHM3(
+     +      SEQ(STARTS(IFILE)),STARTS(IFILE+1)-STARTS(IFILE),
+     +      ST(IFILE),LE(IFILE),
+     +      SEQ(STARTS(JFILE)),STARTS(JFILE+1)-STARTS(JFILE),
+     +      ST(JFILE),LE(JFILE),BCHAMG)
+          END IF
+          IF(OPT.EQ.3000)THEN
+C   MISMAT NUMBER OF BASE DIFFERENCES
+            CALL BSCHN5(
+     +      SEQ(STARTS(IFILE)),STARTS(IFILE+1)-STARTS(IFILE),
+     +      ST(IFILE),LE(IFILE),
+     +      SEQ(STARTS(JFILE)),STARTS(JFILE+1)-STARTS(JFILE),
+     +      ST(JFILE),LE(JFILE),
+     +      MISMAT,IDEV,PAA)
+          END IF
+          IF(OPT.EQ.28)THEN
+C   MISMAT NUMBER OF expressed BASE DIFFERENCES
+            CALL BSCHN7(
+     +      SEQ(STARTS(IFILE)),STARTS(IFILE+1)-STARTS(IFILE),
+     +      ST(IFILE),LE(IFILE),
+     +      SEQ(STARTS(JFILE)),STARTS(JFILE+1)-STARTS(JFILE),
+     +      ST(JFILE),LE(JFILE),
+     +      MISMAT,IDEV,PAA)
+          END IF
+          IF(OPT.EQ.29)THEN
+C   MISMAT NUMBER OF silent BASE DIFFERENCES
+            CALL BSCHN8(
+     +      SEQ(STARTS(IFILE)),STARTS(IFILE+1)-STARTS(IFILE),
+     +      ST(IFILE),LE(IFILE),
+     +      SEQ(STARTS(JFILE)),STARTS(JFILE+1)-STARTS(JFILE),
+     +      ST(JFILE),LE(JFILE),
+     +      MISMAT,IDEV,PAA)
+        END IF
+          IF(OPT.EQ.30)THEN
+C   MISMAT NUMBER OF Amino acid DIFFERENCES
+            CALL BSCHN9(
+     +      SEQ(STARTS(IFILE)),STARTS(IFILE+1)-STARTS(IFILE),
+     +      ST(IFILE),LE(IFILE),
+     +      SEQ(STARTS(JFILE)),STARTS(JFILE+1)-STARTS(JFILE),
+     +      ST(JFILE),LE(JFILE),
+     +      MISMAT,IDEV,PAA)
+        END IF
+C
+C   GET DIFFERENCES IN DIFFER
+C
+          IF(OPT.EQ.25)THEN
+            CALL BSCHN4(
+     +      SEQ(STARTS(IFILE)),STARTS(IFILE+1)-STARTS(IFILE),
+     +      ST(IFILE),LE(IFILE),
+     +      SEQ(STARTS(JFILE)),STARTS(JFILE+1)-STARTS(JFILE),
+     +      ST(JFILE),LE(JFILE),
+     +      DIFFER)
+          END IF
+C
+C   GET DIFFERENCES IN DIFFER (accumulated counts of bases that change the
+C   amino acid)
+C
+          IF(OPT.EQ.26)THEN
+            CALL COCHN1(
+     +      SEQ(STARTS(IFILE)),STARTS(IFILE+1)-STARTS(IFILE),
+     +      ST(IFILE),LE(IFILE),
+     +      SEQ(STARTS(JFILE)),STARTS(JFILE+1)-STARTS(JFILE),
+     +      ST(JFILE),LE(JFILE),
+     +      DIFFER,PAA)
+          END IF
+C
+C   estimate mutation rate from observed silent changes
+C
+          IF(OPT.EQ.38)THEN
+            CALL COCHN4(
+     +      SEQ(STARTS(IFILE)),STARTS(IFILE+1)-STARTS(IFILE),
+     +      ST(IFILE),LE(IFILE),
+     +      SEQ(STARTS(JFILE)),STARTS(JFILE+1)-STARTS(JFILE),
+     +      ST(JFILE),LE(JFILE),
+     +      SUMCOD)
+          END IF
+C
+C   GET DIFFERENCES IN DIFFER (accumulated counts of bases that dont change the
+C   amino acid)
+C
+          IF(OPT.EQ.27)THEN
+            CALL COCHN2(
+     +      SEQ(STARTS(IFILE)),STARTS(IFILE+1)-STARTS(IFILE),
+     +      ST(IFILE),LE(IFILE),
+     +      SEQ(STARTS(JFILE)),STARTS(JFILE+1)-STARTS(JFILE),
+     +      ST(JFILE),LE(JFILE),
+     +      DIFFER,PAA)
+          END IF
+          IF(OPT.EQ.36)THEN
+            CALL COCHN3(
+     +      SEQ(STARTS(IFILE)),STARTS(IFILE+1)-STARTS(IFILE),
+     +      ST(IFILE),LE(IFILE),
+     +      SEQ(STARTS(JFILE)),STARTS(JFILE+1)-STARTS(JFILE),
+     +      ST(JFILE),LE(JFILE),
+     +      BCHANG,PAA)
+          END IF
+          IF(OPT.EQ.39)THEN
+            CALL COCHN5(
+     +      SEQ(STARTS(IFILE)),STARTS(IFILE+1)-STARTS(IFILE),
+     +      ST(IFILE),LE(IFILE),
+     +      SEQ(STARTS(JFILE)),STARTS(JFILE+1)-STARTS(JFILE),
+     +      ST(JFILE),LE(JFILE),
+     +      BCHANG,PAA)
+          END IF
+          ICOUNT = ICOUNT + 1
+          COUNTS(ICOUNT) = MISMAT
+          POINTS(ICOUNT) = ICOUNT
+          TOTCOU = TOTCOU + MISMAT
+ 200    CONTINUE
+ 300  CONTINUE
+      IF(OPT.EQ.38) THEN
+C        CALL UPDET(SUMCOD,PAA,MTT)
+        CALL UPDE(MT,ET,MTT,SUMCOD,PAA)
+        WRITE(IDEV,1010)(CHRSET(K),K=1,4)
+        DO 323 I=1,4
+          WRITE(IDEV,1012)CHRSET(I),(MT(I,K),K=1,4)
+ 323   CONTINUE
+ 1012  FORMAT(' ',A1,'   ',4(F5.4,1X))
+        GO TO 100
+      END IF
+      IF(GRAPH.EQ.ON) THEN
+        XMIN = 1.
+        XMAX = LONGE - LONGS + 1
+        YMIN = 0.
+        YMAX = IMAXA(DIFFER,LONGE-LONGS+1)
+        IYMAX = YMAX
+        CALL GETINT(0,9999,IYMAX,'Maximum Y value for plotting',
+     +  IVAL,KBIN,KBOUT,HELPS(OPT),HELPE(OPT),HELPF,IDEVH,IOK)
+        IF(IOK.NE.0) GO TO 100
+        YMAX = IVAL
+        CALL PLTI(DIFFER,LONGE-LONGS+1,
+     +  XMAX,XMIN,YMAX,YMIN,
+     +  MARGL,MARGR,MARGB(OPT),MARGT(OPT),ISXMAX,ISYMAX)
+        GO TO 100
+      END IF
+      IF(GRAPH.EQ.OFF) THEN
+        WRITE(IDEV,6666)
+     +  (KKKK+LONGS-1,DIFFER(KKKK),KKKK=1,LONGE-LONGS+1)
+6666  FORMAT(2I6)
+C        CLOSE(UNIT=DEVNOS(1))
+        GO TO 100
+      END IF
+      IF(GRAPH.EQ.ON) THEN
+        XMIN = 1.
+        XMAX = LONGE - LONGS + 1
+        YMIN = 0.
+        YMAX = IMAXA(DIFFER,LONGE-LONGS+1)
+        IYMAX = YMAX
+        CALL GETINT(0,9999,IYMAX,'Maximum Y value for plotting',
+     +  IVAL,KBIN,KBOUT,HELPS(OPT),HELPE(OPT),HELPF,IDEVH,IOK)
+        IF(IOK.NE.0) GO TO 100
+        YMAX = IVAL
+        CALL PLTI(DIFFER,LONGE-LONGS+1,
+     +  XMAX,XMIN,YMAX,YMIN,
+     +  MARGL,MARGR,MARGB(OPT),MARGT(OPT),ISXMAX,ISYMAX)
+        GO TO 100
+      END IF
+      IF(GRAPH.EQ.OFF) THEN
+        WRITE(IDEV,6666)
+     +  (KKKK+LONGS-1,DIFFER(KKKK),KKKK=1,LONGE-LONGS+1)
+        GO TO 100
+      END IF
+      IF(OPT.EQ.24) THEN
+        WRITE(IDEV,1010)CHRSET
+ 1010   FORMAT('     ',5(2X,A1,3X))
+        DO 320 I=1,5
+          WRITE(IDEV,1011)CHRSET(I),(BCHANG(I,K),K=1,5)
+ 1011     FORMAT(' ',A1,5I6)
+ 320      CONTINUE
+          CALL KIMURA(BCHANG,DIST)
+          WRITE(*,*)'Kimura evolutionary distance=',DIST
+        GO TO 100
+      END IF
+      IF(OPT.EQ.35) THEN
+        DO 333 IP=1,3
+        WRITE(IDEV,1010)CHRSET
+        DO 321 I=1,5
+          WRITE(IDEV,1011)CHRSET(I),(BCHAMG(I,K,IP),K=1,5)
+ 321   CONTINUE
+ 333      CONTINUE
+        GO TO 100
+      END IF
+      IF(OPT.EQ.36) THEN
+        WRITE(IDEV,1010)CHRSET
+        DO 322 I=1,5
+          WRITE(IDEV,1011)CHRSET(I),(BCHANG(I,K),K=1,5)
+ 322   CONTINUE
+       GO TO 100
+      END IF
+      IF(OPT.EQ.39) THEN
+        WRITE(IDEV,1010)CHRSET
+        DO 324 I=1,5
+          WRITE(IDEV,1011)CHRSET(I),(BCHANG(I,K),K=1,5)
+ 324   CONTINUE
+       GO TO 100
+      END IF
+      IF(SORT.EQ.OFF) GO TO 100
+      CALL BUB2AS(COUNTS,POINTS,ICOUNT)
+      WRITE(IDEV,*)'                Sorted list'
+      DO 400 II=1,ICOUNT
+        N = II
+        CALL IANDJ(NFILE,POINTS(N),I,J)
+        WRITE(IDEV,1015)NAMES(I)(1:20),NAMES(J)(1:20),COUNTS(II)
+1015    FORMAT(' ',A,' ',A,' distance',I6)
+400   CONTINUE
+      WRITE(IDEV,1020)TOTCOU
+1020  FORMAT(' Total distance ',I6)
+      IF(OPT.EQ.22)WRITE(IDEV,1021)SUMCS 
+1021    FORMAT(' Total conservative changes',I6)
+      GO TO 100
+ 999  CONTINUE
+      CALL SHUTD
+      END
+      REAL FUNCTION VARIM(FACID)
+      INTEGER FACID(22),IMAXA
+      EXTERNAL IMAXA
+C Variability defined (as kabat):
+C
+C  Number of different acids / Freq of most common acid
+C
+      NACIDS = 0
+      TACIDS = 0.
+      DO 10 K = 1,22
+        TACIDS = TACIDS + FACID(K)
+        IF(FACID(K).NE.0) NACIDS = NACIDS + 1
+10    CONTINUE
+      VARIM = 0.
+      IF(TACIDS.GT.0.) THEN
+        FREQC = REAL(IMAXA(FACID,22)) / TACIDS
+        VARIM = REAL(NACIDS) / FREQC
+      END IF
+      END
+      INTEGER FUNCTION AMINOP(ACID)
+      CHARACTER ALLONE*22,ACID
+      SAVE ALLONE
+      DATA ALLONE/'ACDEFGHIKLMNPQRSTVWY*-'/
+      AMINOP = 22
+      DO 10 I=1,21
+        IF(ACID.EQ.ALLONE(I:I)) THEN
+          AMINOP = I
+          RETURN
+        END IF
+10    CONTINUE
+      END
+      SUBROUTINE TGETF(IDEV,FILNAM,KBIN,KBOUT,
+     +SEQ1,MAXSEQ,STARTS,NAMES,MAXFIL,MAXNAM,NFILE,IOK,
+     +IHELPS,IHELPE,HELPF,IDEVH)
+      CHARACTER SEQ1(MAXSEQ),FILNAM*(*),HELPF*(*)
+      CHARACTER*(*) NAMES(MAXFIL)
+      INTEGER STARTS(MAXFIL)
+C
+C Routine to read in two sequences
+C
+      FILNAM = ' '
+      CALL OPENF1(IDEV,FILNAM,0,IOK,KBIN,KBOUT,
+     +'File name of first sequence',
+     +IHELPS,IHELPE,HELPF,IDEVH)
+      IF(IOK.NE.0)RETURN
+      IDIM1 = MAXSEQ
+      CALL ARRFIL(IDEV,SEQ1,IDIM1,KBOUT)
+      CLOSE(UNIT=IDEV)
+      NAMES(1) = FILNAM
+      STARTS(1) = 1
+      FILNAM = ' '
+      CALL OPENF1(IDEV,FILNAM,0,IOK,KBIN,KBOUT,
+     +'File name of second sequence',
+     +IHELPS,IHELPE,HELPF,IDEVH)
+      IF(IOK.NE.0)RETURN
+      STARTS(2) = IDIM1 + 1
+      IDIM1 = MAXSEQ - IDIM1
+      CALL ARRFIL(IDEV,SEQ1(STARTS(2)),IDIM1,KBOUT)
+      CLOSE(UNIT=IDEV)
+      NAMES(2) = FILNAM
+      STARTS(3) = STARTS(2) + IDIM1
+      NFILE = 2
+      END
+      SUBROUTINE GETSQS(IDEV1,IDEV2,SEQ,MAXSEQ,STARTS,NAMES,
+     +FILNAM,NFILE,MAXFIL,MAXNAM,KBIN,KBOUT,
+     +IHELPS,IHELPE,HELPF,IDEVH)
+      CHARACTER SEQ(MAXSEQ),HELPF*(*)
+      CHARACTER*(*) FILNAM,NAMES(MAXFIL)
+      INTEGER STARTS(MAXFIL)
+      NFILE = 0
+      IEND = 0
+      FILNAM = ' '
+      CALL OPENF1(IDEV1,FILNAM,0,IOK,KBIN,KBOUT,
+     +'File of file names',
+     +IHELPS,IHELPE,HELPF,IDEVH)
+2     CONTINUE
+      IF (NFILE.LT.MAXFIL) THEN
+        READ(IDEV1,1000,END=3)FILNAM
+ 1000   FORMAT(A)
+        NFILE = NFILE + 1
+        STARTS(NFILE) = IEND + 1
+        NAMES(NFILE) = FILNAM
+        IDIM2 = MAXSEQ - IEND
+        IF (IDIM2.GT.0) THEN
+          CALL OPENRS(IDEV2,FILNAM,IOK,LRECL,2)
+          CALL ARRFIL(IDEV2,SEQ(STARTS(NFILE)),IDIM2,KBOUT)
+          CLOSE(UNIT=IDEV2)
+          IEND = IEND + IDIM2
+          GO TO 2
+        END IF
+C
+C if we get here weve run out of array space
+C
+        NFILE = NFILE - 1
+        WRITE(KBOUT,*)'Only ',NFILE,' files read: no more memory'
+        CLOSE(UNIT=IDEV1)
+        RETURN
+      ELSE
+C
+C if we get here weve got too many files
+C
+        NFILE = NFILE - 1
+        CLOSE(UNIT=IDEV1)
+        WRITE(KBOUT,*)'Maximum files ',NFILE,' read'
+        RETURN
+      END IF
+ 3    CONTINUE
+      STARTS(NFILE+1) = IEND + 1
+      CLOSE(UNIT=IDEV1)
+      END
+      SUBROUTINE LISTN(SEQ,MAXCHR,LENSEQ,NFILE,LINLEN,I1,I2,
+     +IDEV,KBOUT,NAMES,MAXFIL)
+      CHARACTER*(*) NAMES(MAXFIL)
+      PARAMETER (MAXLIN = 120)
+      CHARACTER SEQ(MAXCHR),LINE*(MAXLIN)
+      INTEGER LENSEQ(MAXFIL)
+      EXTERNAL NOTIRL
+C     SET WIDTH FOR LAST PAGE
+      LPAGE=MOD(I2-I1+1,LINLEN)
+C     HOW MANY PAGE WIDTHS?
+      NPAGE=1+(I2-I1+1)/LINLEN
+      IF(MOD(I2-I1+1,LINLEN).EQ.0)THEN
+        NPAGE=NPAGE-1
+        LPAGE=LINLEN
+      END IF
+      ISTART=I1-LINLEN
+      DO 50 I=1,NPAGE
+        ISTART=ISTART+LINLEN
+        IF(I.EQ.NPAGE)LINLEN=LPAGE
+        WRITE(IDEV,1006)(K,K=ISTART+9,ISTART+LINLEN-1,10)
+        DO 40 J=1,NFILE
+          KF = ISTART + LENSEQ(J) - 1
+          KT = MIN(KF+LINLEN,LENSEQ(J+1)) - 1
+          LINE(1:) = ' '
+          WRITE(LINE,1003,ERR=60)(SEQ(K),K=KF,KT)
+1003      FORMAT(' ',60A1)
+          LINE(KT-KF+4:) = NAMES(J)(1:15)
+          WRITE(IDEV,1004,ERR=60)LINE(1:NOTIRL(LINE,MAXLIN,' '))
+ 1004     FORMAT(A)
+1006      FORMAT(' ',10I10)
+40      CONTINUE
+        WRITE(IDEV,1008)
+1008    FORMAT( )
+50    CONTINUE
+      RETURN
+60    CONTINUE
+      WRITE(KBOUT,*)' Error writing file'
+      END
+      SUBROUTINE LISTND(SEQ,MAXCHR,LENSEQ,NFILE,LINLEN,I1,I2,
+     +IDEV,KBOUT,NAMES,MAXFIL)
+      CHARACTER*(*) NAMES(MAXFIL)
+      PARAMETER (MAXLIN = 120)
+      CHARACTER SEQ(MAXCHR),LINE*(MAXLIN)
+      INTEGER LENSEQ(MAXFIL),CTONUM
+      EXTERNAL NOTIRL,CTONUM
+C     SET WIDTH FOR LAST PAGE
+      LPAGE=MOD(I2-I1+1,LINLEN)
+C     HOW MANY PAGE WIDTHS?
+      NPAGE=1+(I2-I1+1)/LINLEN
+      IF(MOD(I2-I1+1,LINLEN).EQ.0)THEN
+        NPAGE=NPAGE-1
+        LPAGE=LINLEN
+      END IF
+      ISTART=I1-LINLEN
+      DO 50 I=1,NPAGE
+        ISTART=ISTART+LINLEN
+        IF(I.EQ.NPAGE)LINLEN=LPAGE
+        WRITE(IDEV,1006)(K,K=ISTART+9,ISTART+LINLEN-1,10)
+          KF = ISTART + LENSEQ(1) - 1
+          KT = MIN(KF+LINLEN,LENSEQ(2)) - 1
+          WRITE(LINE,1003,ERR=60)(SEQ(K),K=KF,KT)
+1003      FORMAT(' ',60A1)
+          LINE(KT-KF+4:) = NAMES(1)(1:15)
+          WRITE(IDEV,1004,ERR=60)LINE(1:NOTIRL(LINE,MAXLIN,' '))
+        DO 40 J=2,NFILE
+          KF = ISTART + LENSEQ(J) - 1
+          KT = MIN(KF+LINLEN,LENSEQ(J+1)) - 1
+          KSF = ISTART + LENSEQ(1) - 2
+          LINE(1:) = ' '
+          KKL = 1
+          DO 35 KK = KF,KT
+            KKL = KKL + 1
+            KSF = KSF + 1
+            IF(CTONUM(SEQ(KK)).EQ.CTONUM(SEQ(KSF))) THEN
+              LINE(KKL:KKL) = '-'
+            ELSE
+              LINE(KKL:KKL) = SEQ(KK)
+            END IF
+ 35         CONTINUE
+          LINE(KT-KF+4:) = NAMES(J)(1:15)
+          WRITE(IDEV,1004,ERR=60)LINE(1:NOTIRL(LINE,MAXLIN,' '))
+ 1004     FORMAT(A)
+1006      FORMAT(' ',10I10)
+40      CONTINUE
+        WRITE(IDEV,1008)
+1008    FORMAT( )
+50    CONTINUE
+      RETURN
+60    CONTINUE
+      WRITE(KBOUT,*)' Error writing file'
+      END
+      SUBROUTINE LISTNT(SEQ,MAXCHR,LENSEQ,NFILE,LINLIN,I1,I2,
+     +IDEV,KBOUT,NAMES,MAXFIL,PAA)
+      CHARACTER*(*) NAMES(MAXFIL)
+      PARAMETER (MAXLIN = 120)
+      CHARACTER SEQ(MAXCHR),LINE*(MAXLIN),PAA*(*),TRANF
+      INTEGER LENSEQ(MAXFIL)
+      EXTERNAL NOTIRL,TRANF
+C
+C line length is linlen acids which needs 3*linlen bases
+C
+      LINLEN = LINLIN
+      I2MI1 = I2 - I1 + 1
+C number of whole codons
+      I2MI1 = I2MI1/3
+C     SET WIDTH FOR LAST PAGE
+      LPAGE=MOD(I2MI1,LINLEN)
+C     HOW MANY PAGE WIDTHS?
+      NPAGE=1+I2MI1/LINLEN
+      IF(MOD(I2MI1,LINLEN).EQ.0)THEN
+        NPAGE=NPAGE-1
+        LPAGE=LINLEN
+      END IF
+      ISTART=I1-3*LINLEN
+      DO 50 I=1,NPAGE
+        ISTART=ISTART+3*LINLEN
+        IF(I.EQ.NPAGE)LINLEN=LPAGE
+        WRITE(IDEV,1006)(K,K=ISTART+29,ISTART+3*LINLEN-1,30)
+        DO 40 J=1,NFILE
+          KF = ISTART + LENSEQ(J) - 1
+          KT = MIN(KF+3*LINLEN,LENSEQ(J+1)) - 1
+          LINE(1:) = ' '
+          LL = KF - 3
+          DO 30 L = 1,LINLEN
+            LL = LL + 3
+            LINE(L:L) = TRANF(SEQ(LL),PAA)
+ 30         CONTINUE
+          LINE(1+(KT-KF+4)/3:) = NAMES(J)(1:15)
+          WRITE(IDEV,1004,ERR=60)LINE(1:NOTIRL(LINE,MAXLIN,' '))
+ 1004     FORMAT(' ',A)
+1006      FORMAT(' ',10I10)
+40      CONTINUE
+        WRITE(IDEV,1008)
+1008    FORMAT( )
+50    CONTINUE
+      RETURN
+60    CONTINUE
+      WRITE(KBOUT,*)' Error writing file'
+      END
+      SUBROUTINE LISTNV(SEQ,MAXCHR,LENSEQ,NFILE,LINLIN,I1,I2,
+     +IDEV,KBOUT,NAMES,MAXFIL,PAA)
+      CHARACTER*(*) NAMES(MAXFIL)
+      PARAMETER (MAXLIN = 120)
+      CHARACTER SEQ(MAXCHR),LINE*(MAXLIN),PAA*(*),TRANF
+      INTEGER LENSEQ(MAXFIL)
+      EXTERNAL NOTIRL,TRANF
+C
+C line length is linlen acids which needs 3*linlen bases
+C
+      LINLEN = LINLIN
+      I2MI1 = I2 - I1 + 1
+C number of whole codons
+      I2MI1 = I2MI1/3
+C     SET WIDTH FOR LAST PAGE
+      LPAGE=MOD(I2MI1,LINLEN)
+C     HOW MANY PAGE WIDTHS?
+      NPAGE=1+I2MI1/LINLEN
+      IF(MOD(I2MI1,LINLEN).EQ.0)THEN
+        NPAGE=NPAGE-1
+        LPAGE=LINLEN
+      END IF
+      ISTART=I1-3*LINLEN
+      DO 50 I=1,NPAGE
+        ISTART=ISTART+3*LINLEN
+        IF(I.EQ.NPAGE)LINLEN=LPAGE
+        WRITE(IDEV,1006)(K,K=ISTART+29,ISTART+3*LINLEN-1,30)
+          KF = ISTART + LENSEQ(1) - 1
+          KT = MIN(KF+3*LINLEN,LENSEQ(2)) - 1
+          LINE(1:) = ' '
+          LL = KF - 3
+          DO 20 L = 1,LINLEN
+            LL = LL + 3
+            LINE(L:L) = TRANF(SEQ(LL),PAA)
+ 20         CONTINUE
+          LINE(1+(KT-KF+4)/3:) = NAMES(1)(1:15)
+          WRITE(IDEV,1004,ERR=60)LINE(1:NOTIRL(LINE,MAXLIN,' '))
+        DO 40 J=2,NFILE
+          KF = ISTART + LENSEQ(J) - 1
+          KT = MIN(KF+3*LINLEN,LENSEQ(J+1)) - 1
+          KFS = ISTART + LENSEQ(1) - 1
+          LINE(1:) = ' '
+          LL = KF - 3
+          LLS = KFS - 3
+          DO 30 L = 1,LINLEN
+            LL = LL + 3
+            LLS = LLS + 3
+            IF(TRANF(SEQ(LLS),PAA).EQ.TRANF(SEQ(LL),PAA)) THEN
+              LINE(L:L) = '-'
+            ELSE
+              LINE(L:L) = TRANF(SEQ(LL),PAA)
+            END IF
+ 30         CONTINUE
+          LINE(1+(KT-KF+4)/3:) = NAMES(J)(1:15)
+          WRITE(IDEV,1004,ERR=60)LINE(1:NOTIRL(LINE,MAXLIN,' '))
+ 1004     FORMAT(' ',A)
+1006      FORMAT(' ',10I10)
+40      CONTINUE
+        WRITE(IDEV,1008)
+1008    FORMAT( )
+50    CONTINUE
+      RETURN
+60    CONTINUE
+      WRITE(KBOUT,*)' Error writing file'
+      END
+      SUBROUTINE IANDJ(N,L,I,J)
+C   ROUTINE, GIVEN N FILES AND ELEMENT L FROM LIST
+C   CALC ROW I AND COL J NOS ASSUMING L LIES IN TOP
+C   RIGHT CORNER OF MATRIX
+      I=1
+      J1=0
+      K=0
+10    CONTINUE
+      J1=J1+1
+      J=J1
+11    CONTINUE
+C   REACHED ELEMENT L?
+      IF(K.EQ.L)RETURN
+      J=J+1
+      K=K+1
+C   REACHED END OF ROW?
+      IF(J.LE.N)GO TO 11
+C  YES, POINT TO NEX ROW
+      I=I+1
+      K=K-1
+      GO TO 10
+      END
+      INTEGER FUNCTION IMAXA(I,N)
+      INTEGER I(N)
+      IMAXA = I(1)
+      DO 10 J=2,N
+        IMAXA = MAX(IMAXA,I(J))
+ 10     CONTINUE
+      END
+      INTEGER FUNCTION IMINA(I,N)
+      INTEGER I(N)
+      IMINA = I(1)
+      DO 10 J=2,N
+        IMINA = MIN(IMINA,I(J))
+ 10     CONTINUE
+      END
+      SUBROUTINE PLTI(IY,NY,
+     +XMAX,XMIN,YMAX,YMIN,
+     +MARGL,MARGR,MARGB,MARGT,ISXMAX,ISYMAX)
+      INTEGER IY(NY)
+      CALL VECTOM
+      CALL FRAME(MARGL,MARGR,MARGB,MARGT,ISXMAX,ISYMAX)
+      YF = YMIN
+      DO 100 I=1,NY
+        XF = I
+        YT = IY(I)
+        CALL LINE(XF,XF,YF,YT,XMAX,XMIN,YMAX,YMIN,
+     +  MARGL,MARGR,MARGB,MARGT,ISXMAX,ISYMAX)
+100   CONTINUE
+      CALL VT100M
+      END
+      REAL FUNCTION RMAXA(I,N)
+      REAL I(N)
+      RMAXA = I(1)
+      DO 10 J=2,N
+        RMAXA = MAX(RMAXA,I(J))
+ 10     CONTINUE
+      END
+      REAL FUNCTION RMINA(I,N)
+      REAL I(N)
+      RMINA = I(1)
+      DO 10 J=2,N
+        RMINA = MIN(RMINA,I(J))
+ 10     CONTINUE
+      END
+      SUBROUTINE PLTR(IY,NY,
+     +XMAX,XMIN,YMAX,YMIN,
+     +MARGL,MARGR,MARGB,MARGT,ISXMAX,ISYMAX)
+      REAL IY(NY)
+      CALL VECTOM
+      CALL FRAME(MARGL,MARGR,MARGB,MARGT,ISXMAX,ISYMAX)
+      YF = YMIN
+      DO 100 I=1,NY
+        XF = I
+        YT = IY(I)
+        CALL LINE(XF,XF,YF,YT,XMAX,XMIN,YMAX,YMIN,
+     +  MARGL,MARGR,MARGB,MARGT,ISXMAX,ISYMAX)
+100   CONTINUE
+      CALL VT100M
+      END
+      SUBROUTINE COCHAN(SEQ1,IDIM1,I1,N1,SEQ2,IDIM2,I2,N2,
+     +ICONSA,ISAME,ICONSC,MISMAT,IDEV,SUM)
+      INTEGER SJ(6)
+      INTEGER SUM(4096),SAME(77),SUMC
+      CHARACTER SEQ1(IDIM1),SEQ2(IDIM1)
+      CHARACTER AA(18)
+      EXTERNAL JCODNO
+      DATA AA/'F','L','I','V','S','P','T','A','Y','H','Q','N',
+     +'K','D','E','C','R','G'/
+      DATA SAME/2,1,2,6,3,4,17,18,19,20,3,33,34,35,4,49,50,51,
+     +52,6,5,6,7,8,45,46,4,21,22,23,24,4,37,38,39,40,4,53,54,
+     +55,56,2,9,10,2,25,26,2,27,28,2,41,42,2,43,44,2,57,58,2,
+     +59,60,2,13,14,6,29,30,31,32,47,48,4,61,62,63,64/
+C   CONSERVED ACIDS             ICONSA=KSUM
+C   CONSERVATIVE CHANGES        ICONSC=SUMC
+C   UNCHANGED CODONS            ISAME=ISUM
+      DO 55 I=1,4096
+        SUM(I)=0
+55    CONTINUE
+C
+      IDIM3=N1-I1+1
+      IDIM4=N2-I2+1
+C
+C   GET MINIMUM LENGTH TO SCAN
+      MINL=MIN(IDIM3,IDIM4)
+C   SET MIN TO NUMBER OF CODONS
+      MINL=MINL/3
+      MAXL=MAX(IDIM3,IDIM4)
+      MAXL=MAXL/3
+      J=I1
+      K=I2
+C
+C   MAIN LOOP
+C
+      DO 100 I=1,MINL
+        IP1=JCODNO(SEQ1,IDIM1,J)
+        IF(IP1.EQ.0)GO TO 199
+        IP2=JCODNO(SEQ2,IDIM2,K)
+        IF(IP2.EQ.0)GO TO 199
+        IP=IP1*64+IP2-64
+        SUM(IP)=SUM(IP)+1
+199     CONTINUE
+        J=J+3
+        K=K+3
+100   CONTINUE
+C
+C   SUM THOSE CONSERVED
+C
+      ISUM=0
+      SUMC=0
+      IK1=2
+C
+C   LOOP FOR EACH AMINO ACID WITH MORE THAN 1 CODON
+C
+      DO 120 K=1,18
+        NUM=SAME(IK1-1)
+C
+C       FIRST ELEMENT IN SAME IS THE NUMBER OF CODONS FOR THIS AMINO ACID
+C       SUCCEEDING ELEMENTS ARE THE CODON NUMBERS
+C       LOOP FOR EACH CODON
+C
+        DO 110 I=1,NUM
+          IP=SAME(IK1+I-1)
+          NP=(IP-1)*64
+C
+C         LOOP FOR EACH CODON CALCULATING POINTERS TO EACH CHANGE NOT
+C         AFFECTING AMINO ACID
+C
+          DO 105 J=1,NUM
+            MP=SAME(IK1+J-1)
+            JP=NP+MP
+            SJ(J)=SUM(JP)
+105       CONTINUE
+          DO 104 N=1,NUM
+            IF(N.EQ.I)ISUM=ISUM+SJ(N)
+            SUMC=SUMC+SJ(N)
+            SJ(N)=0
+104       CONTINUE
+110     CONTINUE
+        IK1=IK1+NUM+1
+120   CONTINUE
+C   ADD MET AND TRP CODONS TO THOSE CONSERVING ACID
+      KSUM=SUMC+SUM(2276)+SUM(976)
+      FKSUM=100.*FLOAT(KSUM)/FLOAT(MAXL)
+      WRITE(IDEV,1005)KSUM,FKSUM
+ 1005 FORMAT(' Number of conserved amino acids ',I6,' = ',F6.2,'%')
+C1005  FORMAT(' NUMBER OF CONSERVED AMINO ACIDS=',I6,', AS PERCENT='
+C     1,F6.2)
+C
+C   SUBTRACT CONSERVED CODONS FROM THOSE CONSERVING AMINO ACID
+      SUMC=SUMC-ISUM
+      FSUMC=100.*FLOAT(SUMC)/FLOAT(MAXL)
+      WRITE(IDEV,1001)SUMC,FSUMC
+ 1001 FORMAT(' Number of conservative codon changes ',I6,' = ',F6.2,'%')
+C1001  FORMAT(' NUMBER OF CONSERVATIVE CODON CHANGES=',I6,', AS',
+C     1' PERCENT=',
+C     1F6.2)
+C   ADD MET AND TRP TO UNCHANGED CODONS
+        ISUM=ISUM+SUM(2276)+SUM(976)
+      FISUM=100.*FLOAT(ISUM)/FLOAT(MAXL)
+      WRITE(IDEV,1004)ISUM,FISUM
+ 1004 FORMAT(' Number of unchanged codons ',I6,' = ',F6.2,'%')
+C1004  FORMAT(' NUMBER OF UNCHANGED CODONS=',I6,', AS PERCENT=',F6.2)
+C
+C   CONSERVED ACIDS
+      ICONSA=KSUM
+C   CONSERVATIVE CHANGES
+      ICONSC=SUMC
+C   UNCHANGED CODONS
+      ISAME=ISUM
+C   CODONS CHANGING AMINO ACID
+      MISMAT=MAXL-ICONSA
+      RETURN
+      END
+      SUBROUTINE BSCHN2(SEQ1,IDIM1,I1,N1,SEQ2,IDIM2,I2,N2,MISMAT,
+     1IDEV)
+C   THIS ROUTINE COUNTS GENETIC EVENTS AND 1 BASE INSERTION
+C   EQUALS N BASE INSERTION
+      CHARACTER SEQ1(IDIM1),SEQ2(IDIM2)
+      INTEGER CTONUM
+      EXTERNAL CTONUM
+      IDIM3=N1-I1+1
+      IDIM4=N2-I2+1
+C
+C   GET MINIMUM LENGTH TO SCAN
+      MINL=MIN(IDIM3,IDIM4)
+C   SET MIN TO NUMBER OF BASES
+      MAXL=MAX(IDIM3,IDIM4)
+      MISMAT=0
+      J=I2-1
+      IDASH1=0
+      IDASH2=0
+      DO 5 I=I1,I1+MINL-1
+        J=J+1
+        IF(CTONUM(SEQ1(I)).EQ.5)IDASH1=IDASH1+1
+        IF(CTONUM(SEQ1(I)).NE.5)IDASH1=0
+        IF(CTONUM(SEQ2(J)).EQ.5)IDASH2=IDASH2+1
+        IF(CTONUM(SEQ2(J)).NE.5)IDASH2=0
+        IF(SEQ1(I).EQ.SEQ2(J))GO TO 5
+        MISMAT=MISMAT+1
+        IF((IDASH1.GT.1).OR.(IDASH2.GT.1))MISMAT=MISMAT-1
+5     CONTINUE
+C cantor and jukes
+      P = REAL(MISMAT)/REAL(MAXL)
+      D = -0.75*LOG(1.0 - 4.0*P/3.0)
+      V = P*(1.0-P)/(REAL(MAXL)*(1.0-4.0*P/3.0)**2)
+      CONS=MINL-MISMAT
+      CONS=CONS*100./MAXL
+      WRITE(IDEV,1001)MISMAT,CONS
+ 1001 FORMAT(' Number of events ',I6,' = ',F6.2,'%')
+C1001  FORMAT(' NUMBER OF EVENTS=',I6,' PERCENTAGE CONSERVATION=',
+C     1F6.2)
+      WRITE(IDEV,1002)D,V
+ 1002 FORMAT(' Expected number of substitutions per site and variance '
+     +,F10.5,F10.7)
+C1002  FORMAT(
+C     +' JC SUBSTITUTIONS PER SITE=',F10.5,' AND VARIANCE=',F10.7) 
+      END
+C
+      SUBROUTINE BSCHN1(SEQ1,IDIM1,I1,N1,SEQ2,IDIM2,I2,N2,MISMAT,
+     +IDEV)
+      CHARACTER SEQ1(IDIM1),SEQ2(IDIM2)
+      INTEGER CTONUM
+      EXTERNAL CTONUM
+C     COUNT DIFFERENCES (BASE CHANGES)
+      IDIM3=N1-I1+1
+      IDIM4=N2-I2+1
+C
+C   GET MINIMUM LENGTH TO SCAN
+      MINL=MIN(IDIM3,IDIM4)
+C   SET MIN TO NUMBER OF BASES
+      MAXL=MAX(IDIM3,IDIM4)
+      MISMAT=0
+      J=I2-1
+      DO 10 I=I1,I1+MINL-1
+        J=J+1
+        IF(CTONUM(SEQ1(I)).NE.CTONUM(SEQ2(J))) MISMAT=MISMAT+1
+10    CONTINUE
+      CONS=MINL-MISMAT
+      CONS=CONS*100./MAXL
+      WRITE(IDEV,1001)MISMAT,CONS
+ 1001 FORMAT(' Number of differences ',I6,' = ',F6.2,'%')
+      END
+      SUBROUTINE BSCHN6(SEQ1,IDIM1,I1,N1,SEQ2,IDIM2,I2,N2,MISMAT,
+     1IDEV)
+      CHARACTER SEQ1(IDIM1),SEQ2(IDIM2)
+C     COUNT DIFFERENCES (BASE CHANGES)
+      INTEGER CTONUM
+      EXTERNAL CTONUM
+      IDIM3=N1-I1+1
+      IDIM4=N2-I2+1
+C
+C   GET MINIMUM LENGTH TO SCAN
+      MINL=MIN(IDIM3,IDIM4)
+C   SET MIN TO NUMBER OF BASES
+      MAXL=MAX(IDIM3,IDIM4)
+      MISMAT=0
+      J=I2-1
+      DO 10 I=I1,I1+MINL-1
+        J=J+1
+        K1 = CTONUM(SEQ1(I))
+        K2 = CTONUM(SEQ2(J))
+        IF(K1.EQ.K2) GO TO 10
+        IF(K1.EQ.5) GO TO 10
+        IF(K2.EQ.5) GO TO 10
+        MISMAT=MISMAT+1
+10    CONTINUE
+      CONS=MINL-MISMAT
+      CONS=CONS*100./MAXL
+      WRITE(IDEV,1001)MISMAT,CONS
+1001  FORMAT(' NUMBER OF DIFFERENCES=',I6,' PERCENTAGE CONSERVATION',
+     1' = ',F6.2)
+      RETURN
+      END
+C
+      SUBROUTINE BSCHN4(SEQ1,IDIM1,I1,N1,SEQ2,IDIM2,I2,N2,DIFFER)
+      CHARACTER SEQ1(IDIM1),SEQ2(IDIM2)
+      INTEGER DIFFER(IDIM1)
+      INTEGER CTONUM
+      EXTERNAL CTONUM
+      IDIM3=N1-I1+1
+      IDIM4=N2-I2+1
+C   GET MINIMUM LENGTH TO SCAN
+      MINL=MIN(IDIM3,IDIM4)
+      J1 = I1 - 1
+      J2 = I2 - 1
+      DO 10 I=1,MINL
+        J1 = J1 + 1
+        J2 = J2 + 1
+        IF(CTONUM(SEQ1(J1)).NE.CTONUM(SEQ2(J2))) 
+     +  DIFFER(I)=DIFFER(I)+1
+10    CONTINUE
+      END
+C
+      SUBROUTINE BSCHN3(SEQ1,IDIM1,I1,N1,SEQ2,IDIM2,I2,N2,CHANGE)
+      CHARACTER SEQ1(IDIM1),SEQ2(IDIM2)
+      INTEGER CHANGE(5,5)
+      INTEGER CTONUM
+      EXTERNAL CTONUM
+      IDIM3=N1-I1+1
+      IDIM4=N2-I2+1
+C   GET MINIMUM LENGTH TO SCAN
+      MINL=MIN(IDIM3,IDIM4)
+C   SET MIN TO NUMBER OF BASES
+      MAXL=MAX(IDIM3,IDIM4)
+      MISMAT=0
+      J=I2-1
+      DO 10 I=I1,I1+MINL-1
+        J=J+1
+        II=CTONUM(SEQ1(I))
+        JJ=CTONUM(SEQ2(J))
+        CHANGE(II,JJ)=CHANGE(II,JJ)+1
+10    CONTINUE
+      END
+      SUBROUTINE BSCHM3(SEQ1,IDIM1,I1,N1,SEQ2,IDIM2,I2,N2,CHANGE)
+      CHARACTER SEQ1(IDIM1),SEQ2(IDIM2)
+      INTEGER CHANGE(5,5,3)
+      INTEGER CTONUM
+      EXTERNAL CTONUM
+      IDIM3=N1-I1+1
+      IDIM4=N2-I2+1
+C   GET MINIMUM LENGTH TO SCAN
+      MINL=MIN(IDIM3,IDIM4)
+C   SET MIN TO NUMBER OF BASES
+      MAXL=MAX(IDIM3,IDIM4)
+      MISMAT=0
+      J=I2-3
+      DO 10 I=I1,I1+MINL-2,3
+        J=J+3
+        DO 5 K=0,2
+          II=CTONUM(SEQ1(I+K))
+          JJ=CTONUM(SEQ2(J+K))
+          CHANGE(II,JJ,K+1)=CHANGE(II,JJ,K+1)+1
+ 5      CONTINUE
+10    CONTINUE
+      END
+      SUBROUTINE KIMURA(CHANGE,DIST)
+      INTEGER CHANGE(5,5)
+      EXTERNAL EVDIST
+C
+C Calc P and Q, then calc the evolutionary distance
+C
+      P = CHANGE(1,2) + CHANGE(2,1) + CHANGE(3,4) + CHANGE(4,3)
+      Q = CHANGE(1,3) + CHANGE(3,1) + CHANGE(1,4) + CHANGE(4,1)
+      Q = Q + CHANGE(3,2) + CHANGE(2,3) + CHANGE(2,4) + CHANGE(4,2)
+      NSITES = 0
+C
+C dont count changes to dash
+C
+      DO 10 I=1,4
+        DO 5 J=1,4
+          NSITES = NSITES + CHANGE(I,J)
+ 5        CONTINUE
+ 10       CONTINUE
+      WRITE(*,*)'NP=',P
+      WRITE(*,*)'NQ=',Q
+      WRITE(*,*)'NSITES=',NSITES
+      P = 58
+      Q = 63
+      NSITES = 438
+      WRITE(*,*)'NP=',P
+      WRITE(*,*)'NQ=',Q
+      WRITE(*,*)'NSITES=',NSITES
+      P = P / REAL(NSITES)
+      Q = Q / REAL(NSITES)
+      DIST = EVDIST(P,Q)
+      END
+      REAL FUNCTION EVDIST(P,Q)
+C
+C Calc evolutionary distance per site according to kimura
+C
+C P and Q are the fractions if sites with respectively type I and II
+C substitutions (ie transitions and transversions)
+C
+      EVDIST = -0.5 * LOG((1.0 - 2.0*P - Q) * SQRT(1.0 - 2.0 * Q))
+C
+C standard error
+C
+      A = 1.0 / (1.0 - 2.0 * P - Q)
+      B = 0.5 * (1.0 / ( A - 1.0 / (1.0 - 2.0 * Q)))
+C
+C !!!!!!!!!!!!!! NOT SURE I CAN READ THIS IN THE PAPER
+C AND CANT READ THE NEXT BIT 
+      END
+C
+C   SUBROUTINE TO WRITE 3 LINES OF SEQUENCES
+C
+      SUBROUTINE FMT2(IDEV,SEQ1,SEQ2,IDIM,ISW,ISX,LINLEN)
+      CHARACTER SEQ1(IDIM),SEQ2(IDIM),MATCH(120)
+      INTEGER KL(12)
+C
+C
+      ISXX=ISX-1
+      ISWW=ISW-1
+      IE=0
+1     CONTINUE
+      WRITE(IDEV,1003)
+1003  FORMAT( )
+      DO 50 J=1,LINLEN/10
+        ISWW=ISWW+10
+        KL(J)=ISWW
+50    CONTINUE
+      WRITE(IDEV,1001)(KL(KKK),KKK=1,LINLEN/10)
+      IS=IE+1
+      IE=IE+LINLEN
+      IF(IE.GT.IDIM)IE=IDIM
+C   COMPARE THE TWO SECTIONS OF SEQUENCE
+      IL=IE-IS+1
+      CALL SQMTCH(SEQ1(IS),SEQ2(IS),MATCH,IL)
+      WRITE(IDEV,1002)(SEQ1(K),K=IS,IE)
+      WRITE(IDEV,1002)(MATCH(K),K=1,IL)
+      WRITE(IDEV,1002)(SEQ2(K),K=IS,IE)
+1002  FORMAT( '  ',12(10A1,1X))
+C   SET UP DECIMAL COUNTERS
+      DO 60 J=1,LINLEN/10
+        ISXX=ISXX+10
+        KL(J)=ISXX
+60    CONTINUE
+      WRITE(IDEV,1001)(KL(KKK),KKK=1,LINLEN/10)
+1001  FORMAT( ' ',12(5X,I6))
+      IF(IE.EQ.IDIM)RETURN
+      GO TO 1
+      END
+C
+C
+C
+C  RETURNS POINTER TO CODON NUMBER FROM 1 - 64
+      INTEGER FUNCTION JCODNO(SEQ,IDIM,I)
+C   AUTHOR: RODGER STADEN
+      CHARACTER SEQ(IDIM)
+      INTEGER CTONUM,JP(3)
+      EXTERNAL CTONUM
+C   CHECK FOR BAD CHAR IN SEQ
+      JCODNO=0
+      IP=I-1
+      DO 1 J=1,3
+      JP(J)=CTONUM(SEQ(IP+J))
+1     IF(JP(J).EQ.5)RETURN
+      JCODNO=JP(1)*16+4*JP(2)+JP(3)-20
+      RETURN
+      END
+C
+      SUBROUTINE BSCHN5(SEQ1,IDIM1,I1,N1,SEQ2,IDIM2,I2,N2,MISMAT,
+     1IDEV,PAA)
+      CHARACTER SEQ1(IDIM1),SEQ2(IDIM2),PAA(5,5,5)
+      INTEGER CFCOD1
+      EXTERNAL CFCOD1
+      IDIM3=N1-I1+1
+      IDIM4=N2-I2+1
+C   GET MINIMUM LENGTH TO SCAN
+      MINL=MIN(IDIM3,IDIM4)
+      J1=I1 - 3
+      J2 = I2 - 3
+      ISUM = 0
+      JSUM = 0
+      DO 10 I=1,MINL-2,3
+        J1 = J1 + 3
+        J2 = J2 + 3
+        ISUM = ISUM + CFCOD1(SEQ1(J1),SEQ2(J2),PAA)
+        JSUM = JSUM + CFCOD1(SEQ2(J2),SEQ1(J1),PAA)
+10    CONTINUE
+      WRITE(IDEV,1000)ISUM
+      WRITE(IDEV,1001)JSUM
+1000  FORMAT('  1 TO 2 =',I6)
+1001  FORMAT('  2 TO 1 =',I6)
+      MISMAT = ISUM + JSUM
+      END
+      SUBROUTINE BSCHN7(SEQ1,IDIM1,I1,N1,SEQ2,IDIM2,I2,N2,MISMAT,
+     +IDEV,PAA)
+      CHARACTER SEQ1(IDIM1),SEQ2(IDIM2),PAA(5,5,5)
+      INTEGER CFCOD1
+      EXTERNAL CFCOD1
+      IDIM3=N1-I1+1
+      IDIM4=N2-I2+1
+C   GET MINIMUM LENGTH TO SCAN
+      MINL=MIN(IDIM3,IDIM4)
+      J1=I1 - 3
+      J2 = I2 - 3
+      MISMAT = 0
+      DO 10 I=1,MINL-2,3
+        J1 = J1 + 3
+        J2 = J2 + 3
+        MISMAT = MISMAT + CFCOD1(SEQ1(J1),SEQ2(J2),PAA)
+10    CONTINUE
+      WRITE(IDEV,1000)MISMAT
+1000  FORMAT(' Expressed base changes ',I6)
+      END
+      SUBROUTINE BSCHN8(SEQ1,IDIM1,I1,N1,SEQ2,IDIM2,I2,N2,MISMAT,
+     +IDEV,PAA)
+      CHARACTER SEQ1(IDIM1),SEQ2(IDIM2),PAA(5,5,5)
+      INTEGER CFCOD2
+      EXTERNAL CFCOD2
+      IDIM3=N1-I1+1
+      IDIM4=N2-I2+1
+C   GET MINIMUM LENGTH TO SCAN
+      MINL=MIN(IDIM3,IDIM4)
+      J1=I1 - 3
+      J2 = I2 - 3
+      MISMAT = 0
+      DO 10 I=1,MINL-2,3
+        J1 = J1 + 3
+        J2 = J2 + 3
+        MISMAT = MISMAT + CFCOD2(SEQ1(J1),SEQ2(J2),PAA)
+10    CONTINUE
+      WRITE(IDEV,1000)MISMAT
+1000  FORMAT(' Silent base changes ',I6)
+      END
+      SUBROUTINE BSCHN9(SEQ1,IDIM1,I1,N1,SEQ2,IDIM2,I2,N2,MISMAT,
+     +IDEV,PAA)
+      CHARACTER SEQ1(IDIM1),SEQ2(IDIM2),PAA(5,5,5)
+      INTEGER CFCOD3
+      EXTERNAL CFCOD3
+      IDIM3=N1-I1+1
+      IDIM4=N2-I2+1
+C   GET MINIMUM LENGTH TO SCAN
+      MINL=MIN(IDIM3,IDIM4)
+      J1=I1 - 3
+      J2 = I2 - 3
+      MISMAT = 0
+      DO 10 I=1,MINL-2,3
+        J1 = J1 + 3
+        J2 = J2 + 3
+        MISMAT = MISMAT + CFCOD3(SEQ1(J1),SEQ2(J2),PAA)
+10    CONTINUE
+      WRITE(IDEV,1000)MISMAT
+1000  FORMAT(' Number of changed acids ',I6)
+      END
+      SUBROUTINE COCHN1(SEQ1,IDIM1,I1,N1,SEQ2,IDIM2,I2,N2,DIFFER,
+     +PAA)
+      CHARACTER SEQ1(IDIM1),SEQ2(IDIM2),PAA(5,5,5)
+      INTEGER DIFFER(IDIM1)
+C count number of expressed base changes
+      IDIM3=N1-I1+1
+      IDIM4=N2-I2+1
+C   GET MINIMUM LENGTH TO SCAN
+      MINL=MIN(IDIM3,IDIM4)
+      J1=I1 - 3
+      J2 = I2 - 3
+      DO 10 I=1,MINL-2,3
+        J1 = J1 + 3
+        J2 = J2 + 3
+        CALL SCFCD1(SEQ1(J1),SEQ2(J2),PAA,DIFFER(I))
+C        DIFFER(I) = DIFFER(I) + CFCOD1(SEQ1(J1),SEQ2(J2),PAA)
+10    CONTINUE
+      END
+      SUBROUTINE SCFCD1(COD1,COD2,PAA,DIFF)
+      CHARACTER COD1(3),COD2(3),COD(3),ACID,TRANF,PAA(5,5,5)
+      INTEGER DIFF(3)
+      EXTERNAL TRANF
+C
+C returns 1 for each base in a codon cod2 that changes the acid from that
+C encoded by cod1
+C
+      ACID = TRANF(COD1,PAA)
+      DO 10 I = 1,3
+       COD(I) = COD1(I)
+10    CONTINUE
+      DO 20 I = 1,3
+        COD(I) = COD2(I)
+        IF(TRANF(COD,PAA).NE.ACID)DIFF(I) = DIFF(I) + 1
+        COD(I) = COD1(I)
+20    CONTINUE
+      END
+      INTEGER FUNCTION CFCOD1(COD1,COD2,PAA)
+      CHARACTER COD1(3),COD2(3),COD(3),ACID,TRANF,PAA(5,5,5)
+      EXTERNAL TRANF
+C
+C returns 1 for each base in a codon cod2 that changes the acid from that
+C encoded by cod1
+C
+      CFCOD1 = 0
+      ACID = TRANF(COD1,PAA)
+      DO 10 I = 1,3
+       COD(I) = COD1(I)
+10    CONTINUE
+      DO 20 I = 1,3
+        COD(I) = COD2(I)
+        IF(TRANF(COD,PAA).NE.ACID)CFCOD1 = CFCOD1 + 1
+        COD(I) = COD1(I)
+20    CONTINUE
+      END
+      SUBROUTINE COCHN2(SEQ1,IDIM1,I1,N1,SEQ2,IDIM2,I2,N2,DIFFER,
+     +PAA)
+      CHARACTER SEQ1(IDIM1),SEQ2(IDIM2),PAA(5,5,5)
+      INTEGER DIFFER(IDIM1)
+C count number of silent base changes
+      IDIM3=N1-I1+1
+      IDIM4=N2-I2+1
+C   GET MINIMUM LENGTH TO SCAN
+      MINL=MIN(IDIM3,IDIM4)
+      J1=I1 - 3
+      J2 = I2 - 3
+      DO 10 I=1,MINL-2,3
+        J1 = J1 + 3
+        J2 = J2 + 3
+        CALL SCFCD2(SEQ1(J1),SEQ2(J2),PAA,DIFFER(I))
+C        DIFFER(I) = DIFFER(I) + CFCOD2(SEQ1(J1),SEQ2(J2),PAA)
+10    CONTINUE
+      END
+      SUBROUTINE SCFCD2(COD1,COD2,PAA,DIFF)
+      CHARACTER COD1(3),COD2(3),COD(3),ACID,TRANF,PAA(5,5,5)
+      INTEGER DIFF(3)
+      EXTERNAL TRANF
+C
+C compare each base, if different does this base alone change the acid
+C if not then add 1 to score
+      ACID = TRANF(COD1,PAA)
+      DO 10 I = 1,3
+       COD(I) = COD1(I)
+10    CONTINUE
+      DO 20 I = 1,3
+        IF(COD1(I).NE.COD2(I)) THEN
+          COD(I) = COD2(I)
+          IF(TRANF(COD,PAA).EQ.ACID)DIFF(I) = DIFF(I) + 1
+          COD(I) = COD1(I)
+        END IF
+20    CONTINUE
+      END
+      INTEGER FUNCTION CFCOD2(COD1,COD2,PAA)
+      CHARACTER COD1(3),COD2(3),COD(3),ACID,TRANF,PAA(5,5,5)
+      EXTERNAL TRANF
+C
+C compare each base, if different does this base alone change the acid
+C if not then add 1 to score
+      CFCOD2 = 0
+      ACID = TRANF(COD1,PAA)
+      DO 10 I = 1,3
+       COD(I) = COD1(I)
+10    CONTINUE
+      DO 20 I = 1,3
+        IF(COD1(I).NE.COD2(I)) THEN
+          COD(I) = COD2(I)
+          IF(TRANF(COD,PAA).EQ.ACID)CFCOD2 = CFCOD2 + 1
+          COD(I) = COD1(I)
+        END IF
+20    CONTINUE
+      END
+      INTEGER FUNCTION CFCOD3(COD1,COD2,PAA)
+      CHARACTER COD1(3),COD2(3),TRANF,PAA(5,5,5)
+      EXTERNAL TRANF
+C
+C compare each acid, count if different
+C
+      CFCOD3 = 0
+      IF(TRANF(COD1,PAA).NE.TRANF(COD2,PAA)) CFCOD3 = 1
+      END
+      REAL FUNCTION FINF(COMP)
+      INTEGER COMP(5)
+      F = 0.
+      S = 5.
+      DO 10 I=1,5
+        S = S + COMP(I)
+ 10     CONTINUE
+      DO 20 I=1,5
+        X = (1.0+REAL(COMP(I)))/S
+        F = F - X * LOG(X)
+ 20     CONTINUE
+      FINF = F
+      END
+      SUBROUTINE COCHN3(SEQ1,IDIM1,I1,N1,SEQ2,IDIM2,I2,N2,CHANGE,
+     +PAA)
+      CHARACTER SEQ1(IDIM1),SEQ2(IDIM2),PAA(5,5,5)
+      INTEGER CHANGE(5,5)
+C count number of expressed base changes
+      IDIM3=N1-I1+1
+      IDIM4=N2-I2+1
+C   GET MINIMUM LENGTH TO SCAN
+      MINL=MIN(IDIM3,IDIM4)
+      J1=I1 - 3
+      J2 = I2 - 3
+      DO 10 I=1,MINL-2,3
+        J1 = J1 + 3
+        J2 = J2 + 3
+        CALL SCFCD3(SEQ1(J1),SEQ2(J2),PAA,CHANGE)
+10    CONTINUE
+      END
+      SUBROUTINE SCFCD3(COD1,COD2,PAA,CHANGE)
+      CHARACTER COD1(3),COD2(3),COD(3),ACID,TRANF,PAA(5,5,5)
+      INTEGER CHANGE(5,5),CTONUM
+      EXTERNAL TRANF,CTONUM
+C
+C compare each base, if different does this base alone change the acid
+C if so then add 1 to score
+      ACID = TRANF(COD1,PAA)
+      DO 10 I = 1,3
+       COD(I) = COD1(I)
+10    CONTINUE
+      DO 20 I = 1,3
+        IF(COD1(I).NE.COD2(I)) THEN
+          COD(I) = COD2(I)
+          IF(TRANF(COD,PAA).NE.ACID) THEN
+            K1 = CTONUM(COD1(I))
+            K2 = CTONUM(COD2(I))
+            CHANGE(K1,K2) = CHANGE(K1,K2) + 1
+          END IF
+          COD(I) = COD1(I)
+        END IF
+20    CONTINUE
+      END
+      SUBROUTINE COCHN5(SEQ1,IDIM1,I1,N1,SEQ2,IDIM2,I2,N2,CHANGE,
+     +PAA)
+      CHARACTER SEQ1(IDIM1),SEQ2(IDIM2),PAA(5,5,5)
+      INTEGER CHANGE(5,5)
+C count number of expressed base changes
+      IDIM3=N1-I1+1
+      IDIM4=N2-I2+1
+C   GET MINIMUM LENGTH TO SCAN
+      MINL=MIN(IDIM3,IDIM4)
+      J1=I1 - 3
+      J2 = I2 - 3
+      DO 10 I=1,MINL-2,3
+        J1 = J1 + 3
+        J2 = J2 + 3
+        CALL SCFCD4(SEQ1(J1),SEQ2(J2),PAA,CHANGE)
+10    CONTINUE
+      END
+      SUBROUTINE SCFCD4(COD1,COD2,PAA,CHANGE)
+      CHARACTER COD1(3),COD2(3),TRANF,PAA(5,5,5)
+      INTEGER CHANGE(5,5),CTONUM
+      EXTERNAL TRANF,CTONUM
+C
+C if the acid is the same count the mutations
+C
+      IF (TRANF(COD1,PAA).EQ.TRANF(COD2,PAA)) THEN
+        DO 20 I = 1,3
+          K1 = CTONUM(COD1(I))
+          K2 = CTONUM(COD2(I))
+          CHANGE(K1,K2) = CHANGE(K1,K2) + 1
+20      CONTINUE
+      END IF
+      END
+      SUBROUTINE TRAN(SEQ1,IDIM1,I1,N1,SEQ2,IDIM2,I2,N2,
+     +KBIN,KBOUT,IDEV,LINLEN,PAA)
+      CHARACTER SEQ1(IDIM1),SEQ2(IDIM2),SYM1,SYM2,MATCH(120),TRANF
+      CHARACTER PAA(5,5,5)
+      INTEGER CTONUM
+      EXTERNAL CTONUM,TRANF
+      SYM2 = ':'
+      SYM1 = ' '
+      IF(0.EQ.1) THEN
+      WRITE(KBOUT,2000)
+2000  FORMAT(' ? IDENTITY SYMBOL=',$)
+      READ(KBIN,2001)SYM2
+2001  FORMAT(A1)
+      WRITE(KBOUT,2002)
+2002  FORMAT(' ? MISMATCH SYMBOL=',$)
+      READ(KBIN,2001)SYM1
+      END IF
+      J1=I1
+      J2=I1+LINLEN-1
+      IF(J2.GT.N1)J2=N1
+      K1=I2
+      K2=I2+LINLEN-1
+      IF(K2.GT.N2)K2=N2
+20    CONTINUE
+      WRITE(IDEV,1004)
+      WRITE(IDEV,1000)(TRANF(SEQ1(K),PAA),K=J1,J2-1,3)
+      WRITE(IDEV,1003)(SEQ1(K),K=J1,J2)
+      DO 30 JJ=1,LINLEN
+        MATCH(JJ)=SYM1
+30    CONTINUE
+      DO 40 JJ=1,MIN((J2-J1+1),(K2-K1+1),(N1-J1+1),(N2-K1+1))
+        KK=CTONUM(SEQ1(J1-1+JJ))
+        LL=CTONUM(SEQ2(K1-1+JJ))
+        IF(KK.EQ.LL)MATCH(JJ)=SYM2
+40    CONTINUE
+      WRITE(IDEV,1003)(MATCH(K),K=1,MIN((J2-J1+1),(K2-K1+1),
+     +(N1-J1+1),(N2-K1+1)))
+      WRITE(IDEV,1003)(SEQ2(K),K=K1,K2)
+      WRITE(IDEV,1000)(TRANF(SEQ2(K),PAA),K=K1,K2-1,3)
+C
+      J1=J2+1
+      J2=J2+LINLEN
+      IF(J1.GT.N1)RETURN
+      IF(J2.GT.N1)J2=N1
+      K1=K2+1
+      K2=K2+LINLEN
+      IF(K1.GT.N2)RETURN
+      IF(K2.GT.N2)K2=N2
+      GO TO 20
+1000  FORMAT(3X,40(2X,1A1))
+1001  FORMAT(4X,40(2X,1A1))
+1002  FORMAT(5X,40(2X,1A1))
+1003  FORMAT(4X,120A1)
+1004  FORMAT( )
+1005  FORMAT(4X,12I10)
+      END
+      SUBROUTINE INITMT(M,S,JOB)
+      INTEGER S(4096)
+      REAL M(16)
+      CALL FILLI(S,4096,0)
+C only initialise mutation rates if first pass
+      IF(JOB.EQ.0) CALL FILLR(M,16,0.25)
+      END
+      SUBROUTINE MAKED(M,D)
+      REAL M(4,4),D(17)
+      INTEGER T,C,A,G
+      SAVE T,C,A,G
+      DATA T,C,A,G/1,2,3,4/
+C
+C To use these values: 1. add m(x,y) to d where x,y is the selected change
+C                      2. correct each of the appropriate m's using the
+C                         d values and add m(x,y)/d to m(x,y)
+C
+      D(1) = M(T,C) + M(T,A) + M(T,G)
+      D(2) = M(T,A) + M(T,G)
+      D(3) = M(T,G)
+      D(4) = 0.
+      D(5) = M(C,T) + M(C,A) + M(C,G)
+      D(6) = M(C,A) + M(C,G)
+      D(7) = 0.
+      D(8) = M(A,T) + M(A,C) + M(A,G)
+      D(9) = M(A,T) + M(A,C)
+      D(10) = M(A,G)
+      D(11) = 0.
+      D(12) = M(G,T) + M(G,C) + M(G,A)
+      D(13) = M(G,T) + M(G,C)
+      D(14) = 0.
+      D(15) = M(C,T) + M(C,G)
+      D(16) = M(C,G)
+      D(17) = M(A,T) + M(A,G)
+C      DO 10 I=1,17
+C        WRITE(*,*)I,D(I)
+C 10     CONTINUE
+      END
+      SUBROUTINE UPDM(M,D,E,MC,B1,B2,IADD,ND)
+      REAL M(4,4),D(17),E(4,4)
+      INTEGER T,C,A,G,B1,B2,ND(17)
+      SAVE T,C,A,G
+      PARAMETER (DELTA = 1E-10)
+      DATA T,C,A,G/1,2,3,4/
+      IF (IADD.EQ.0) RETURN
+C      ND(MC) = ND(MC) +  IADD
+      ADD = IADD
+C      E(B1,B2) = E(B1,B2) + ADD
+C      IF(0.EQ.0) RETURN
+C
+C add the rate for the observed mutation to the denominator
+C
+      X = D(MC) + M(B1,B2) + DELTA
+C      WRITE(*,*)'B1,B2,MC,ADD,D,X',B1,B2,MC,ADD,D(MC),X
+      IF (MC.EQ.1) THEN
+C T>T
+        IF(0.EQ.0) RETURN
+C        WRITE(*,*)'D(1),M(B1,B2)',D(1),M(B1,B2)
+C
+C add in the observed mutation to the appropriate mutation rate
+C which is equivalent to adding (1 - the corrections)
+C
+        E(B1,B2) = E(B1,B2) + ADD*M(B1,B2)/X
+C
+C now add in the corrections for the barred bases
+C
+        E(B1,C) = E(B1,C) + ADD*M(B1,C)/X
+        E(B1,A) = E(B1,A) + ADD*M(B1,A)/X
+        E(B1,G) = E(B1,G) + ADD*M(B1,G)/X
+      ELSE IF (MC.EQ.2) THEN
+        E(B1,B2) = E(B1,B2) + ADD*M(B1,B2)/X
+        E(B1,A)  = E(B1,A) + ADD*M(B1,A)/X
+        E(B1,G)  = E(B1,G) + ADD*M(B1,G)/X
+      ELSE IF (MC.EQ.3) THEN
+C        WRITE(*,*)'D(3),M(B1,B2)',D(3),M(B1,B2)
+        E(B1,B2) = E(B1,B2) + ADD*M(B1,B2)/X
+        E(B1,G)  = E(B1,G) + ADD*M(B1,G)/X
+      ELSE IF (MC.EQ.4) THEN
+C T>TCAG
+C        WRITE(*,*)'D(),M(B1,B2)',D(4),M(B1,B2)
+        E(B1,B2) = E(B1,B2) + ADD*M(B1,B2)/X
+      ELSE IF (MC.EQ.5) THEN
+C C>C
+        IF(0.EQ.0) RETURN
+        E(B1,B2) = E(B1,B2) + ADD*M(B1,B2)/X
+        E(B1,T) = E(B1,T) + ADD*M(B1,T)/X
+        E(B1,A) = E(B1,A) + ADD*M(B1,A)/X
+        E(B1,G) = E(B1,G) + ADD*M(B1,G)/X
+      ELSE IF (MC.EQ.6) THEN
+C C>CT
+        E(B1,B2) = E(B1,B2) + ADD*M(B1,B2)/X
+        E(B1,A)  = E(B1,A) + ADD*M(B1,A)/X
+        E(B1,G)  = E(B1,G) + ADD*M(B1,G)/X
+      ELSE IF (MC.EQ.7) THEN
+C C>TCAG
+        E(B1,B2) = E(B1,B2) + ADD*M(B1,B2)/X
+      ELSE IF (MC.EQ.8) THEN
+C A>A
+        IF(0.EQ.0) RETURN
+C        WRITE(*,*)'D(8),M(B1,B2)',D(8),M(B1,B2)
+        E(B1,B2) = E(B1,B2) + ADD*M(B1,B2)/X
+        E(B1,T) = E(B1,T) + ADD*M(B1,T)/X
+        E(B1,C) = E(B1,C) + ADD*M(B1,C)/X
+        E(B1,G) = E(B1,G) + ADD*M(B1,G)/X
+      ELSE IF (MC.EQ.9) THEN
+C A>AG
+        E(B1,B2) = E(B1,B2) + ADD*M(B1,B2)/X
+        E(B1,T) = E(B1,T) + ADD*M(B1,T)/X
+        E(B1,C) = E(B1,C) + ADD*M(B1,C)/X
+      ELSE IF (MC.EQ.10) THEN
+C A>TCA
+        E(B1,B2) = E(B1,B2) + ADD*M(B1,B2)/X
+        E(B1,G) = E(B1,G) + ADD*M(B1,G)/X
+      ELSE IF (MC.EQ.11) THEN
+C A>TCAG
+        E(B1,B2) = E(B1,B2) + ADD*M(B1,B2)/X
+      ELSE IF (MC.EQ.12) THEN
+C G>G
+        IF(0.EQ.0) RETURN
+C        WRITE(*,*)'D(12),M(B1,B2)',D(12),M(B1,B2)
+        E(B1,B2) = E(B1,B2) + ADD*M(B1,B2)/X
+        E(B1,T) = E(B1,T) + ADD*M(B1,T)/X
+        E(B1,C) = E(B1,C) + ADD*M(B1,C)/X
+        E(B1,A) = E(B1,A) + ADD*M(B1,A)/X
+      ELSE IF (MC.EQ.13) THEN
+C G>AG
+        E(B1,B2) = E(B1,B2) + ADD*M(B1,B2)/X
+        E(B1,T) = E(B1,T) + ADD*M(B1,T)/X
+        E(B1,C) = E(B1,C) + ADD*M(B1,C)/X
+      ELSE IF (MC.EQ.14) THEN
+C G>TCAG
+        E(B1,B2) = E(B1,B2) + ADD*M(B1,B2)/X
+      ELSE IF (MC.EQ.15) THEN
+C C>CA
+        E(B1,B2) = E(B1,B2) + ADD*M(B1,B2)/X
+        E(B1,T) = E(B1,T) + ADD*M(B1,T)/X
+        E(B1,G) = E(B1,G) + ADD*M(B1,G)/X
+      ELSE IF (MC.EQ.16) THEN
+C C>TCA
+        E(B1,B2) = E(B1,B2) + ADD*M(B1,B2)/X
+        E(B1,G) = E(B1,G) + ADD*M(B1,G)/X
+      ELSE IF (MC.EQ.17) THEN
+C A>CA
+        E(B1,B2) = E(B1,B2) + ADD*M(B1,B2)/X
+        E(B1,T) = E(B1,T) + ADD*M(B1,T)/X
+        E(B1,G) = E(B1,G) + ADD*M(B1,G)/X
+      ELSE
+        WRITE(*,*)'SCREAM UPDM',MC
+      END IF
+      END
+      SUBROUTINE UPDE(M,E,MC,SUMS,PAA)
+      REAL M(4,4),D(17),E(4,4),T(4),PREV(4,4),DELTA
+      INTEGER SUMS(4,4,4,4,4,4),MC(4,4,4,3),CYCLE,ND(17)
+      CHARACTER PAA(5,5,5)
+      PARAMETER (SMALL = 1E-10)
+      SAVE DELTA
+      DATA DELTA/0.01/
+      DO 1 I=1,4
+        DO 1 J=1,4
+          PREV(I,J) = M(I,J)
+ 1        CONTINUE
+      DO 3 I=1,17
+        ND(I) = 0
+ 3      CONTINUE
+      IR = 0
+ 5    CONTINUE
+      IR = IR + 1
+      CALL MAKED(M,D)
+      DO 10 I=1,4
+        DO 10 J=1,4
+          E(I,J) = 0.
+ 10       CONTINUE
+      DO 20 I=1,4
+        DO 20 J=1,4
+          DO 20 K=1,4
+            DO 15 II=1,4
+              DO 15 JJ=1,4
+                DO 15 KK=1,4
+                  IF(PAA(K,J,I).EQ.PAA(KK,JJ,II)) THEN
+       IF((I.NE.II).OR.(J.NE.JJ).OR.(K.NE.KK)) THEN
+           CALL UPDM(M,D,E,MC(K,J,I,1),I,II,SUMS(I,J,K,II,JJ,KK),ND)
+           CALL UPDM(M,D,E,MC(K,J,I,2),J,JJ,SUMS(I,J,K,II,JJ,KK),ND)
+           CALL UPDM(M,D,E,MC(K,J,I,3),K,KK,SUMS(I,J,K,II,JJ,KK),ND)
+                  END IF
+                  END IF
+ 15               CONTINUE
+ 20               CONTINUE
+C       WRITE(*,*)'NEW E '
+C       DO 55 I=1,4
+C         WRITE(*,*)(E(I,J),J=1,4)
+C  55   CONTINUE
+      CALL FILLR(T,4,SMALL)
+      DO 30 I=1,4
+        DO 30 J=1,4
+          T(I) = T(I) + E(I,J)
+ 30       CONTINUE
+C      WRITE(*,*)'ROW TOTS',T
+      DO 40 I=1,4
+        DO 40 J=1,4
+          M(I,J) = E(I,J)/T(I)
+ 40       CONTINUE
+C      WRITE(*,*)' NEW M'
+C      DO 50 I=1,4
+C        WRITE(*,1000)(M(I,J),J=1,4)
+C        WRITE(*,1000)(PREV(I,J),J=1,4)
+C 50     CONTINUE
+C 1000   FORMAT(4F8.5)
+      CYCLE = 0
+      DO 60 I=1,4
+        DO 60 J=1,4
+          IF (ABS(M(I,J)-PREV(I,J)).GT.DELTA) CYCLE = 1
+C          PREV(I,J) = M(I,J)
+ 60       CONTINUE
+C      WRITE(*,*)IR
+      DO 70 I=1,4
+        DO 70 J=1,4
+          PREV(I,J) = M(I,J)
+ 70       CONTINUE
+      IF(CYCLE.EQ.1) GO TO 5
+      WRITE(*,*)'Number of iterations',IR
+C      WRITE(*,*)(K,ND(K),K=1,17)
+      END
+      SUBROUTINE UPDET(SUMS,PAA,MC)
+      INTEGER SUMS(4,4,4,4,4,4),MC(4,4,4,3)
+      CHARACTER PAA(5,5,5),BASES(4)
+      SAVE BASES
+      DATA BASES/'T','C','A','G'/
+      DO 20 I=1,4
+        DO 20 J=1,4
+          DO 20 K=1,4
+            DO 15 II=1,4
+              DO 15 JJ=1,4
+                DO 15 KK=1,4
+                  IF(PAA(K,J,I).EQ.PAA(KK,JJ,II)) THEN
+C                  IF(PAA(I,J,K).EQ.PAA(II,JJ,KK)) THEN
+C                    WRITE(*,*)I,J,K,' to',II,JJ,KK,SUMS(I,J,K,II,JJ,KK)
+             WRITE(*,*)BASES(I),BASES(J),BASES(K),
+     +BASES(II),BASES(JJ),BASES(KK),MC(K,J,I,1),MC(K,J,I,2),
+     +MC(K,J,I,3),SUMS(I,J,K,II,JJ,KK)
+                  END IF
+ 15               CONTINUE
+ 20               CONTINUE
+      END
+      SUBROUTINE COCHN4(SEQ1,IDIM1,I1,N1,SEQ2,IDIM2,I2,N2,CHANGE)
+      CHARACTER SEQ1(IDIM1),SEQ2(IDIM2)
+      INTEGER CHANGE(4,4,4,4,4,4),CTONUM,K1(3),K2(3)
+      EXTERNAL CTONUM
+      IDIM3=N1-I1+1
+      IDIM4=N2-I2+1
+C   GET MINIMUM LENGTH TO SCAN
+      MINL=MIN(IDIM3,IDIM4)
+      J1=I1 - 3
+      J2 = I2 - 3
+      DO 10 I=1,MINL-2,3
+        J1 = J1 + 3
+        J2 = J2 + 3
+        DO 5 JJ=1,3
+         KK = CTONUM(SEQ1(J1+JJ-1))
+         IF(KK.EQ.5) GO TO 10
+         K1(JJ) = KK
+         KK = CTONUM(SEQ2(J2+JJ-1))
+         IF(KK.EQ.5) GO TO 10
+         K2(JJ) = KK
+ 5       CONTINUE
+C         WRITE(*,*)I,K1,K2
+         CHANGE(K1(1),K1(2),K1(3),K2(1),K2(2),K2(3)) =
+     +   CHANGE(K1(1),K1(2),K1(3),K2(1),K2(2),K2(3)) + 1
+10    CONTINUE
+      END
+      SUBROUTINE EMT(MTT)
+      INTEGER MTT(64,3)
+      CHARACTER MTTC(64)*3
+      SAVE MTTC
+      DATA MTTC/
+     +'112','116','219','21D',
+     +'154','157','15B','15E',
+     +'182','186','199','19D',
+     +'1C2','1C6','1D8','1CC',
+     +'514','517','61B','61E',
+     +'554','557','55B','55E',
+     +'582','586','589','58D',
+     +'5C4','5C7','FCB','FCE',
+     +'813','81G','81A','81C',
+     +'854','857','85B','85E',
+     +'882','886','889','88D',
+     +'8C2','8C6','HC9','HCD',
+     +'C14','C17','C1B','C1E',
+     +'C54','C57','C5B','C5E',
+     +'C82','C86','C89','C8D',
+     +'CC4','CC7','CCB','CCE'/
+      CALL CTI(MTTC,MTT)
+C      CALL WRTCOI(SUM,6,PAA,MTTC)
+C      CALL EM(PAA,KBOUT)
+      END
+      SUBROUTINE CTI(MTTC,MTT)
+      CHARACTER MTTC(64)*3
+      INTEGER MTT(64,3)
+      CHARACTER C*17
+      DATA C/'123456789ABCDEFGH'/
+      DO 10 J=1,64
+        DO 8 M=1,3
+          DO 5 K=1,17
+            IF(MTTC(J)(M:M).EQ.C(K:K)) THEN
+              MTT(J,M) = K
+              GO TO 8
+            END IF
+ 5          CONTINUE
+ 8          CONTINUE
+ 10         CONTINUE
+      END
+      SUBROUTINE WRTCOI(SUM,IDEV,PAA,MTT)
+C   AUTHOR: RODGER STADEN
+      INTEGER SUM(4,4,4)
+      CHARACTER BASE(4),PAA(5,5,5),MTT(4,4,4)*3
+      SAVE BASE
+      DATA BASE/'T','C','A','G'/
+C
+      WRITE(IDEV,1001)
+1001  FORMAT(6X,'===========================================')
+      DO 10 I=1,4
+      DO 20 K=1,4
+      WRITE(IDEV,1000)(PAA(K,J,I),
+     +BASE(I),BASE(J),BASE(K),SUM(I,J,K),J=1,4)
+      WRITE(IDEV,1002)(MTT(K,J,I),J=1,4)
+ 1002 FORMAT(5X,4(1X,1X,A,5X))
+20    CONTINUE
+10    WRITE(IDEV,1001)
+1000  FORMAT(5X,4(1X,A1,1X,3A1,I5))
+      END

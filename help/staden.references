@@ -1,0 +1,81 @@
+
+  References with further information about the methods
+ 
+            Staden, R.  Nucl.  Acid Res.  8, 817-825 (1980)
+                 A computer program to search for tRNA genes. (NIP)
+            Staden, R.  Nucl.  Acid Res.  8, 3673-3694 (1980)
+                 A new computer method for the storage and  manipulation
+                 of DNA gel reading data.  (SAP).
+            Staden, R.  Nucl.  Acid Res.  10, 2951-2961 (1982)
+                 An  interactive  graphics  program  for  comparing  and
+                 aligning   nucleic   acid  and  amino  acid  sequences.
+                 (SIP).
+            Staden, R.  Nucl.  Acid Res.  10, 4731-4751 (1982)
+                 Automation of the computer handling of gel reading data
+                 produced by the shotgun method of DNA sequencing.(SAP)
+            Staden, R.  and  McLachlan,  A.,D.   Nucl.   Acid  Res.   10
+                 141-156 (1982)
+                 Codon preference and its  use  in  identifying  protein
+                 coding regions in long DNA sequences. (NIP)
+            Staden, R.  Nucl.  Acid Res.  12, 499-503 (1984)
+                 A computer program to enter DNA gel reading data into a
+                 computer.  (GIP)
+            Staden, R.  Nucl.  Acid Res.  12, 551-567 (1984)
+                 Measurements of the effects that coding for  a  protein
+                 has  on  on  a  DNA  sequence and their use for finding
+                 genes.  (NIP:  positional base preferences, uneven
+                 positional base frequencies)
+            Staden, R.  Nucl.  Acid Res.  12, 505-519 (1984)
+                 Computer methods to  locate  signals  in  nucleic  acid
+                 sequences.    NIP:   promoters,  ribosome  binding
+                 sites, intron/exon junctions.
+            McLachlan A D, Staden R and Boswell D R,  Nucl.   Acid  Res.
+                 12, 9567-9575 (1984)
+                 Measure of strength of codon preference. (NIP)
+            Staden R, Computer methods to locate genes  and  signals  in
+                 nucleic acid sequences, Genetic Engineering: Principles
+                 and Methods Vol. 7, Edited  by  J. K. Setlow   and   A.
+                 Hollaender, Plenum Publishing Corp.  1985. (NIP)
+            Staden R Nucl. Acid. Res. 14, 217-231 (1986)
+                 The current status and portability of our sequence
+                 handling software. Summary for May 1985.
+            Staden R "Computer Handling of DNA sequencing projects" in
+                 Nucleic acid and protein sequence analysis, A practical
+                 approach, 173-217. Edited by M.J.Bishop and C.J.Rawlings,
+                 IRL press (1987). (SAP)
+            Staden R, Methods to define and locate patterns of motifs in
+                  sequences. CABIOS 4 53-60 (1988). (NIP, PIP,
+                  NIPL, PIPL)
+            Staden R, Methods for calculating the probabilities of finding
+                  patterns in sequences. CABIOS 5 89-96 (1989). (NIP, PIP,
+                  NIPL, PIPL)
+            Staden R,  "Methods for discovering novel motifs in nucleic acid
+                   sequences". CABIOS 5, 293-298, (1989). (MEP)
+            Staden R, Methods to search for patterns in protein and nucleic
+                  acid sequences. In Doolittle, R,R (ed), Methods in
+                  Enzymology, 183, Academic Press, San Diego, CA, 193-211.
+                  (1990) (NIP, NIPL, PIP, PIPL)
+            Staden R, Finding protein coding regions in genomic sequences.
+                  In Doolittle, R,R (ed), Methods in Enzymology, 183, 
+                  Academic Press, San Diego, CA, 163-180. (1990) (NIP)
+            Gleeson T J and Staden R, An X windows and UNIX implementation
+                  of our sequence analysis package. CABIOS 7 398 (1991)
+	    Staden R, Screening protein and nucleic acid sequences against
+                  libraries of patterns. DNA Sequence, in press (NIP, PIP,
+                  SPLITP1, SPLITP2, SPLITP3, PROSITE)
+            Dear S and Staden R, A sequence assembly and editing program for
+                   efficient management of large projects. Nucleic Acids
+                   Research 19 3907-3911 (1991) (XDAP)
+	    Staden R and Dear S, Indexing the sequence libraries: Software
+		   providing a common indexing system for all the standard
+		   sequence libraries. DNA Sequence 3, 99-105 (1992).
+            Dear S and Staden R, A standard file format for data from DNA
+		   sequencing instruments. DNA Sequence 3, 107-110 (1992)
+	    Gleeson T and Hillier L, A trace display and editing program
+		   for data from fluorescence based sequencing machines.
+		   Nucleic Acids Research 19 6481-6483 (1991) (TED)
+	    Staden R, Staden package update. Genome News 13 12-13 (1993)
+
+ 
+
+

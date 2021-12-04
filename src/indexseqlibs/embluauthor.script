@@ -1,0 +1,47 @@
+#! /bin/csh -f
+#
+# script to make an author index for the embl newdata library
+#
+
+echo "emblauthor.script Version 1.0"
+
+set RM = "/bin/rm -f"
+set SORT = sort
+
+#
+# LIBFILE is the name youve given to the library file
+#
+set LIBFILE = emseq.all
+
+# get authors
+emblauthor $LIBFILE author.list
+if ( $status ) goto abort
+
+# sort on entry name
+${SORT} -u author.list >! author.sorted
+if ( $status ) goto abort
+${RM} author.list
+
+# include entry numbers in the file
+freetext2 author.sorted author.entry
+if ( $status ) goto abort
+${RM} author.sorted
+
+# sort on text
+${SORT} -b +2 author.entry >! author.sorted2
+if ( $status ) goto abort
+${RM} author.entry
+
+# create the index
+hitNtrg author.sorted2 author.trg author.hit 35
+if ( $status ) goto abort
+${RM} author.sorted2
+
+exit 0
+
+#
+# Abort
+#
+abort:
+echo "emblauthor.script: aborting due to serious error"
+exit 2

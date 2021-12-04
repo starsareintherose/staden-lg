@@ -1,0 +1,18 @@
+#
+# A database of Staden databases currently using squirrel:
+#
+# Format:
+#
+#    <clone> <directory> <project> <version> <database_type> <owner>
+#
+# Example:
+#
+# We are sequencing clone CLONE. We have created a bap database 
+# called T in the subdirectory TEST of user sd's home directory.
+# (Database files would be called ~sd/TEST/T.{SQ,AR,RL,TG,CC}0)
+# CLONE would be the name of the project in the edited version of
+# the script 'squirrel' that has been copied to ~sd/TEST/.
+#
+# CLONE TEST T 0 bap sd
+#
+TESTDB TESTDB TESTDB 0 bap sd

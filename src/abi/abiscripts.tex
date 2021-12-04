@@ -1,0 +1,221 @@
+\documentstyle[12pt]{article}
+
+\oddsidemargin  0.0truein
+\evensidemargin 0.0truein
+\textwidth      6.5truein
+\marginparwidth 0.0truein
+\marginparsep   0.0truein
+\marginparpush  0.0truein
+
+\topmargin      0.0truein
+\textheight     9.0truein
+\headheight     0.0truein
+\headsep        0.0truein
+
+\setlength{\parskip}{0.25\baselineskip}
+
+\title{Processing ABI data}
+
+\author{Richard from a draft by John}
+
+\begin{document}
+
+\maketitle
+
+Before you start you need a user name and password on the Sun, and two
+subdirectories in your Sun home directories.  One of these is called
+{\sf Mac-files-{\em \{your user name\}}}, and is visible from the Mac.
+This is where the raw results folder gets transferred to.  The other
+is a subdirectory for your project, in which you will keep all the
+data for one cosmid and run {\sf sap}.  This is called by the name of
+the cosmid (e.g. ZK637). I can help set these up.
+
+\section{At the Mac}
+
+Settings for ABI run: 14 hours, analyse all samples ({\em N.B. you
+will lose all data on the Sun for samples that were not analysed on
+the Mac}). Fill in sample names according to the following rules:
+
+\begin{verse}
+Each microtitre plate has a letter plus a two digit number.  This
+identifier is unique to you and to a library made from a particular
+cosmid. (Fill in the index sheet on the wall to avoid conflicts.)\\
+The 96 clones in the microtitre plate are numbered a1, a2 .. h12.\\
+The sequence sample name is formed by adding a full stop, a character
+and a number.  The characters in use at the present time are: s
+(single stranded), f (double stranded, forward) and r (double
+stranded, reverse).   The number indicates which read  this one is,
+in a series of primer walks. Thus the first, shotgun, read always ends
+in 1.\\
+e.g. a09c8.s1 is plate a09, row c, column 8, single strand, first
+(shotgun) read.\\
+If you extract a second sequence file from the same raw data file, you
+should add another letter to the name (e.g. a09c8.s1a).  Another
+reaction and raw data read would be called by a different number (e.g.
+109c8.s2).
+It's a matter of personal taste whether you use upper or lower case
+letters, but I strongly recommend lower case ones for ease of UNIX typing.\\
+NB  If you want to process the data on the Sun you must give the
+sample a name, even if is a test sample.  Also, any spaces in the name
+will be turned into underscores by {\sf abiprocess}.\\
+\end{verse}
+
+After the ABI has run and processed the samples, use TOPS to transfer
+the results folder to the Sun.  The results folder is called ``Results
+{\em folder\_date}'' , where the date is at the time of {\em
+termination}.
+\begin{verse}
+Select {\bf TOPS} from the pulldown desk accessory menu (apple icon in top left).\\
+Select {\bf cele} from the list of machines on the right side of the
+TOPS application.\\
+Click on {\bf open} in the central panel (or double click on {\bf cele} in previous step).\\
+Give your Sun user name and password.\\
+Click on {\bf Mac-files-{\em you}}.\\
+Select {\bf mount} from the central panel - this creates a published
+volume icon, looking a bit like a reading stand, in the place where the disk 
+icons go at the right hand edge of the screen.\\
+Drag the icon for your results folder over to the published volume icon.\\
+Wait while your files get copied.\\
+Close TOPS and trash the published volume icon.\\
+\end{verse}
+
+Leave the results folder on the Mac until the results have been
+backed up onto tape.
+
+\section{At the Sun}
+
+Log on to a Sun (any one).  Put a tape in the tape drive (currently next to
+cele at the far end of room 5036).  You have to back up your data
+before {\sf abiprocess} will transfer the sequences to your project.
+
+Type {\sf abiprocess {\em folder\_date}}, where {\em folder\_date} is
+the date as given for the ABI results folder (i.e. with underscores
+and American ordering).  You do not need to {\sf cd} anywhere before
+doing this.  It will then run {\sf ted} for each sample
+for which there was a {\sf .Seq} file, i.e. for each one that was
+analysed on the Mac by the ABI software.
+
+For each ted run (i.e. each sequence) do the following:
+\begin{verse}
+Move the outline of the ted window to a suitable place on the screen and
+click to start (all clicks are with the left mouse button).\\
+Set the cutoffs, and edit as required.  Don't waste a lot of time at
+this stage on editing.  Make the right cut between 400 and 500
+usually.  The additional data will be saved, and can be used later.\\
+If you want to use the sequence from this run, click on {\bf Output},
+then on {\bf OK} in the pop-up output window.\\
+Click on {\bf Quit}.
+\end{verse}
+
+The files you should end up with are: one file of file names {\sf {\em
+folder\_date}fn}; for each sample name in this file a sap input format
+sequence file {\em sample\_name} and a raw data file renamed to {\sf
+{\em sample\_name}RES}; and for each sample not in this list (i.e.
+those for which you didn't output a sequence in ted) a raw data file
+renamed to {\sf {\em sample\_name}FLD}.
+
+After processing all the samples {\sf abiprocess} requires you to back
+up the data on tape.  You must have a tape loaded in the drive, with
+the door switch pulled across to the right.  The tape must be
+writable, i.e. the little button at top left must be rotated so that
+the arrow points away from SAFE.  You will be asked how many data sets
+have already been stored on the tape.  It is possible to store many
+folders, but you have to keep track of them yourself. If you give too
+small a number you will lose data and mess things up.
+
+If you don't have a tape set up when you hit Return to start the
+backup, then {\sf abiprocess} will abort without giving you the chance
+to copy the data to your projet directory.  However you can come back
+at any time in the future and run {\sf abiprocess} again with the same
+date to do the transfer.  This will {\em not} require you to run all
+the {\sf ted}'s again.  
+
+Similarly, you can yourself abort from {\sf abiprocess} by putting the
+cursor is in the xterm window from which you first ran {\sf
+abiprocess} and typing CTRL/C (holding down the Control key while
+pressing the C key).  To be sure that you leave things in a sensible
+state, do this when inside ted, but before you output a sequence.
+Again, if you do this, you can restart at a later date by running {\sf
+abiprocess} again.  You will restart with the sample that you were
+editing when you aborted.
+
+After backing up the results directory on tape, {\sf abiprocess} asks
+whether you want to transfer the processed data to a project, and if
+so, prompts for a project directory name.  When you give this all the
+files are transferred to the project directory, and the results folder
+subdirectory of {\sf Mac-files-{\em you}} is destroyed.  
+
+\subsection{Restoring data to the Mac from your project directory}
+
+If you want to restore some data to the Mac (for example to plot a
+trace) then you can use {\sf abirestore}.  Run {\sf abirestore {\em
+project folder\_date}}.  This creates a subdirectory {\sf
+restored.{\em folder\_date}} of your {\sf Mac\_files} directory that
+you can see from TOPS on the Mac.  When you mount it all the ABI data
+files will be on top of one another in the folder window (due to the
+way I fiddled the Mac resources files -- they all get the same one!),
+so it looks like there is only one.  To see them all use the finder
+options to either clean up the window or view by name.
+
+This only restores the successful reads (the ones you output sequence
+from in ted).  
+
+\subsection{Restoring data from tape - and more about tape usage}
+
+I haven't written a script to do this yet.  The following should work
+(anything after a \# sign is a comment that you don't need to type).
+\begin{verse}
+\# load the tape\\
+rlogin cele \hspace{2cm}  \# if you are not already on cele\\
+cd ~/Mac-files-{\em \{your login name\}}\\
+unsetenv TAPE \hspace{2cm} \# this is a fix for something I don't understand\\
+mt fsf {\em nskip} \hspace{2cm} \# where {\em nskip} is the number of data sets to skip\\
+\hspace{3in} \# (i.e. 0 to retrieve the first folder)\\
+tar xvf /dev/rst0\\
+\# unload the tape
+\end{verse}
+
+You should in principle be able to get about 30 complete abi run
+folders on a tape, but there are several reasons not to go up that
+high.  The first is that it will take rather a long time to wind
+forward to the right place when writing (or reading) the later ones.
+The second is that you should be backing up your entire project from
+time to time.  This is done by saving everything in the project
+directory.  In this case we do not bother to try to store more than
+one archive set on a tape, and so don't need the ``mt fsf'' command
+(and associated ``unsetenv TAPE'').  So the following should work:
+\begin{verse}
+\# load tape and rlogin to cele if necessary
+cd ~\\
+tar cvf /dev/rst0 {\em project\_name}
+\end{verse}
+You can restore it if need be with:
+\begin{quote}
+tar xvf /dev/rst0
+\end{quote}
+or just get a listing of what it contains with
+\begin{quote}
+tar tvf /dev/rst0
+\end{quote}
+
+Once you have backed up the project, that tape will contain all the
+raw data files as well as the assembly data, so you can erase the tape
+you were using to store the original folders.  You do this with the
+command
+\begin{quote}
+mt erase
+\end{quote}
+
+\subsection{For those you want to know a bit more}
+
+{\sf abiprocess} and {\sf abirestore} are both shell scripts,
+containing a mixture of UNIX commands and control statements.  They
+can be found in {\sf /usr/local/bin} along with most other public
+local programs, such as {\sf ted}.  If you want to see what they do
+you can look at them with {\sf cat} or {\sf more} or your favourite
+editor, or print them out with {\sf lpr}.  In fact {\sf abiprocess}
+runs a remote shell script on cele to do the tape backup and transfer
+to project.  This is called {\sf abibackup} and is also found in {\sf
+/usr/local/bin}.
+\end{document}
+

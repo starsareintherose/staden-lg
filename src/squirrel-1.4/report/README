@@ -1,0 +1,25 @@
+				SQUIZZ
+		     A Squirrel Reporting Program
+
+			      Simon Dear
+			      7 May 1993
+
+
+
+0. Introduction
+
+Squizz analyses squirrel reports and produces a breakdown summary
+detailing how many readings were assembled and failed, and for what
+reasons. The average reading length of processed data is also
+calculated.
+
+
+1. Usage
+
+Run squizz in your project directory. Just type:
+
+	$SQUIRREL/report/squizz
+
+The breakdown summary will be produces quite quickly. The report on
+average reading lengths will take a little longer.
+

@@ -1,0 +1,5116 @@
+.NPA
+.SP 1
+.left margin1
+@-1. TX  0 @General
+.sp
+@-2. T   0 @Screen control
+.sp
+@-2. X   0 @Screen
+.sp
+@-3. T   0 @Statistical analysis of content
+.sp
+@-3. X   0 @Statistics
+.sp
+@-4. T   0 @Structures and repeats
+.sp
+@-4. X   0 @Structures
+.sp
+@-5. TX  0 @Translation and codons
+.sp
+@-6. TX  0 @Gene search by content
+.sp
+@-7. TX  0 @General signals
+.sp
+@-8. TX  0 @Specific signals
+.sp
+@0.  TX  -1 @NIP
+.PARA
+.para
+This is a program  for analysing individual nucleotide sequences. It can 
+read sequences stored in many of the most commonly used formats, and 
+performs all of the usual simple analyses. However the main purpose of 
+the program is to provide  methods for finding  the function of each 
+section of a sequence. In general no single method can  give an 
+unequivecal interpretation of a sequence so we need to use many 
+techniques together and to combine  their results. For this reason the 
+program  present many of its  results graphically. 
+.para
+General information is contained in the user interface. Online 
+documentation for any function follows a consistent pattern: summary, 
+list of inputs, list of outputs, details, example.
+.LEFT MARGIN1
+@1. TX 0 @ Help
+.LEFT MARGIN2
+.para
+This option gives online help. The user should select option numbers and
+the current documentation will be given. Note that option 0 gives an
+introduction to the program, and that ? will get help from anywhere in 
+the 
+program.
+The following functions are included:
+.left margin1
+@2. TX 0 @ Quit
+.left margin2
+.para
+This function stops the program.
+.left margin1
+@3. TX 1 @ Read a new sequence
+.LEFT MARGIN2
+.para
+This option allows users to read in new sequences, browse through annotations,
+ or search sequence 
+libraries for keywords. Sequences can be read from "personal" 
+sequence files or from sequence libraries. These are referred to as the 
+sequence "source". Personal files can be stored in several formats:
+Staden, PIR, EMBL, GENBANK and GCG.
+At LMB we use "Staden" format for sequencing and all 
+the 
+libraries are stored in their original formats. Note, however, that libraries
+such as EMBL or GenBank that are divided into several files (eg GenBank has
+13 separate files) are indexed as a whole. This means that users do not need
+to know which file contains an entry, only which library.
+When the user selects to read in a sequence the program first asks for the 
+sequence "source". 
+.para
+If the user selects "personal" the program will ask for 
+the format (Staden, PIR, EMBL, GENBANK or GCG), and then for the name of 
+the file. For PIR format the user will also be required to know the entry 
+name of the sequence as the file can contain several. For the other formats
+only a single entry is expected. The file will be read, its length and
+composition will be displayed and the option left.
+.para
+If the user selects "library" as the sequence source the program will display a
+list of available libraries. The programs are capable of handling all current
+libraries but which ones are available will vary from site to site. At LMB we
+have several libraries and also weekly updates of data gathered between releases.
+The program will ask users to select a library and then give a list of options:
+.lit
+
+ X  1 Get a sequence
+    2 Get annotations
+    3 Get entrynames from accession numbers
+    4 Search titles for keywords
+    5 Search text index for keywords
+
+.end lit
+If get a sequence or get annotations is selected users will be asked to 
+type the entry name. The option will be left when a sequence is selected or 
+! is typed. The composition and length will be displayed.
+.para
+The text index contains all words from feature tables, reference titles,
+definition lines, keywords lists and comments, so the text index search
+is most useful. It is also the fastest. Up to 5 words can be searched for
+at once. The words should be typed separated by spaces, for example
+.lit
+ ? Keywords=P53 mouse murine tumo
+
+.end lit
+will search for all entries that contain words starting with p53, mouse,
+murine and tumo. Only the unique entries that contain ALL words will be 
+listed. Before listing the matching entries
+the program will show the number of 'hits' for each word and ring the bell.
+Escape is possible at this point, or after each screenfull of entries.
+In addition to the entry names the text search displays the primary accession 
+number, the sequence length and up to 80 characters of description.
+(The search of 'titles' is now redundant because the full text index
+contains all the title words and the search is much faster. It will probably
+be removed from the program.)
+All searches are independent of case. Where
+possible the program will offer default entry names.
+.para
+Typical dialogue follows.
+.lit
+Select sequence source
+X  1 Personal file
+   2 Sequence library
+? Selection  (1-2) (1) =
+Select sequence file format
+X  1 Staden
+   2 EMBL
+   3 GenBank
+   4 PIR
+   5 GCG
+? Selection  (1-5) (1) =
+? Sequence file name=M13MP7.SEQ
+ Contig title removed
+Sequence length=  7238
+ Sequence composition
+          T          C          A          G          -
+      2405.      1539.      1765.      1527.         2.
+        33.2%      21.3%      24.4%      21.1%       0.0%
+  .
+  .
+  .
+
+
+ Select sequence source
+ X  1 Personal file
+    2 Sequence library
+ ? Selection  (1-2) (1) =2
+ Select a library
+ X  1 EMBL 29 nucleotide library Dec 91
+    2 SWISSPROT 20 protein library Nov 91
+    3 PIR 31 protein library Dec 91
+    4 NRL3D 58 From Brookhaven protein library Dec 91
+    5 GenBank
+ ? Selection  (1-5) (1) =
+Library is in EMBL format with indexes
+ Select a task
+ X  1 Get a sequence
+    2 Get annotations
+    3 Get entry names from accession numbers
+    4 Search titles for keywords
+    5 Search text index for keywords
+ ? Selection  (1-5) (1) =5
+ Search for keywords
+ ? Keywords=P53 mouse
+P53 hits  68
+MOUSE hits  8180
+
+ MMANT01    X00875         536 Murine gene fragment for cellular tumour antigen
+ MMANT02    X00876          83 Murine gene fragment for cellular tumour antigen
+ MMANT03    X00877          21 Murine gene fragment for cellular tumour antigen
+ MMANT04    X00878         261 Murine gene fragment for cellular tumour antigen
+ MMANT05    X00879         184 Murine gene fragment for cellular tumour antigen
+ MMANT06    X00880         113 Murine gene fragment for cellular tumour antigen
+ MMANT07    X00881         110 Murine gene fragment for cellular tumour antigen
+ MMANT08    X00882         137 Murine gene fragment for cellular tumour antigen
+ MMANT09    X00883          74 Murine gene fragment for cellular tumour antigen
+ MMANT10    X00884         107 Murine gene for cellular tumour antigen p53 (exon
+ MMANT11    X00885         562 Murine p53 gene 3' region with exon 11
+ MMANTP53   M26862         536 Mouse tumor antigen p53 gene, 5' end.
+ MMLYN      M64608        2044 Mouse lyn protein mRNA, complete cds.
+ MMP53      X00741        1377 Mouse mRNA for transformation associated protein
+ MMP53A     M13872        1285 Mouse p53 mRNA, complete cds, clone pcD53.
+ MMP53B     M13873        1241 Mouse p53 mRNA, complete cds, clone p53-m11.
+ MMP53C     M13874        1322 Mouse p53 mRNA, complete cds, clone p53-m8.
+ MMP53G1    X01235         554 Mouse genomic DNA for 5' region of cellular tumou
+ MMP53IN4   X60470         729 M.musculus p53 gene for p53 protein, intron 4
+ MMP53P     X01236        2132 Mouse pseudogene for cellular tumour antigen p53
+ MMP53R     X01237        1773 Mouse mRNA for cellular tumour antigen p53
+ MMRSB2P5   M64597         196 Mouse B2 repeat in the 3' flank of protein 53 (p5
+      22 different entries found
+
+ Select a task
+ X  1 Get a sequence
+    2 Get annotations
+    3 Get entry names from accession numbers
+    4 Search titles for keywords
+    5 Search text index for keywords
+ ? Selection  (1-5) (1) =4
+ Search for keywords
+ ? Keywords=alpha
+ Searching for alpha
+ AAGHA          623 a.anguilla mrna for glycoprotein hormone alpha subunit precu
+ AAMALI        3338 a.aegypti mali gene encoding alpha 1-4 glucosidase, complete
+ AAMALIA       1659 a.aegypti maltase-like i (mali) gene encoding alpha-1,4-gluc
+ AAMALIB       1832 a.aegypti maltase-like i (mali) mrna encoding alpha-1,4-gluc
+ ACA13GT        371 alouatta caraya alpha-1,3gt gene, 3' flank.
+ ADHBADA1       102 duck alpha-d-globin gene, exon 1.
+ ADHBADA2      1145 duck alpha-a-globin gene and 5' flank
+ ADHBADWP       513 duck (white pekin) alpha ii (minor) globin mrna, complete co
+ AEACOXABC     5279 a.eutrophus protein x (acox), acetoin:dcpip oxidoreductase-a
+ AGA13GT        371 ateles geoffroyi alpha-1,3gt gene, 3' flank.
+ AGAAAGFP       282 c.tetragonoloba alpha-amylase/alpha-galactosidase fusion pro
+ AGAABL         138 b.subtilis alpha-amylase signal peptide gene e.coli beta-lac
+ AGAFAMYA        57 synthetic b.stearothermophilus alpha amylase/s.cerevisiae ma
+ AGAFAMYB        57 synthetic b.stearothermophilus alpha amylase/s.cerevisiae ma
+ AGAFAMYC        57 synthetic b.stearothermophilus alpha amylase/s.cerevisiae ma
+ AGAFCOXA        98 synthetic alpha-factor/cox iv fusion gene signal peptide.
+ AGAGABA       7876 synthetic gossypium hirsutum (cotton) alpha globulin a and b
+ AGAMYLS        120 synthetic alpha-amylase gene, 5' end.
+ AGANPS          95 synthetic gene (jcnf-1) encoding alpha-factor pro-region/han
+!
+ Select a task
+ X  1 Get a sequence
+    2 Get annotations
+    3 Get entry names from accession numbers
+    4 Search titles for keywords
+    5 Search text index for keywords
+ ? Selection  (1-5) (1) =3
+ ? Accession number=v00636
+Entry name LAMBDA
+ Select a task
+ X  1 Get a sequence
+    2 Get annotations
+    3 Get entry names from accession numbers
+    4 Search titles for keywords
+    5 Search text index for keywords
+ ? Selection  (1-5) (1) =2
+ Default Entry name=LAMBDA
+ ? Entry name=
+ID   LAMBDA     standard; DNA; PHG; 48502 BP.
+XX
+AC   V00636; J02459; M17233; X00906;
+XX
+DT   03-JUL-1991 (Rel. 28, Last updated, Version 3)
+DT   09-JUN-1982 (Rel. 1, Created)
+XX
+DE   Genome of the bacteriophage lambda (Styloviridae).
+XX
+KW   circular; coat protein; DNA binding protein; genome;
+KW   origin of replication.
+XX
+OS   Bacteriophage lambda
+OC   Viridae; ds-DNA nonenveloped viruses; Siphoviridae.
+XX
+RN   [1]
+RP   1-48502
+RA   Sanger F., Coulson A.R., Hong G.F., Hill D.F., Petersen G.B.;
+RT   "Nucleotide sequence of bacteriophage lambda DNA";
+RL   J. Mol. Biol. 162:729-773(1982).
+XX
+!
+ Select a task
+ X  1 Get a sequence
+    2 Get annotations
+    3 Get entry names from accession numbers
+    4 Search titles for keywords
+    5 Search text index for keywords
+ ? Selection  (1-5) (1) =
+ Default Entry name=LAMBDA
+ ? Entry name=
+DE   Genome of the bacteriophage lambda (Styloviridae).
+ Sequence length  48502
+ Sequence composition
+           T          C          A          G          -
+      11988.     11360.     12336.     12818.         0.
+         24.7%      23.4%      25.4%      26.4%       0.0%
+
+.end lit
+.left margin1
+@4. TX 1 @ Define active region
+.LEFT MARGIN2
+.para
+For its analytic functions 
+the program always works on a region of the sequence called the "active 
+region". This function allows the start and end points of the active region 
+to be reset. 
+.para
+Define  the required start and end points.
+.para
+When a new sequence is read into the program the active region is 
+automatically set to start at the beginning of the sequence and extend  to 
+the 
+maximum the program can 
+handle. On most machines this will be to the end of the sequence. The 
+positions are shown on the screen.
+ Note that for 
+convenience, in the 
+listing and translation functions, the user is given access to regions 
+outside the active region.
+.left margin1
+@5. TX 1 @ List a sequence
+.LEFT MARGIN2
+.para
+The sequence can be listed single or double stranded with line lengths 
+from 
+10 to 120 in multiples of 10.
+.para
+Define the region to list, the line length required and choose between a 
+single or double stranded display.
+The output looks like:
+.lit
+
+  GTTAATGTAG CTTAATAACA AAGCAAAGCA CTGAAAATGC TTAGATGGAT
+  CAATTACATC GAATTATTGT TTCGTTTCGT GACTTTTACG AATCTACCTA
+          10         20         30         40         50
+ 
+  AATTGTATCC CATAAACACA AAGGTTTGGT CCTGGCCTTA TAATTAATTA
+  TTAACATAGG GTATTTGTGT TTCCAAACCA GGACCGGAAT ATTAATTAAT
+          60         70         80         90        100
+ 
+  GAGGTAAAAT TACACATGCA AACCTCCATA GACCGGTGTA AAATCCCTTA
+  CTCCATTTTA ATGTGTACGT TTGGAGGTAT CTGGCCACAT TTTAGGGAAT
+         110        120        130        140        150
+ 
+  AACATTTACT TAAAATTTAA GGAGAGGGTA TCAAGCACAT TAAAATAGCT
+  TTGTAAATGA ATTTTAAATT CCTCTCCCAT AGTTCGTGTA ATTTTATCGA
+         160        170        180        190        200
+ 
+.end lit
+.left margin1
+@6. TX 1 @ List a text file.
+.LEFT MARGIN2
+.para
+Allows the user to have a text file displayed on the screen. It will appear 
+one page at a time.
+.para
+Supply the name of the file to be displayed.
+.left margin1
+@7. TX 1 @ Direct output to disk
+.LEFT MARGIN2
+.para
+Used to direct output that would normally appear on the screen to a file. 
+.para
+Select redirection of either text or graphics, and 
+supply the name of the file that the output should be written to.
+.para
+ The results from the next options selected will not appear on the screen 
+but will be written to the file. When option 7 is selected again
+the file will be 
+closed and output will again appear on the screen.
+.left margin1
+@8. TX 1 @ Write active region to disk
+.LEFT MARGIN2
+.para
+Used to write the current active section of sequence to a disk file in 
+"Staden format".
+.para
+Supply a file name and an optional title.
+.para
+The program has the capability of reading sequences stored in several 
+formats and so, in conjunction with this option, can be used to reformat 
+them. 
+.left margin1
+@9. TX 1 @ Edit the sequence
+.LEFT MARGIN2
+.para
+Used to edit sequences or any other files by giving access to the 
+computers system editor. For editing sequences the input file should  
+have already been created using one of the listing functions such as "list 
+sequence", "list translation" or "list restriction sites above the 
+sequence".
+.para
+Supply the name of the file to edit. Wait while the system editor is made 
+ready (can take awhile on a vax). Use the editor. Exit from the editor. If a 
+sequence has been edited, and you want to process it, affirm that the 
+sequence should be "made active". The edited sequence will replace the 
+original sequence. 
+.para
+This editing method is designed to give users access to an editor with 
+which they are familiar - i.e. the one on their machine, and yet to allow 
+them to edit a sequence which contains all the landmarks they need in 
+order to know where they are. Users can create files containing simple 
+listings (single stranded) with numbering, using "list the sequence", and 
+then edit them with their system editor, using the numbering to know 
+where they are within the sequence. When the edits are complete they 
+exit from the editor and the program "analyses" the edited file to extract 
+only the sequence characters. Similarly a file containing a three phase 
+tranlslation can be edited, or a file containing a sequence plus its three 
+phase translation, plus its restriction sites marked above the sequence. 
+In order to be able to "analyse" such complicated listings and correctly 
+extract the sequence the following simple rule is used: all lines in the 
+file that contain a character that is not A,C,T,G or U are deleted. It is 
+obviously important to be aware of this rule and its implications.
+.left margin1
+@10. TX 2 @ Clear graphics
+.LEFT MARGIN1
+.para
+ Clears graphics from the screen.
+.left margin1
+@11. TX 2 @ Clear text
+.LEFT MARGIN1
+.para
+ Clears  text from the screen.
+.left margin1
+@12. TX 2 @ Draw a ruler
+.LEFT MARGIN2
+.para
+This option
+allows the user to draw a ruler or scale along the x axis of the screen to 
+help identify the coordinates of points of interest. The user can define 
+the position of the first base to be marked (for example if the active 
+region is 1501 to 8000, the user might wish to mark every 1000th base 
+starting at either 1501 or 2000 - it depends if the user wishes to treat 
+the active region as an independent unit with its own numbering starting 
+at 
+its left edge, or as part of the whole sequence). The user can also define 
+the separation of the ticks on the scale and their height. If required the 
+labelling routine can be used to add numbers to the ticks.
+.left margin1
+@13. TX 2 @ Use crosshair
+.LEFT MARGIN2
+.para
+This function puts
+a steerable cross on the screen that can be used to find the 
+coordinates of points in the sequence. The user can move the cross 
+around using the directional keys; when he hits the space bar the 
+program will print out the coordinates of the cross in sequence units and 
+the option will be exited.
+.PARA
+If instead, 
+you hit a , the position will be displayed but the cross will remain on 
+the screen.
+.PARA
+If a letter s is hit the program will display the sequence around the 
+crosshair 
+position, and leave the cross on the screen.
+.left margin1
+@14. TX 2 @ Reposition plots
+.LEFT MARGIN2
+.para
+The positions of each of the plots is defined relative to a users drawing 
+board which has size 1-10,000 in x and 1-10,000 in y.
+Plots for
+each option are drawn in a window defined by x0,y0 and xlength,ylength. 
+Where x0,y0 is the position of the bottom left hand corner of the window,
+  and xlength is the width of the window and ylength the 
+height of the window.
+.lit
+   --------------------------------------------------------- 10,000
+   1                                                       1
+   1       --------------------------------------   ^      1
+   1       1                                    1   1      1
+   1       1                                    1   1      1
+   1       1                                    1 ylength  1
+   1       1                                    1   1      1
+   1       1                                    1   1      1
+   1       --------------------------------------   v      1
+   1  x0,y0^                                               1
+   1       <---------------xlength-------------->          1
+   ---------------------------------------------------------      1
+   1                                                   10,000
+
+.end lit
+All values are in drawing board units (i.e. 1-10,000, 1-10,000).
+The default window positions are read from a file "NIPMARG" when the 
+program is started. Users can have their own file if required.
+As all the plots start 
+at the same position in x and have the same width, x0 and xlength are the 
+same for all options. Generally users will only want to change the start 
+level of the window y0 and its height ylength. 
+ This option 
+allows users to change window positions whilst running the program.
+The routine prompts first for the number of the option that the users 
+wishes 
+to reposition; then for the y start and height; then for the x start and 
+length. Note that changes to the x values affect all options. If the user 
+types only carriage return for any value it will remain unchanged. 
+The cross-hair can be used to choose suitable heights.
+.LEFT MARGIN1
+@15. TX 2 @ Label a diagram
+.LEFT MARGIN2
+.para
+This routine allows users to label any diagrams they have produced. They 
+are asked to type in a label. When the user types carriage return to finish 
+typing the label the cross-hair appears on the screen. The user can 
+position it anywhere on the screen. If the user types R (for right justify)
+the label will be 
+written on the diagram with its right end at the cross-hair position. 
+If the user types L (for left justify) the label will be written on the 
+diagram with its left end at the cross hair position.
+The 
+cross-hair will then immediately reappear. The user may put the same 
+label 
+on another part of the diagram as before or if he hits the space bar he 
+will be asked if he wishes to type in another label.
+.para
+Typical dialogue follows.
+.lit
+? Menu or option number=15
+Type label then drive cross hair to left or right end
+of label position then hit  "L"  to  write label left
+justified or  "R"  to  write label right justified or
+the space bar to quit
+ 
+ 
+? Label=delta gene
+
+ missing graphics 
+
+? Label=
+ 
+.end lit
+.left margin1
+@16. TX 2 @Display a map
+.LEFT MARGIN2
+.para
+This draws a map 
+of any sequence features selected by the user.
+These features may be protein coding regions (CDS), tRNA genes (TRNA), 
+promoter positions (PRM), etc. Users may define their own feature table 
+key 
+names. For example I find it convenient to split CDS lines into CDS1, 
+CDS2 
+and CDS3 each of which contains only those sequences that code in the 
+reading frames 1, 2 or 3. Then I can plot them at different heights on 
+the screen ( suitable heights can be determined by using the cross-hair).
+.para
+The coordinates must be stored in a file in the format of an EMBL or GenBank
+feature table. Note that this means that the file must include either EMBL
+or GenBank headers, and a suitable "tail". The simplest header is the word
+FEATURES starting in column 1 of the first line of the file. The simplest
+tail is 2 empty lines at the end of the file. These lines are not included
+when nip writes out results in feature table format.
+.para
+Typical dialogue follows.
+.lit
+? Menu or option number=16
+ Display a map using an EMBL feature table file
+? map file name=hsegl1.ft
+? feature code(e.g. CDS) =CDS
+X 1 + strand
+  2 - strand
+  3 both strands
+? 0,1,2,3 =
+? level (0-9480) (256) =4000
+
+ missing graphics 
+ 
+? feature code(e.g. CDS) =
+
+.end lit
+.left margin1
+@17. TX 1 @ Search for restriction enzymes
+.LEFT MARGIN2
+.para
+This routine is used to search for short sequences, like restriction 
+enzyme 
+recognition sequences, 
+and can either list  the results or present them graphically. Listings can 
+take several forms and can include the sequence and its translation. 
+Examples are given below. The program will also display the names of 
+enzymes that cut the sequence infrequently. Users can select from sets 
+of enzymes stored in files or can enter them from the keyboard. 
+.para
+The short 
+sequences (strings) and their names need to be arranged in a particular 
+way. See below. Select to search, list an enzyme file or clear the screen. 
+Choose either a file of enzymes or to enter their recognition sequences at the 
+keyboard. Choose to search for all the enzymes in the list or to select 
+from the list. Select a mode of output. Define the sequence as circular or 
+linear. Select to search for "definite" or "possible" matches. The search 
+starts, and after the results have been displayed, further searches can be 
+performed.
+.para
+When the enzymes and their recognition sequences are stored in a file 
+they must be defined in the following way. We 
+call the recognition sequences "strings".
+The format is as follows: each string or set of strings must be 
+preceded by a name, each string must be preceded and 
+terminated with a slash (/), and 
+each set of strings by 2 slashes. 
+For example 
+AATII/GACGT'C// defines the name AATII, its recognition sequence 
+GACGTC 
+and its cut site with the ' symbol; ACCI/GT'MKAC// defines the name 
+ACCI 
+and its recognition sequence includes IUB symbols for incompletely 
+defined 
+symbols in nucleic acid sequences; 
+BBVI/GCAGCNNNNNNNN'/'NNNNNNNNNNNNGCTGC// 
+defines the name BBVI and this time two recognition sequences and cut 
+sites 
+are specified in order to correctly show the cutting position relative to 
+the recognition sequence. If no cut site is included the first base of the 
+recognition sequence is displayed as being on the 3' side of the 
+recognition sequence. 
+.para
+These collections of strings and their 
+names can be read from disk or entered from the keyboard.
+When names and strings are entered from the keyboard the program will ask 
+for the name and then the string(s). If more than one string is typed per 
+name they must be separated by slash (/) characters. See the "Typical 
+dialogue" below.
+ Three files 
+containing restriction enzyme recognition sequences are currently 
+available. The "all enzymes" file contains the Rich Roberts REBASE 
+restriction enzyme database, which is updated monthly.
+.para
+The user can select strings 
+by name from these collections. If so the program will prompt for the 
+names, one at a time. The user can continue to select names until a blank 
+name is entered (by the user typing only return).
+.para
+ Listed output can be displayed in several ways: it 
+can be ordered enzyme by enzyme, or on cut positions, or with enzyme 
+names 
+written above a listing of the sequence. This last listing can also include 
+a three phase translation of the sequence. In addition the program will 
+display only infrequent cutters (the user defines the minimum number of 
+cuts), or can plot the positions of matches.
+.para
+Listings sorted "enzyme by enzyme" have the following form:
+.lit
+
+ Matches found=     1
+     Name                  Sequence            Position  Fragment lengths
+   1 AATII                 GACGT'C                  112     111     111
+                                                            912     912
+ Matches found=     2
+     Name                  Sequence            Position  Fragment lengths
+   1 ACCI                  GT'CGAC                  112     111     111
+   2 ACCI                  GT'AGAC                  420     308     308
+                                                            604     604
+ Matches found=     2
+     Name                  Sequence            Position  Fragment lengths
+   1 AHAII                 GA'CGTC                  109     108      90
+   2 AHAII                 GG'CGTC                  199      90     108
+                                                            825     825
+ Matches found=     2
+     Name                  Sequence            Position  Fragment lengths
+   1 AVAII                 G'GACC                    84      83      51
+   2 AVAII                 G'GTCC                   973     889      83
+                                                             51     889
+ Matches found=     1
+     Name                  Sequence            Position  Fragment lengths
+   1 BALI                  TGG'CCA                  258     257     257
+                                                            766     766
+ Matches found=     1
+     Name                  Sequence            Position  Fragment lengths
+   1 BAMHI                 G'GATCC                   92      91      91
+
+   ......   etc
+ 
+Listings sorted on cut position have the following form:
+
+ Searching
+     Name                  Sequence            Position  Fragment lengths
+   1 ECORI                 G'AATTC                    2       1
+   2 BANI                  G'GTGCC                   26      24
+   3 BSP1286               GTGCC'C                   31       5
+   4 BBVI                  'TACTGCGCCGCAGCTGC        38       7
+   5 NSPBII                CAG'CTG                   51      13
+   6 PVUII                 CAG'CTG                   51       0
+   7 BBVI                  GCAGCTGCTGGTG'            60       9
+   8 HINCII                GTC'AAC                   80      20
+   9 AVAII                 G'GACC                    84       4
+  10 BINI                  'CCAGGGATCC               87       3
+  11 BSTNI                 CC'AGG                    89       2
+  12 BAMHI                 G'GATCC                   92       3
+  13 XHOII                 G'GATCC                   92       0
+  14 NSPBII                CCG'CTG                   98       6
+  15 BINI                  GGATCCGCT'               100       2
+  16 AHAII                 GA'CGTC                  109       9
+  17 SALI                  G'TCGAC                  111       2
+  18 AATII                 GACGT'C                  112       1
+  19 ACCI                  GT'CGAC                  112       0
+  20 HINCII                GTC'GAC                  113       1
+  21 BBVI                  GCAGCGACTGATT'           166      53
+  22 BINI                  'ACTCAGATCC              178      12
+  23 XHOII                 A'GATCC                  183       5
+  24 HGAI                  'GGCGGCGGAGGCGTC         188       5
+
+  .....etc
+
+Lists of infrequent cutters have the following form:
+
+     0 AFLII
+     0 AFLIII
+     0 APAI
+     0 APALI
+     0 ASUII
+     0 AVAI
+     0 AVRII
+     0 BCLI
+     0 BGLI
+     0 BGLII
+     0 BSMI
+     0 BSPMII
+     0 BSTEII
+  ...... etc
+ 
+ Listings showing names above the sequence, and a translation have the 
+following form:
+
+
+ ECORI                   BANI BSP1286
+ .                       .    .      BBVI         NSPBII
+ .                       .    .      .            PVUII    BBVI
+GAATTCGGTTTGGGCTTGGTGTGAGGTGCCCAGAGATTACTGCGCCGCAGCTGCTG
+GTGC
+        10        20        30        40        50        60
+ E  F  G  L  G  L  V  *  G  A  Q  R  L  L  R  R  S  C  W  C
+  N  S  V  W  A  W  C  E  V  P  R  D  Y  C  A  A  A  A  G  A
+   I  R  F  G  L  G  V  R  C  P  E  I  T  A  P  Q  L  L  V  L
+ 
+                   HINCII
+                   .   AVAII
+                   .   .  BINI
+                   .   .  . BSTNI
+                   .   .  . .  BAMHI
+                   .   .  . .  XHOII NSPBII
+                   .   .  . .  .     . BINI     AHAII
+                   .   .  . .  .     . .        . SALI
+                   .   .  . .  .     . .        . .AATII
+                   .   .  . .  .     . .        . .ACCI
+                   .   .  . .  .     . .        . ..HINCII
+TGGCGGTGCGGAGGTCGTCAACGGACCCAGGGATCCGCTGGACGAGGACGTCGACG
+ACGA
+        70        80        90       100       110       120
+ W  R  C  G  G  R  Q  R  T  Q  G  S  A  G  R  G  R  R  R  R
+  G  G  A  E  V  V  N  G  P  R  D  P  L  D  E  D  V  D  D  E
+   A  V  R  R  S  S  T  D  P  G  I  R  W  T  R  T  S  T  T  R
+ 
+                                             BBVI        BINI
+GGAGGAGGTGGATAGCGCATTGCTGGTGGCTGGCAGCGACTGATTTGAGTTCTGAC
+CACT
+       130       140       150       160       170       180
+ G  G  G  G  *  R  I  A  G  G  W  Q  R  L  I  *  V  L  T  T
+  E  E  V  D  S  A  L  L  V  A  G  S  D  *  F  E  F  *  P  L
+   R  R  W  I  A  H  C  W  W  L  A  A  T  D  L  S  S  D  H  S
+ 
+  XHOII
+  .    HGAI       AHAII                      PFIMI
+  .    .          .                          .   BBVI
+CAGATCCGGCGGCGGAGGCGTCGAGGCTCCCGAAACTCCCAGTGGCTGGCCTGCTA
+GATT
+       190       200       210       220       230       240
+ Q  I  R  R  R  R  R  R  G  S  R  N  S  Q  W  L  A  C  *  I
+  R  S  G  G  G  G  V  E  A  P  E  T  P  S  G  W  P  A  R  F
+   D  P  A  A  E  A  S  R  L  P  K  L  P  V  A  G  L  L  D  S
+
+   .........etc
+ 
+.end lit
+.para
+The terms "possible" and "definite" matches are important only for back 
+translations of protein into DNA, and which include IUB redundancy codes.
+Those matches that the program terms "definite matches" and are ones in 
+which the specification of the recognition sequence corresponds 
+exactly to that of the back translation, and consequently are definitely in 
+the DNA sequence. The program will also find what it 
+terms 'possible matches' which are ones that depend on the particular 
+codons
+chosen for each amino acid.
+These are sites at which recognition 
+sequences could be engineered to produce a cut in the DNA 
+without changing the amino 
+acid, but which are not 
+necessarily found in the original sequence.
+.para
+The routine will handle both linear and circular sequences, and 
+so finds cutsites spanning the "ends" of circular sequences.
+ The program will only find cutsites spanning the 
+ends of sequences if the sequence is declared as circular.
+This includes sites for 
+recognition sequences containing leading or trailing N symbols, in which 
+the actual recognition sequence does not span the join. For example if the 
+recognition sequence was 'NNNNACGT and the first 4 characters in the 
+sequence were ACGT, then the match would only be found if the sequence 
+was 
+declared as circular. If the sequence is linear then the first fragment 
+starts at base number 1, and the last ends at the last base. If the 
+sequence is circular then the length of the first fragment is the 
+clockwise
+distance from the last cut to the first.
+.para
+Graphical output marks the position of each string by a 
+short vertical line and gives the name of the enzyme at the left end of 
+the 
+line. If the top of the screen is reached the program gives the user the 
+oportunity to take a hard copy and then will clear the screen and restart
+plotting results at the original start position.
+.para
+Below is an edited piece of dialogue from use of the search option:
+.lit
+? Menu or option number=17
+ 
+Search for restriction enzyme sites
+X 1 Search
+  2 List enzyme file
+  3 Clear text
+  4 Clear graphics
+? 0,1,2,3,4 = 2
+ 
+  1 All enzymes
+X 2 Six cutters
+  3 Four cutters
+  4 Personal file
+  5 Keyboard
+? 0,1,2,3,4,5 =
+ 
+AATII/GACGT'C//
+ACCI/GT'MKAC//
+AFLII/C'TTAAG//
+AFLIII/A'CRYGT//
+AHAII/GR'CGYC//
+APAI/GGGCC'C//
+APALI/G'TGCAC//
+ASUII/TT'CGAA//
+AVAI/C'YCGRG//
+AVAII/G'GWCC//
+AVRII/C'CTAGG//
+BALI/TGG'CCA//
+BAMHI/G'GATCC//
+BANI/G'GYRCC//
+BANII/GRGCY'C//
+BBVI/GCAGCNNNNNNNN'/'NNNNNNNNNNNNGCTGC//
+BCLI/T'GATCA//
+BGLI/GCCNNNN'NGGC//
+BGLII/A'GATCT//
+BINI/GGATCNNNN'/'NNNNNGATCC//
+BSMI/GAATGCN'/NG'CATTC//
+BSP1286/GDGCH'C//
+ 
+X 1 Search
+  2 List enzyme file
+  3 Clear text
+  4 Clear graphics
+? 0,1,2,3,4 =
+  1 All enzymes
+X 2 Six cutters
+  3 Four cutters
+  4 Personal file
+  5 Keyboard
+? 0,1,2,3,4,5 =
+? (y/n) (y) Search for all names
+X 1 Order results enzyme by enzyme
+  2 Order results by position
+  3 Show only infrequent cutters
+  4 Show names above the sequence
+? 0,1,2,3,4 =
+? (y/n) (y) List matches
+? (y/n) (y) The sequence is linear
+? (y/n) (y) Search for definite matches
+ 
+ Searching
+ Matches found=     1
+     Name                  Sequence            Position  Fragment lengths
+   1 AATII                 GACGT'C                  112     111     111
+                                                            912     912
+ Matches found=     2
+     Name                  Sequence            Position  Fragment lengths
+   1 ACCI                  GT'CGAC                  112     111     111
+   2 ACCI                  GT'AGAC                  420     308     308
+                                                            604     604
+ Matches found=     2
+     Name                  Sequence            Position  Fragment lengths
+   1 AHAII                 GA'CGTC                  109     108      90
+   2 AHAII                 GG'CGTC                  199      90     108
+                                                            825     825
+ Matches found=     2
+     Name                  Sequence            Position  Fragment lengths
+   1 AVAII                 G'GACC                    84      83      51
+   2 AVAII                 G'GTCC                   973     889      83
+                                                             51     889
+ Matches found=     1
+     Name                  Sequence            Position  Fragment lengths
+   1 BALI                  TGG'CCA                  258     257     257
+                                                            766     766
+ Matches found=     1
+     Name                  Sequence            Position  Fragment lengths
+   1 BAMHI                 G'GATCC                   92      91      91
+                                                            932     932
+ Matches found=     1
+     Name                  Sequence            Position  Fragment lengths
+   1 BANI                  G'GTGCC                   26      25      25
+                                                            998     998
+ Matches found=     1
+     Name                  Sequence            Position  Fragment lengths
+   1 BANII                 GAGCC'C                  490     489     489
+                                                            534     534
+ Matches found=    11
+     Name                  Sequence            Position  Fragment lengths
+   1 BBVI                  'TACTGCGCCGCAGCTGC        38      37       3
+   2 BBVI                  GCAGCTGCTGGTG'            60      22      22
+   3 BBVI                  GCAGCGACTGATT'           166     106      28
+   4 BBVI                  'CCTGCTAGATTCGCTGC       230      64      37
+   5 BBVI                  GCAGCGGTACGTA'           452     222      50
+   6 BBVI                  'CTCGCCAACGTTGCTGC       502      50      55
+   7 BBVI                  GCAGCCTTCAACT'           606     104      64
+   8 BBVI                  'GAGGTATTCCTGGCTGC       634      28      97
+   9 BBVI                  'CTGGCCGCCGCCGCTGC       869     235     104
+  10 BBVI                  'GCCGCCGCCGCTGCTGC       872       3     106
+  11 BBVI                  GCAGCGATGAGGA'           927      55     222
+
+  ....etc
+
+ X 1 Search
+  2 List enzyme file
+  3 Clear text
+  4 Clear graphics
+? 0,1,2,3,4 =
+
+  1 All enzymes
+X 2 Six cutters
+  3 Four cutters
+  4 Personal file
+  5 Keyboard
+? 0,1,2,3,4,5 =
+ 
+? (y/n) (y) Search for all names
+ 
+X 1 Order results enzyme by enzyme
+  2 Order results by position
+  3 Show only infrequent cutters
+  4 Show names above the sequence
+? 0,1,2,3,4 = 2
+ 
+? (y/n) (y) List matches
+? (y/n) (y) The sequence is linear
+? (y/n) (y) Search for definite matches
+ 
+ Searching
+     Name                  Sequence            Position  Fragment lengths
+   1 ECORI                 G'AATTC                    2       1
+   2 BANI                  G'GTGCC                   26      24
+   3 BSP1286               GTGCC'C                   31       5
+   4 BBVI                  'TACTGCGCCGCAGCTGC        38       7
+   5 NSPBII                CAG'CTG                   51      13
+   6 PVUII                 CAG'CTG                   51       0
+   7 BBVI                  GCAGCTGCTGGTG'            60       9
+   8 HINCII                GTC'AAC                   80      20
+   9 AVAII                 G'GACC                    84       4
+  10 BINI                  'CCAGGGATCC               87       3
+  11 BSTNI                 CC'AGG                    89       2
+  12 BAMHI                 G'GATCC                   92       3
+  13 XHOII                 G'GATCC                   92       0
+  14 NSPBII                CCG'CTG                   98       6
+  15 BINI                  GGATCCGCT'               100       2
+  16 AHAII                 GA'CGTC                  109       9
+  17 SALI                  G'TCGAC                  111       2
+  18 AATII                 GACGT'C                  112       1
+  19 ACCI                  GT'CGAC                  112       0
+  20 HINCII                GTC'GAC                  113       1
+
+  .....etc 
+ 
+X 1 Search
+  2 List enzyme file
+  3 Clear text
+  4 Clear graphics
+? 0,1,2,3,4 =
+ 
+  1 All enzymes
+X 2 Six cutters
+  3 Four cutters
+  4 Personal file
+  5 Keyboard
+? 0,1,2,3,4,5 =
+ 
+? (y/n) (y) Search for all names
+ 
+  1 Order results enzyme by enzyme
+X 2 Order results by position
+  3 Show only infrequent cutters
+  4 Show names above the sequence
+? 0,1,2,3,4 =3
+? Maximum number of cuts (0-100) (0) =
+? (y/n) (y) The sequence is linear
+? (y/n) (y) Search for definite matches
+ 
+ Searching
+     0 AFLII
+     0 AFLIII
+     0 APAI
+     0 APALI
+     0 ASUII
+     0 AVAI
+     0 AVRII
+     0 BCLI
+     0 BGLI
+     0 BGLII
+     0 BSMI
+     0 BSPMII
+     0 BSTEII
+     0 CLAI
+     0 DRAI
+     0 DRAII
+     0 ECOB
+     0 ECOK
+     0 ECORV
+     0 ESPI
+
+   ......etc 
+ 
+X 1 Search
+  2 List enzyme file
+  3 Clear text
+  4 Clear graphics
+? 0,1,2,3,4 =
+ 
+  1 All enzymes
+X 2 Six cutters
+  3 Four cutters
+  4 Personal file
+  5 Keyboard
+? 0,1,2,3,4,5 =
+ 
+? (y/n) (y) Search for all names
+ 
+  1 Order results enzyme by enzyme
+  2 Order results by position
+X 3 Show only infrequent cutters
+  4 Show names above the sequence
+? 0,1,2,3,4 =4
+? (y/n) (y) Hide translation n
+? (y/n) (y) Use 1 letter codes
+? Line length (30-90) (60) =
+? (y/n) (y) The sequence is linear
+? (y/n) (y) Search for definite matches
+ 
+ Searching
+ ECORI                   BANI BSP1286
+ .                       .    .      BBVI         NSPBII
+ .                       .    .      .            PVUII    BBVI
+GAATTCGGTTTGGGCTTGGTGTGAGGTGCCCAGAGATTACTGCGCCGCAGCTGCTG
+GTGC
+        10        20        30        40        50        60
+ E  F  G  L  G  L  V  *  G  A  Q  R  L  L  R  R  S  C  W  C
+  N  S  V  W  A  W  C  E  V  P  R  D  Y  C  A  A  A  A  G  A
+   I  R  F  G  L  G  V  R  C  P  E  I  T  A  P  Q  L  L  V  L
+ 
+                   HINCII
+                   .   AVAII
+                   .   .  BINI
+                   .   .  . BSTNI
+                   .   .  . .  BAMHI
+                   .   .  . .  XHOII NSPBII
+                   .   .  . .  .     . BINI     AHAII
+                   .   .  . .  .     . .        . SALI
+                   .   .  . .  .     . .        . .AATII
+                   .   .  . .  .     . .        . .ACCI
+                   .   .  . .  .     . .        . ..HINCII
+TGGCGGTGCGGAGGTCGTCAACGGACCCAGGGATCCGCTGGACGAGGACGTCGACG
+ACGA
+        70        80        90       100       110       120
+ W  R  C  G  G  R  Q  R  T  Q  G  S  A  G  R  G  R  R  R  R
+  G  G  A  E  V  V  N  G  P  R  D  P  L  D  E  D  V  D  D  E
+   A  V  R  R  S  S  T  D  P  G  I  R  W  T  R  T  S  T  T  R
+ 
+                                             BBVI        BINI
+GGAGGAGGTGGATAGCGCATTGCTGGTGGCTGGCAGCGACTGATTTGAGTTCTGAC
+CACT
+       130       140       150       160       170       180
+ G  G  G  G  *  R  I  A  G  G  W  Q  R  L  I  *  V  L  T  T
+  E  E  V  D  S  A  L  L  V  A  G  S  D  *  F  E  F  *  P  L
+   R  R  W  I  A  H  C  W  W  L  A  A  T  D  L  S  S  D  H  S
+
+ .......etc
+ 
+X 1 Search
+  2 List enzyme file
+  3 Clear text
+  4 Clear graphics
+? 0,1,2,3,4 =
+
+  1 All enzymes
+X 2 Six cutters
+  3 Four cutters
+  4 Personal file
+  5 Keyboard
+? 0,1,2,3,4,5 =5
+Define search strings by typing a string name
+followed by the string(s)
+? Name=FRED
+? String(s)=AAAAAA/TTTTTT
+? Name=MARY
+? String(s)=CCCC/GGGG/GCGCT
+? Name=
+? (y/n) (y) Search for all names 
+X 1 Order results enzyme by enzyme
+  2 Order results by position
+  3 Show only infrequent cutters
+  4 Show names above the sequence
+? 0,1,2,3,4 =
+? (y/n) (y) List matches 
+? (y/n) (y) The sequence is linear 
+? (y/n) (y) Search for definite matches 
+ Searching
+ Matches found=     9
+     Name                  Sequence            Position  Fragment lengths
+   1 FRED                  'TTTTTT                 1557    1556       1
+   2 FRED                  'TTTTTT                 1558       1       1
+   3 FRED                  'TTTTTT                 1559       1       1
+   4 FRED                  'TTTTTT                 1560       1      22
+   5 FRED                  'AAAAAA                 1582      22     529
+   6 FRED                  'AAAAAA                 3160    1578    1019
+   7 FRED                  'AAAAAA                 4204    1044    1044
+   8 FRED                  'AAAAAA                 5691    1487    1487
+   9 FRED                  'AAAAAA                 6710    1019    1556
+                                                            529    1578
+ Matches found=    36
+     Name                  Sequence            Position  Fragment lengths
+   1 MARY                  'CCCC                     47      46       1
+   2 MARY                  'GGGG                    486     439       1
+   3 MARY                  'GGGG                    487       1       1
+   4 MARY                  'CCCC                    557      70       1
+   5 MARY                  'CCCC                    558       1       1
+   6 MARY                  'GCGCT                  1177     619       1
+
+  ... etc
+
+X 1 Search
+  2 List enzyme file
+  3 Clear text
+  4 Clear graphics
+? 0,1,2,3,4 =
+  1 All enzymes
+X 2 Six cutters
+  3 Four cutters
+  4 Personal file
+  5 Keyboard
+? 0,1,2,3,4,5 =5
+Define search strings by typing a string name
+followed by the string(s)
+? Name=JANE
+? String(s)=A'TTTT/CC'GGG
+? Name=
+? (y/n) (y) Search for all names 
+X 1 Order results enzyme by enzyme
+  2 Order results by position
+  3 Show only infrequent cutters
+  4 Show names above the sequence
+? 0,1,2,3,4 =
+? (y/n) (y) List matches 
+? (y/n) (y) The sequence is linear 
+? (y/n) (y) Search for definite matches 
+ Searching
+ Matches found=    30
+     Name                  Sequence            Position  Fragment lengths
+   1 JANE                  A'TTTT                   437     436       6
+   2 JANE                  A'TTTT                   546     109      33
+   3 JANE                  A'TTTT                   597      51      43
+   4 JANE                  A'TTTT                   777     180      51
+   5 JANE                  A'TTTT                  1274     497      60
+   6 JANE                  A'TTTT                  1571     297      62
+   7 JANE                  CC'GGG                  1926     355      75
+   8 JANE                  A'TTTT                  2403     477      81
+   9 JANE                  A'TTTT                  2586     183      82
+  10 JANE                  A'TTTT                  2731     145     101
+  11 JANE                  A'TTTT                  2812      81     103
+
+ ... etc
+
+ 
+X 1 Search
+  2 List enzyme file
+  3 Clear text
+  4 Clear graphics
+? 0,1,2,3,4 =!
+.end lit
+ 
+.left margin1
+@18. TX 1 7 @ Compare a short sequence
+.LEFT MARGIN2
+.para
+This routine slides a short sequence along the current sequence and finds 
+all positions at which a given percentage of the bases match.
+Output is in both graphical and listed forms. 
+.para
+If  users call for dialogue when the routine is selected they will be given 
+the choice of keyboard or file input. Define the string, select the "sense" 
+to use and the percentage match. Matches will be plotted out and then the 
+user can select to have them listed. Then the routine cycles around.
+.para
+ The routine slides the search string 
+along the  sequence and marks the positions at which a minimum 
+percentage score is reached. The graphical output draws a vertical line at 
+the match position; the height of the line represents the percentage 
+score, 
+so that if the line reaches the top of the box the score is 100%.
+The NC-IUB symbols may be used in the search sequence to encode 
+uncertain 
+characters. Any other symbols will not match.
+.LIT
+
+
+            NC-IUB SYMBOLS
+
+      A,C,G,T
+      R        (A,G)        'puRine'
+      Y        (T,C)        'pYrimidine'
+      W        (A,T)        'Weak'
+      S        (C,G)        'Strong'
+      M        (A,C)        'aMino'
+      K        (G,T)        'Keto'
+      H        (A,T,C)      'not G'
+      B        (G,C,T)      'not A'
+      V        (G,A,C)      'not T'
+      D        (G,A,T)      'not C'
+      N        (G,A,C,T)    'aNy'
+
+ Typical dialogue is shown below.
+
+
+? Menu or option number=18
+ Find percentage matches
+? (y/n) (y) Keep picture
+? String=AAATTTCCC
+STRING=AAATTTCCC
+? (y/n) (y) This sense
+? Percent match (1.00-100.00) (70.00) =
+ 
+ Missing graphics display here
+ 
+Total scoring positions above 70.000 percent =   7
+Scores         7      6      6      6      6      6      6
+Positions    365    212    213    292    311    358    627
+? Display (0-7) (0) =3
+ 
+       365
+         ACATTTCGC
+         * ***** *
+         AAATTTCCC
+         1
+ 
+       212
+         GAAACTCCC
+          **  ****
+         AAATTTCCC
+         1
+ 
+       213
+         AAACTCCCA
+         *** * **
+         AAATTTCCC
+         1
+? (y/n) (y) Keep picture
+Default String=AAATTTCCC
+? String=
+STRING=AAATTTCCC
+? (y/n) (y) This sense n
+STRING=GGGAAATTT
+? Percent match (1.00-100.00) (70.00) =
+ 
+ Missing graphics display here
+
+Total scoring positions above 70.000 percent =   7
+Scores         6      6      6      6      6      6      6
+Positions    269    270    271    288    354    624    853
+? Display (0-7) (0) =3
+ 
+       269
+         GAGGGATTT
+         * *  ****
+         GGGAAATTT
+         1
+ 
+       270
+         AGGGATTTT
+          ** * ***
+         GGGAAATTT
+         1
+ 
+       271
+         GGGATTTTC
+         ****  **
+         GGGAAATTT
+         1
+? (y/n) (y) Keep picture !
+
+.end lit
+.left margin1
+@19. TX 7 @ Compare a short sequence using a score matrix
+.LEFT MARGIN2
+.para
+This routine slides a short sequence along the current sequence and finds 
+all positions at which a given level of similarity (a cutoff score) is 
+reached. The score is defined by use of a score matrix. Output is in both 
+graphical and listed forms. 
+.para
+If  users call for dialogue when the routine is selected they will be given 
+the choice of keyboard or file input. Define the string, select the "sense" 
+to use and the cutoff score. Matches will be plotted out and then the user 
+can select to have them listed. Then the routine cycles around.
+.para
+ The routine slides the search string 
+along the  sequence and marks the positions at which a the cutoff score 
+is achieved. The graphical output draws a vertical line at 
+the match position; the height of the line represents the  score, 
+so that if the line reaches the top of the box the score is the maximum 
+possible.
+The NC-IUB symbols may be used in the search sequence to encode 
+uncertain 
+characters.
+.para 
+ The score matrix reflects the level of 
+redundancy in the probe sequence and hence will put more emphasis on 
+those 
+characters that are better defined. The score matrix is:
+.lit
+             DNA SCORE MATRIX USING IUB SYMBOLS
+
+        T  C  A  G  -  R  Y  W  S  M  K  H  B  V  D  N  ?
+
+   T   36  0  0  0  9  0 18 18  0  0 18 12 12  0 12  9  0 
+   C    0 36  0  0  9  0 18  0 18 18  0 12 12 12  0  9  0 
+   A    0  0 36  0  9 18  0 18  0 18  0 12  0 12 12  9  0 
+   G    0  0  0 36  9 18  0  0 18  0 18  0 12 12 12  9  0 
+   -    9  9  9  9 36 18 18 18 18 18 18 27 27 27 27 36  0 
+   R    0  0 18 18 18 36  0  9  9  9  9  6  6 12 12 18  0 
+   Y   18 18  0  0 18  0 36  9  9  9  9 12 12  6  6 18  0 
+   W   18  0 18  0 18  9  9 36  0  9  9 12  6  6 12 18  0 
+   S    0 18  0 18 18  9  9  0 36  9  9  6 12 12  6 18  0 
+   M    0 18 18  0 18  9  9  9  9 36  0 12  6 12  6 18  0 
+   K   18  0  0 18 18  9  9  9  9  0 36  6 12  6 12 18  0 
+   H   12 12 12  0 27  6 12 12  6 12  6 36  8  8  8 27  0 
+   B   12 12  0 12 27  6 12  6 12  6 12  8 36  8  8 27  0 
+   V    0 12 12 12 27 12  6  6 12 12  6  8  8 36  8 27  0 
+   D   12  0 12 12 27 12  6 12  6  6 12  8  8  8 36 27  0 
+   N    9  9  9  9 36 18 18 18 18 18 18 27 27 27 27 36  0 
+   ?    0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0 
+
+  ? is any unrecognised character.
+
+  Typical dialogue is shown below.
+
+? Menu or option number=19
+ Find matches using a score matrix
+? (y/n) (y) Keep picture
+? String=AAATTTCCC
+STRING=AAATTTCCC
+? (y/n) (y) This sense
+Minimum score=     0 Maximum score=   324
+? Score (0-324) (280) =250
+
+ Missing graphics display here
+ 
+For score   250 the number of matches=     1
+Scores       252
+Positions    365
+? Display (0-1) (0) =1
+ 
+       365
+         ACATTTCGC
+         * ***** *
+         AAATTTCCC
+         1
+? (y/n) (y) Keep picture
+Default String=AAATTTCCC
+? String=
+STRING=AAATTTCCC
+? (y/n) (y) This sense n
+STRING=GGGAAATTT
+Minimum score=     0 Maximum score=   324
+? Score (0-324) (222) = 200
+
+ Missing graphics display here
+
+For score   200 the number of matches=     7
+Scores       216    216    216    216    216    216    216
+Positions    269    270    271    288    354    624    853
+? Display (0-7) (0) =3
+ 
+       269
+         GAGGGATTT
+         * *  ****
+         GGGAAATTT
+         1
+ 
+       270
+         AGGGATTTT
+          ** * ***
+         GGGAAATTT
+         1
+ 
+       271
+         GGGATTTTC
+         ****  **
+         GGGAAATTT
+         1
+? (y/n) (y) Keep picture !
+ 
+.end lit
+.left margin1
+@20. TX 7 @ Search for a motif using a weight matrix
+.LEFT MARGIN2
+.para
+This function performs searches for short sequence
+motifs using an appropriate  weight matrix. In addition it can be used to 
+create or modify weight matrices. In order to perform a search the only 
+input 
+required is the name of the file containing the weight matrix.
+The results can be presented graphically or listed. The graphical 
+presentation will draw line at the position of any matches found; the 
+height of the line is proportional to the score.
+.para
+For a search, select "use weight matrix", supply the name of the file 
+containing the weight matrix, and choose between having results plotted 
+or listed. If dialogue is requested when the function is selected users can 
+alter the cutoff score employed.
+.para
+To create a weight matrix several steps are involved. A file containing an 
+alignment of known motifs is required. (This file must be created before 
+the current option is selected. The format is a follows: each sequence is 
+written on a separate line with at least one space at the beginning; each 
+sequence is terminated by a space character, and can be followed by a 
+name. The sequences must be aligned.) Supply the name of the file of 
+aligned sequences. The program reads and displays the sequences. Choose 
+between "summing logs of weights" or summing weights (i.e. whether to 
+multiply or add weights). If logs are used all scores will be negative. 
+Choose if all positions in the set of aligned sequences should be used or 
+if a mask should be applied. If so selected, define a mask as a string of 
+symbols, in which symbol - means ignore and any other symbol means 
+use. E.g. xx-x--abc means use all positions except 3,5 and 6.
+.para
+The program will calculate weights as the frequencies of each base at 
+each unmasked position in the set of aligned sequences. These weights 
+are then applied to the set of aligned sequences to give a range  of 
+"observed" scores. The mean and standard deviation of these scores is 
+displayed. The user is asked to supply several values to be used when the 
+weight matrix is applied to other sequences: a cutoff score (by default, 
+the mean minus 3 standard deviations), a top score for scaling graphical 
+results (by default, the mean plus 3 standard deviations), and a position 
+to identify (this means that if a particular base within the motif is used 
+as a "landmark", such as the A of the AG in splice acceptor sites, then its 
+position will be marked in plots). All these values are stored along with 
+the weight matrix. Finally supply the name of a file to contain the weight 
+matrix.
+.para
+Weight matrices can be "rescaled" using a set of aligned sequences in 
+much the same ways as a matrix is created. The purpose is to redefine 
+the cutoff scores, and rescaling does not alter any other values in the 
+weight matrix file.
+.para
+The methods have changed considerably but were first outlined in
+Staden, R. Nucl. Acid Res. 12 505-519 1984, and
+Staden, R. Genetic 
+engineering: principles and methods vol 7, Edited by J.K. Setlow and A. 
+Hollaender, Plenum publishing corp., 1985.
+.para
+ The methods have always had to deal with the problem of zeroes in the 
+matrices. The current versions 
+employ "Laplaces Law of Succession" in which 1 is 
+added to each term.
+.para
+It is now possible to apply a mask to a set of aligned sequences in 
+order to give weight to selected positions only.
+Sequences have superimposed functions: some parts may be of general 
+structural 
+importance and give rise to an overall framework, and other parts give 
+specificity and hence are not common; we may want to use a set of 
+aligned 
+sequences to define a motif, but want to use only the framework 
+positions.
+ Alternatively we may want to pick out 
+only those parts of a set of aligned sequences that give a particular 
+property, and to ignore other similarities that are due to some other 
+property
+and which could obscure the pattern 
+we are interested in. The ability to define a mask allows certain 
+positions 
+to be used in the motif and others to be ignored, and yet still permits the 
+use of a set of aligned sequences to calculate weights. 
+.para
+Typical dialogue is shown below.
+.lit
+
+? Menu or option number=20
+X 1 Use weight matrix
+  2 Make weight matrix
+  3 Rescale weight matrix
+? 0,1,2,3 =2
+? Name of aligned sequences file=[RS.MOTIFS]GCN4.SEQ
+ 
+     1 AGCGTGACTCTTCCCGGAA HIS1
+     2 GAGGTGACTCACTTGGAAG HIS1
+     3 CGGATGACTCTTTTTTTTT HIS3
+     4 ACAGTGACTCACGTTTTTT HIS4
+     5 GTCGTGACTCATATGCTTT ARG3
+     6 TGAATGACTCACTTTTTGG ARG4
+     7 TTCTTGACTCGTCTTTTCT CPA1
+     8 CGAATGACTCTTATTGATG CPA2
+     9 AGAATGACTAATTTTACTA TRP5
+    10 TCGTTGACTCATTCTAATC TRP3
+    11 TTGCTGACTCATTACGATT TRP2
+    12 GAGATGACTCTTTTTCTTT IV1
+    13 GCGATGATTCATTTCTCTG IV2
+    14 TAGATGACTCAGTTTAGTC LEU1
+    15 TAAGTGACTCAGTTCTTTC LEU4
+    16 ATGATGACTCTTAAGCATG ILS1
+Length of motif    19
+? (y/n) (y) Sum logs of weights
+ 
+? (y/n) (y) Use all motif positions n
+x means use, - means ignore
+e.g. xx-x---x-x means use positions 1,2,4,8,10
+? Mask=----XXXXXXXX
+ Applying weights to input sequences
+   1      -27.979 AGCGTGACTCTTCCCGGAA
+   2      -24.543 GAGGTGACTCACTTGGAAG
+   3      -20.890 CGGATGACTCTTTTTTTTT
+   4      -23.087 ACAGTGACTCACGTTTTTT
+   5      -22.771 GTCGTGACTCATATGCTTT
+   6      -23.408 TGAATGACTCACTTTTTGG
+   7      -25.159 TTCTTGACTCGTCTTTTCT
+   8      -22.679 CGAATGACTCTTATTGATG
+   9      -24.751 AGAATGACTAATTTTACTA
+  10      -23.157 TCGTTGACTCATTCTAATC
+  11      -23.067 TTGCTGACTCATTACGATT
+  12      -21.449 GAGATGACTCTTTTTCTTT
+  13      -24.191 GCGATGATTCATTTCTCTG
+  14      -23.770 TAGATGACTCAGTTTAGTC
+  15      -22.923 TAAGTGACTCAGTTCTTTC
+  16      -25.285 ATGATGACTCTTAAGCATG
+Top score     -20.890  Bottom score     -27.979
+Mean     -23.694  Standard deviation       1.613
+Mean minus 3.sd     -28.534  Mean plus 3.sd     -18.854
+? Cutoff score (-999.00-9999.00) (-28.53) =
+? Top score for scaling plots (-28.53-999.00) (-18.85) =
+? Position to identify (0-19) (1) =
+? Title=GCN4 SEQUENCES
+? Name for new weight matrix file=1.WTS
+ 
+ 
+? Menu or option number=20
+X 1 Use weight matrix
+  2 Make weight matrix
+  3 Rescale weight matrix
+? 0,1,2,3 =3
+? Name of existing weight matrix file=1.WTS
+ GCN4 SEQUENCES
+? Name of aligned sequences file=[RS.MOTIFS]GCN4.SEQ
+Length of motif    19
+? (y/n) (y) Sum logs of weights n
+? (y/n) (y) Use all motif positions
+ 
+ Applying weights to input sequences
+   1      128.000 AGCGTGACTCTTCCCGGAA
+   2      148.000 GAGGTGACTCACTTGGAAG
+   3      172.000 CGGATGACTCTTTTTTTTT
+   4      160.000 ACAGTGACTCACGTTTTTT
+   5      161.000 GTCGTGACTCATATGCTTT
+   6      157.000 TGAATGACTCACTTTTTGG
+   7      149.000 TTCTTGACTCGTCTTTTCT
+   8      160.000 CGAATGACTCTTATTGATG
+   9      151.000 AGAATGACTAATTTTACTA
+  10      159.000 TCGTTGACTCATTCTAATC
+  11      158.000 TTGCTGACTCATTACGATT
+  12      169.000 GAGATGACTCTTTTTCTTT
+  13      152.000 GCGATGATTCATTTCTCTG
+  14      157.000 TAGATGACTCAGTTTAGTC
+  15      160.000 TAAGTGACTCAGTTCTTTC
+  16      143.000 ATGATGACTCTTAAGCATG
+Top score     172.000  Bottom score     128.000
+Mean     155.250  Standard deviation      10.034
+Mean minus 3.sd     125.147  Mean plus 3.sd     185.353
+? Cutoff score (-999.00-9999.00) (125.15) =
+? Top score for scaling plots (125.15-999.00) (185.35) =
+? Position to identify (0-19) (1) =
+? Title=GCN4 SEQUENCES
+? Name for new weight matrix file=2.WTS
+ 
+ 
+? Menu or option number=20
+X 1 Use weight matrix
+  2 Make weight matrix
+  3 Rescale weight matrix
+? 0,1,2,3 =
+? Motif weight matrix file=1.WTS
+ GCN4 SEQUENCES
+? (y/n) (y) Plot results n
+ 
+    153    -22.61 GCAGCGACTGATTTGAGTT
+    169    -28.53 GTTCTGACCACTCAGATCC
+    172    -27.27 CTGACCACTCAGATCCGGC
+    219    -27.35 CCAGTGGCTGGCCTGCTAG
+    268    -27.82 CGAGGGATTTTCGATCTTG
+    274    -26.99 ATTTTCGATCTTGTGGATG
+    283    -25.79 CTTGTGGATGATTTTCACG
+    287    -27.50 TGGATGATTTTCACGTGCG
+    298    -28.17 CACGTGCGCCGTCATATTG
+    332    -28.27 TCTTTGAAGCAGAAGGGAC
+    351    -28.27 AGGGGTACACTTTCACATT
+    357    -25.05 ACACTTTCACATTTCGCTT
+    364    -28.51 CACATTTCGCTTATGGGAG
+    400    -23.77 GAAGTTACTAATGTGCGTG
+    451    -26.22 ATGCTCGCCCTCTTTGGTG
+    476    -28.00 TCCCTCACTGAGCCCTCCG
+    480    -28.33 TCACTGAGCCCTCCGCCTC
+    517    -23.46 GCTAAGATTCAGCTTGGTT
+    556    -27.27 TCCAGCACTCAGGTTCGGC
+    602    -27.01 AACTTGAATCCATCGTTGC
+    648    -28.45 TGCTAAACACAGCCGGTTT
+    679    -28.18 CTGTTTGCCCAGTTTGGGC
+    691    -28.51 TTTGGGCCGCTTCTGGACG
+    713    -27.67 GGCTTGACCGTGGCTGTGG
+    803    -25.47 ATGCTGACCATGCTTTTCA
+    848    -28.11 ATAATGTTAAGTTTGATTC
+    857    -25.97 AGTTTGATTCCGCTGGCCG
+    879    -27.85 CCGCTGCTGCTGTTTCCAC
+    917    -27.77 GCGATGAGGAAGGCTTGTT
+    931    -27.81 TTGTTGGCGCGCCTGCTCG
+    952    -23.52 GAGGTGACTACCATCCGTG
+    977    -28.40 TGCGTGGGTGAGCTGTTGT
+ 
+ 
+ 
+ 
+? Menu or option number=6
+Page through text files
+? Name of file to read=1.WTS
+ GCN4 SEQUENCES
+     19     1   -28.534   -18.854
+ P   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18
+ N  16  16  16  16  16  16  16  16  16  16  16  16  16  16  16  16  16  16  
+16
+ T   0   0   0   0  16   0   0   1  16   0   5  11  10  12   9   6   7  12   6
+ C   0   0   0   0   0   0   0  15   0  15   0   3   2   2   4   3   2   1   3
+ A   0   0   0   0   0   0  16   0   0   1  10   0   3   2   0   3   5   2   2
+ G   0   0   0   0   0  16   0   0   0   0   1   2   1   0   3   4   2   1   5
+End of file
+
+.end lit
+
+
+.left margin1
+@21. TX 3 @ Count base composition
+.LEFT MARGIN2
+.para
+This routine 
+calculates the base composition of the 
+active region of the sequence as both totals and percentages.
+.left margin1
+@22. TX 3 @ Count dinucleotide frequencies
+.LEFT MARGIN2
+.para
+This routine simply counts dinucleotide frequencies for the currently 
+active region of the sequence. It also calculates an expected distribution 
+based on the base composition.
+The output looks like:
+.LIT
+              T             C             A             G
+        obs  expected obs  expected obs  expected obs  expected 
+
+     T   8.44   8.25   6.67   7.01  10.35   9.92   3.27   3.54
+     C   7.49   7.01   6.76   5.95   8.39   8.43   1.76   3.01
+     A  10.13   9.92   7.78   8.43  11.74  11.93   4.89   4.26
+     G   2.67   3.54   3.19   3.01   4.06   4.26   2.42   1.52
+
+.END LIT
+.left margin1
+@23. TX 3 5 @ Count codons and amino acids
+.LEFT MARGIN2
+.para
+This function
+counts codons, amino acid composition, protein molecular weights, and 
+base 
+composition. Users select the segments of the sequence that the program 
+should analyse.
+.para
+Choose between being shown observed counts or counts normalised so 
+that the totals for each amino acid sum to 100. Select to define 
+segments using either the keyboard or an EMBL feature table.
+Define the segments to count over. Select strand for each segment. Stop 
+selecting segments by typing a zero for "Count from ()". The results are 
+displayed a screenful at a time, and the bell is sounded to show there is 
+more to come. A zero start position,  or the end of an EMBL feature table, 
+signals 
+the routine to print out totals for all values.
+
+.para
+The counts are broken down into several figures.
+ Base 
+composition by position in codon expressed as a percentage of each bases 
+own frequency;  base composition by position in codon expressed as a 
+percentage of the overall base composition of the section; base 
+composition 
+expected for this amino acid composition if there was no codon 
+preference; 
+percentage deviations of the observed amino acid composition from an 
+average amino acid composition. 
+.para
+The output looks like:
+.LIT
+
+      ===========================================
+      F TTT   1. S TCT   2. Y TAT   2. C TGT   1.
+      F TTC   1. S TCC   1. Y TAC   3. C TGC   2.
+      L TTA   7. S TCA   4. * TAA   9. * TGA   1.
+      L TTG   2. S TCG   1. * TAG   2. W TGG   2.
+      ===========================================
+      L CTT   3. P CCT   2. H CAT   4. R CGT   1.
+      L CTC   2. P CCC   3. H CAC   1. R CGC   0.
+      L CTA   3. P CCA   2. Q CAA   4. R CGA   0.
+      L CTG   2. P CCG   2. Q CAG   1. R CGG   2.
+      ===========================================
+      I ATT   9. T ACT   1. N AAT   7. S AGT   3.
+      I ATC   2. T ACC   2. N AAC   4. S AGC   2.
+      I ATA   4. T ACA   5. K AAA  13. R AGA   5.
+      M ATG   1. T ACG   2. K AAG   4. R AGG   1.
+      ===========================================
+      V GTT   2. A GCT   2. D GAT   1. G GGT   3.
+      V GTC   2. A GCC   2. D GAC   1. G GGC   1.
+      V GTA   4. A GCA   3. E GAA   2. G GGA   1.
+      V GTG   2. A GCG   0. E GAG   1. G GGG   1.
+      ===========================================
+  total codons=      166.
+          T          C          A          G
+
+  1     31.06      33.68      34.03      35.00
+  2     35.61      35.79      30.89      32.50
+  3     33.33      30.53      35.08      32.50
+
+  1     24.70      19.28      39.16      16.87
+  2     28.31      20.48      35.54      15.66
+  3     26.51      17.47      40.36      15.66
+  %     26.51      19.08      38.35      16.06  observed, overall totals
+  %     25.00      22.26      33.10      19.65  expected, even codons per acid
+
+          A    C    D    E    F    G    H    I    K    L
+          7.   3.   2.   3.   2.   6.   5.  15.  17.  19.
+ o-e %  -47. -33. -76. -68. -64. -54.  62. 116.  67.  67.
+
+          M    N    P    Q    R    S    T    V    W    Y
+          1.  11.   9.   5.   9.  13.  10.  10.   2.   5.
+ o-e %  -62.  66.  12. -17.  19.  21.   6.  -2.   0.  -5.
+ total acids=  154. molecular weight=    17421.
+
+ Typical dialogue follows.
+
+? Menu or option number=23
+ Calculate codon usage, base composition
+ and amino acid composition
+? (y/n) (y) Show observed counts
+? (y/n) (y) Define segments using keyboard
+? Count from (0-1023) (0) =1
+? Count to (1-1023) (1023) =1000
+? (y/n) (y) + strand
+ 
+     ===========================================
+     F TTT  13. S TCT   1. Y TAT   1. C TGT   3.
+     F TTC   4. S TCC  10. Y TAC   1. C TGC   7.
+     L TTA   1. S TCA   0. * TAA   1. * TGA   4.
+     L TTG   4. S TCG   1. * TAG   3. W TGG   5.
+     ===========================================
+     L CTT   9. P CCT   1. H CAT   3. R CGT  14.
+     L CTC   7. P CCC   0. H CAC   7. R CGC  14.
+     L CTA   0. P CCA   0. Q CAA   4. R CGA   9.
+     L CTG  12. P CCG   1. Q CAG   9. R CGG   8.
+     ===========================================
+     I ATT   7. T ACT   4. N AAT   4. S AGT   1.
+     I ATC   4. T ACC   5. N AAC   3. S AGC   7.
+     I ATA   1. T ACA   1. K AAA   3. R AGA   2.
+     M ATG   2. T ACG   1. K AAG   2. R AGG   2.
+     ===========================================
+     V GTT  11. A GCT  13. D GAT   6. G GGT   9.
+     V GTC   5. A GCC  10. D GAC   9. G GGC  11.
+     V GTA   6. A GCA   5. E GAA   6. G GGA  12.
+     V GTG   8. A GCG   5. E GAG   3. G GGG   8.
+     ===========================================
+ 
+ 
+ Total codons=      333.
+         T          C          A          G
+ 
+ 1     23.32      37.69      28.99      40.06
+ 2     37.15      22.31      38.46      36.59
+ 3     39.53      40.00      32.54      23.34
+       -----      -----      -----      -----
+ =     100%       100%       100%       100%
+ 
+ 1     17.72      29.43      14.71      38.14  = 100%
+ 2     28.23      17.42      19.52      34.83  = 100%
+ 3     30.03      31.23      16.52      22.22  = 100%
+ %     25.33      26.03      16.92      31.73  Observed, overall totals
+ %     24.44      22.31      20.90      32.35  Expected, even codons per acid
+ 
+         A    C    D    E    F    G    H    I    K    L
+        33.  10.  15.   9.  17.  40.  10.  12.   5.  33.
+O-E %   22.  81. -13. -55.  34.  71.  40. -29. -73.  13.
+ 
+         M    N    P    Q    R    S    T    V    W    Y
+         2.   7.   2.  13.  49.  20.  11.  30.   5.   2.
+O-E %  -74. -51. -88.   0. 165. -11. -42.  40.  18. -81.
+Total acids=  325. Molecular weight=    35831. Hydrophobicity= -17.8
+ 
+ 
+? Count from (0-1023) (0) =
+ 
+    Codon totals over all genes
+     ===========================================
+     F TTT  13. S TCT   1. Y TAT   1. C TGT   3.
+     F TTC   4. S TCC  10. Y TAC   1. C TGC   7.
+     L TTA   1. S TCA   0. * TAA   1. * TGA   4.
+     L TTG   4. S TCG   1. * TAG   3. W TGG   5.
+     ===========================================
+     L CTT   9. P CCT   1. H CAT   3. R CGT  14.
+     L CTC   7. P CCC   0. H CAC   7. R CGC  14.
+     L CTA   0. P CCA   0. Q CAA   4. R CGA   9.
+     L CTG  12. P CCG   1. Q CAG   9. R CGG   8.
+     ===========================================
+     I ATT   7. T ACT   4. N AAT   4. S AGT   1.
+     I ATC   4. T ACC   5. N AAC   3. S AGC   7.
+     I ATA   1. T ACA   1. K AAA   3. R AGA   2.
+     M ATG   2. T ACG   1. K AAG   2. R AGG   2.
+     ===========================================
+     V GTT  11. A GCT  13. D GAT   6. G GGT   9.
+     V GTC   5. A GCC  10. D GAC   9. G GGC  11.
+     V GTA   6. A GCA   5. E GAA   6. G GGA  12.
+     V GTG   8. A GCG   5. E GAG   3. G GGG   8.
+     ===========================================
+ 
+ 
+ Total codons=      333.
+         T          C          A          G
+ 
+ 1     23.32      37.69      28.99      40.06
+ 2     37.15      22.31      38.46      36.59
+ 3     39.53      40.00      32.54      23.34
+       -----      -----      -----      -----
+ =     100%       100%       100%       100%
+ 
+ 1     17.72      29.43      14.71      38.14  = 100%
+ 2     28.23      17.42      19.52      34.83  = 100%
+ 3     30.03      31.23      16.52      22.22  = 100%
+ %     25.33      26.03      16.92      31.73  Observed, overall totals
+ %     24.44      22.31      20.90      32.35  Expected, even codons per acid
+ 
+         A    C    D    E    F    G    H    I    K    L
+        33.  10.  15.   9.  17.  40.  10.  12.   5.  33.
+O-E %   22.  81. -13. -55.  34.  71.  40. -29. -73.  13.
+ 
+         M    N    P    Q    R    S    T    V    W    Y
+         2.   7.   2.  13.  49.  20.  11.  30.   5.   2.
+O-E %  -74. -51. -88.   0. 165. -11. -42.  40.  18. -81.
+Total acids=  325. Molecular weight=    35831. Hydrophobicity= -17.8
+ 
+.END LIT
+.LEFT MARGIN1
+@24. TX 3 @ Plot base composition
+.LEFT MARGIN2
+.para
+This option plots the base composition of the sequence. The counts for 
+any combination of bases can be plotted.
+.para
+If dialogue is requested the user is presented with a check box for 
+selecting which bases should be counted, and then allowed to define a 
+window length, and a "plot interval". Otherwise, the AT composition is 
+plotted with a window of 101 and a plot interval of 5.
+.para
+Typical dialogue follows.
+.lit
+? Menu or option number=d24
+ Plot base composition
+ 
+checkbox: those set are marked X
+X 1 T
+  2 C
+X 3 A
+  4 G
+? 0,1,2,3,4 =1
+ 
+checkbox: those set are marked X
+  1 T
+  2 C
+X 3 A
+  4 G
+? 0,1,2,3,4 =3
+ 
+checkbox: those set are marked X
+  1 T
+  2 C
+  3 A
+  4 G
+? 0,1,2,3,4 =2
+ 
+checkbox: those set are marked X
+  1 T
+X 2 C
+  3 A
+  4 G
+? 0,1,2,3,4 =4
+ 
+checkbox: those set are marked X
+  1 T
+X 2 C
+  3 A
+X 4 G
+? 0,1,2,3,4 =
+ 
+? odd span length (1-201) (31) =
+? plot interval (1-11) (5) =
+
+ missing graphics
+
+
+
+.end lit
+.left margIN1
+@25. TX 3 @ Plot local deviations in base composition
+.LEFT MARGIN2
+.para
+The "local deviation" routines are designed to indicate the  similarity of 
+the compositions of different parts of the sequence. The composition of 
+every segment of the sequence is compared with  a standard composition. 
+The levels of similarity are plotted as a chi squared values. The standard 
+can be the composition of the whole sequence, or alternatively that of a 
+small segment defined by the user.
+.para
+If dialogue is forced define the standard region, the window length and 
+the plot interval. Otherwise the composition of the whole sequence is 
+taken as a standard. The maximum and minimum observed value of the chi 
+squared calculation is displayed, and plots will always exactly fill the 
+available box. Any unusual regions will show as peaks.
+.para
+The following measure is used: for each window position
+calculate (sum((obs-exp)*(obs-exp))/(exp*exp)) 
+where obs is the observed composition 
+and exp is the expected composition (the composition of the standard).
+ The calculation is performed once to find out the range of values and is
+then repeated and 
+plotted so that the plot exactly fills the allocated screen space.
+.left margIN1
+@26. TX 3 @ Plot local deviations from dinucleotide composition
+.LEFT MARGIN2
+.para
+The "local deviation" routines are designed to indicate the  similarity of 
+the compositions of different parts of the sequence. The dinucleotide 
+composition of every segment of the sequence is compared with  a 
+standard composition. The levels of similarity are plotted as a chi 
+squared values. The standard can be the composition of the whole 
+sequence, or alternatively that of a small segment defined by the user.
+.para
+If dialogue is forced define the standard region, the window length and 
+the plot interval. Otherwise the composition of the whole sequence is 
+taken as a standard. The maximum and minimum observed value of the chi 
+squared calculation is displayed, and plots will always exactly fill the 
+available box. Any unusual regions will show as peaks.
+.para
+The following measure is used: for each window position
+calculate (sum((obs-exp)*(obs-exp))/(exp*exp)) 
+where obs is the observed composition 
+and exp is the expected composition (the composition of the standard).
+ The calculation is performed once to find out the range of values and is
+then repeated and 
+plotted so that the plot exactly fills the allocated screen space.
+.left margin1
+@27. TX 3 @ Plot local deviations from trinucleotide composition
+.LEFT MARGIN2
+.para
+The "local deviation" routines are designed to indicate the  similarity of 
+the compositions of different parts of the sequence. The trinucleotide 
+composition of every segment of the sequence is compared with  a 
+standard composition. The levels of similarity are plotted as a chi 
+squared values. The standard can be the composition of the whole 
+sequence, or alternatively that of a small segment defined by the user.
+.para
+If dialogue is forced define the standard region, the window length and 
+the plot interval. Otherwise the composition of the whole sequence is 
+taken as a standard. The maximum and minimum observed value of the chi 
+squared calculation is displayed, and plots will always exactly fill the 
+available box. Any unusual regions will show as peaks.
+.para
+The following measure is used: for each window position
+calculate (sum((obs-exp)*(obs-exp))/(exp*exp)) 
+where obs is the observed composition 
+and exp is the expected composition (the composition of the standard).
+ The calculation is performed once to find out the range of values and is
+then repeated and 
+plotted so that the plot exactly fills the allocated screen space.
+.left margin1
+@28. TX 5 @ Calculate codon constraint
+.left margin2
+.para
+The purpose of this option (which is somewhat specialised) is to measure 
+the level of constraint imposed on the sequence by coding for a protein of 
+the observed composition. It measures the strength of the codon bias 
+averaged over windows of 99 codons and displays the values observed.
+.para
+Select between defining segments at the keyboard or using an EMBL 
+feature table. Finish selecting segments by typing a zero start. The value 
+for each segment is displayed:
+.para
+ Mean (W-EW) / EWD, window 99      10.5
+.para
+The codon constraint is the 
+difference between the observed codon improbability and the mean 
+improbabilty for 
+a sequence of the same composition.   See McLachlan, Staden and Boswell 
+Nucl. Acid Res. 1984
+
+.left margin1
+@59. TX 3 @ Plot negentropy
+.LEFT MARGIN2
+.para
+This routine is designed to show regions of the sequence that differ in 
+composition from others, and hence is like the "plot deviation.." routines.
+.para
+Negentropy or information is defined in the following way: let Pi be the 
+probability of observing base i, where i = A,C,G or T, then the average 
+information per base is 
+I=-sum(Pi.Log(Pi))   (sum over all i). This routine calculates Pi by 
+calculating the overall composition for the sequence and then plots I for 
+windows of length defined by the user. 
+.left margin1
+@30. TX 4 @ Search for hairpin loops
+.LEFT MARGIN2
+.para
+Used to find simple inverted repeats or potential hairpin loops
+ The loops are defined by a range of sizes for 
+the loop and a minimum number of consecutive base pairs in the stem. 
+The results can be presented graphically or listed. 
+A-T, G-C and G-T basepairs are counted. 
+.para
+Define the range of loop sizes and the minimum number of consecutive 
+basepairs required. Choose between plotted or listed results.
+.para
+The loops found are plotted as blips on a 
+horizontal line that represents the sequence, the heights of the lines are
+proportional to the number of basepairs in the stems. Note that only 
+uninterrupted stems are found - i.e. all basepairs must be made. To look 
+for stems with some unpaired bases (or for palindromes) use the inverted 
+repeat motif class in the pattern searching option.
+.para
+Typical dialogue follows.
+.lit
+? Menu or option number=30
+ Search for hairpin loops
+Define the range of loop sizes
+? Minimum loop size (1-30) (1) =
+? Maximum loop size (3-60) (3) =
+? Minimum number of basepairs (2-20) (6) =
+? (y/n) (y) Plot results n
+ Searching
+ 
+          T.G
+          G-C
+          G.T
+          T.G
+          C-G
+          G-C
+          T.G
+          C-G
+          G.T
+     GCCGCA GCGGAGG
+         49
+ 
+           G
+          G-C
+          T.G
+          C-G
+          G.T
+          T.G
+          G-C
+     CTGCTG GGAGGTC
+         56
+ 
+ 
+           G
+          T.G
+          G-C
+          G.T
+          T.G
+          C-G
+          G-C
+          T-A
+          T.G
+     AGCGCA CGACTGA
+        139
+ 
+          A C
+          G.T
+          C-G
+          G.T
+          C-G
+          C-G
+          G-C
+     TTCGCT CAACGCC
+        244
+ 
+.end lit
+.LEFT MARGIN1
+@31. TX 4 @ Search for long range inverted repeats
+.LEFT MARGIN2
+.para
+Searches for inverted repeats. The repeats found are exact matches of at 
+least 6 consecutive bases. Results can be presented graphically or listed.
+Plotted results show the end points of repeats joined by rectangular 
+lines.
+.para
+If dialogue is not requested the defaults will be taken. Otherwise choose 
+between plotted or listed results. If required select to analyse a 
+restricted segment of the currently active region. Choose a repeat length.
+.para
+Typical dialogue follows.
+.lit
+? Menu or option number=D31
+ Plot long-range inverted repeats
+? (y/n) (y) Plot results n
+Define restricted region
+? start (1-1023) (1) =
+? end (2-1023) (1023) =
+? Minimum inverted repeat (6-30) (12) =10
+ Searching
+    27     909      10  TGCCCAGAGA
+ 
+.end lit
+.LEFT MARGIN1
+@32. TX 4 @ Search for repeats
+.LEFT MARGIN2
+.para
+Searches for direct repeats. The repeats found are exact matches of at 
+least 6 consecutive bases. Results can be presented graphically or listed.
+Plotted results show the end points of repeats joined by rectangular 
+lines.
+.para
+If dialogue is not requested the defaults will be taken. Otherwise choose 
+between plotted or listed results. If required select to analyse a 
+restricted segment of the currently active region. Choose a repeat length.
+.para
+Typical dialogue follows.
+
+.lit
+ ? Menu or option number=D32
+ Plot repeats
+? (y/n) (y) Plot results n
+Define restricted region
+? start (1-1023) (1) =
+? end (2-1023) (1023) =
+? Minimum repeat (6-30) (12) =8
+ Searching
+   619     988       8  GCTGTTGT
+   514     646       8  GCTGCTAA
+    94     865       8  TCCGCTGG
+   146     222       9  GTGGCTGGC
+   455     497       8  TCGCCCTC
+   454     496       9  CTCGCCCTC
+   872     875       8  GCCGCCGC
+   510     615       8  CGTTGCTG
+   152     913       8  GGCAGCGA
+   199     265       8  CGTCGAGG
+   689     794       8  AGTTTGGG
+   147     223       8  TGGCTGGC
+   101     116       8  GACGAGGA
+     8     690       8  GTTTGGGC
+    52     141       8  TGCTGGTG
+ 
+.end lit
+.left margin1
+@33. TX 4 @ Search for z dna (total ry, yr)
+.LEFT MARGIN2
+.para
+Searches for segments of the sequence that might form Z DNA. A window 
+length is chosen and the number of RY and YR dinucleotides within each 
+window is plotted. The top of the box corresponds to all RY or YR, the 
+bottom to zero RY or YR.
+.para
+If dialogue is requested, select a window length and plot interval. 
+Otherwise the defaults will be used.
+.para
+The program contains three 
+separate ways of doing this (options 33,34,35). 
+.left margin1
+@34. TX 4 @ Search for z dna (runs of ry, yr)
+.LEFT MARGIN2
+.para
+Searches for segments of the sequence that might form Z DNA. Results 
+are plotted.
+.para
+If dialogue is requested define a window length and plot interval. 
+Otherwise the defaults will be used.
+ The routine 
+counts the number of R in positions 1,3,5 etc =R1, the number of Y in 
+positions 2,4,6 etc =Y1, the number of Y in positions 1,3,5 etc =Y2 and 
+the 
+number of R in positions 2,4,6 etc =R2 for a window length. It plots the 
+maximum of R1+Y1 and R2+Y2 relative to a minimum of (window 
+length)/2 and a 
+maximum of (window length). (see 33,35). 
+.LEFT MARGIN1
+@35. TX 4 @ Search for z dna (best phased value)
+.LEFT MARGIN2
+.para
+Searches for segments of the sequence that might form Z DNA. Results 
+are plotted.
+.para
+If dialogue is requested define a window length and a plot interval. 
+Ohterwise the defaults values will be used.
+.para
+ The routine 
+counts the number of consecutive RY or YR dinucleotides in phase. It 
+moves 
+through the sequence counting the number of RY or YR dinucleotides; when 
+the next dinucleotide is not of the correct type the score is set back to 
+zero and the search restarted using the current base to set the phase. The 
+plots are done relative to a minimum of zero and a maximum defined by 
+the 
+user. (See 33,34).
+.LEFT MARGIN1
+@36. TX 4 @ Local similarity or complementarity search
+.LEFT MARGIN2
+.PARA
+This function is designed to find segments of 
+local similarity or complementarity. It is therefore like performing 
+a DIAGON 
+plot that is
+restricted to regions near the main diagonal.  Results can be presented 
+graphically or listed.
+.para
+Users define 
+a region to search through,
+a span length, a range for searching through and a cut-off score. The 
+program takes all sections of sequence 
+of length span within the defined region
+ and compares them to 
+all other sequences within the region and
+range specified. 
+If a match above the cutoff is found we 
+need to show the position 
+of the two sections of sequence and the score, and we do it in the 
+following way.
+If we have a 70%
+match between 
+a sequence that starts at p1 and a sequence that starts at p2
+the program draws a 
+diagonal line that starts at p1 with height 70% of the box and which 
+finishes at p2 with 
+height 0.
+The matches can also be listed. 
+.para
+Here I define the terms range, region, and span and what is compared.
+Suppose we have a defined region j1 to j2, a range of i1 to i2 and a span 
+of 
+s; the program will take, in turn, all sections of sequence of length s
+within j1 and j2 and compare them to all sequences that start a distance 
+i1+s-1
+to i2+s-1 away from them. First it will take the sequence of length s 
+starting 
+at j1 and compare it 
+with the sequence of length s starting at
+j1+s-1+i1, then j1+s-1+i1+1, etc up to j1+s-1+i2; then it will take the 
+sequence of length s starting at j1+1 and compare it with the sequence 
+starting at j1+s-1+1+i1 etc. This continues until we hit
+ the right hand end of the 
+sequence as defined by j2. Note 1)that sequences are not compared with 
+themselves: the nearest sequence compared to a span s starting at j 
+starts 
+at j+s; 2) ranges i1 and i2 are ranges of start positions; 3) by choosing a 
+range greater than the length of the sequence this routine will do a full 
+DIAGON analysis except for those points within a distance span of
+ the main diagonal (see note 1).
+.para
+Typical dialog follows.
+.lit
+
+? Menu or option number=36
+ Search for local similarity or complementarity
+? (y/n) (y) Find direct repeats
+? (y/n) (y) Keep picture n
+? Span (5-200) (15) =
+Define restricted region
+? start (0-1023) (1) =
+? end (2-1023) (1023) =
+? Percent match (1.00-100.00) (70.00) =
+? Range start (1-50) (1) =
+? Range end (1-50) (1) =5
+? (y/n) (y) Plot results n
+ Working
+ 
+ 
+       118        128
+         CGAGGAGGAG GTGGA
+          ** *****  ** **
+         GGACGAGGAC GTCGA
+       100        110
+ 
+ 
+       119        129
+         GAGGAGGAGG TGGAT
+         ** ***** * * **
+         GACGAGGACG TCGAC
+       101        111
+? (y/n) (y) Find direct repeats n
+? (y/n) (y) Keep picture
+? Span (5-200) (15) =
+Define restricted region
+? start (0-1023) (1) =
+? end (2-1023) (1023) =
+? Percent match (1.00-100.00) (70.00) =
+? Range start (1-50) (1) =
+? Range end (1-50) (5) =8
+? (y/n) (y) List results
+ 
+ Working
+ 
+ 
+       178        188
+         ACTCAGATCC GGCGG
+         ***** ***  * **
+         ACTCAAATCA GTCGC
+       156        166
+ 
+ 
+       177        187
+         CACTCAGATC CGGCG
+          ***** ***  * **
+         AACTCAAATC AGTCG
+       157        167
+? (y/n) (y) Find inverted repeats !
+.end lit
+
+.left margin1
+@37. TX 5 @ Set genetic code
+.LEFT MARGIN2
+.para
+This function allows the user to change the current active genetic code 
+for 
+all the options. The user may select: the standard code, the mammalian 
+mitochondrial code, the yeast mitochondrial code or a personal code 
+(define 
+your own). 
+.para
+Select code. If personal, define a codon and select an amino acid. When all 
+codons have been reset define a blank codon.
+.para
+The code differences are:
+.lit
+          Mammalian        Yeast
+  Codon  Mitochondrial  Mitochondrial  Standard
+   UGA       W              W            STOP
+   AUA       M              M             I
+   CUA       L              T             L
+   AGA      STOP            R             R
+   AGG      STOP            R             R
+.END LIT
+.para
+Typical dialogue follows.
+
+.lit
+? Menu or option number=37
+X 1 Standard code
+  2 Mammalian mitochondrial code
+  3 Yeast mitochondrial code
+  4 Personal code
+? 0,1,2,3,4 =2
+ 
+? Menu or option number=37
+X 1 Standard code
+  2 Mammalian mitochondrial code
+  3 Yeast mitochondrial code
+  4 Personal code
+? 0,1,2,3,4 =4
+Define genetic code by typing a codon
+followed by a 1 letter amino acid symbol
+? Codon=TTT
+Default Amino acid symbol=F
+? Amino acid symbol=W
+? Codon=
+.end lit
+
+.left margin1
+@38. T 3 4 @ Examine repeats
+.left margin2
+.para
+This function can be used to examine the frequencies of repeated words
+within a sequence. It finds all words that occur more than once. The
+user selects a minimum word length and the program finds all words of that
+length that occur more than once; then it "follows" each repeated word until it
+becomes unique. For each word length it can report the number of different
+repeated words, the number of occurrences of each word, and their actual
+positions and sequences. 
+.para
+It is possible that the algorithm may run out of memory, paticularly if a short
+mimimum word length is chosen, or if the sequence is very long or very 
+repetitive. If this occurs the longest reported word length will not
+necessarily be the longest in the sequence: the memory will have been consumed
+before the longest word is found.
+.lit
+Typical dialogue and output is shown below.
+
+ Expected length of longest repeat    14
+ ? Minumim word length (1-6) (6) =6
+ Working
+ ? Show repeat frequencies for words of at least length (6-15) (15) =10
+ For length    10 the number of different repeated words is  2035
+ For length    11 the number of different repeated words is   613
+ For length    12 the number of different repeated words is   161
+ For length    13 the number of different repeated words is    37
+ For length    14 the number of different repeated words is    10
+ For length    15 the number of different repeated words is     1
+ ? Show repeats for words of length (6-15) (15) =14
+ ? Show repeats for words occuring with frequency (2-9999) (2) =2
+
+ ggtgctcatgccca
+ occurs at  21611
+ occurs at  21851
+ ttatccggtgatga
+ occurs at   4604
+ occurs at   8806
+ agcaccacgctgac
+ occurs at   5954
+ occurs at   9486
+ catgacggaggatg
+ occurs at  10480
+ occurs at  19925
+ aaagacgggaaaat
+ occurs at  11820
+ occurs at  43157
+ tacaaaaccaattt
+ occurs at  26797
+ occurs at  31369
+ cgagaaagagtgcg
+ occurs at   4260
+ occurs at  44305
+ gccggatgatggcg
+ occurs at   7893
+ occurs at  16638
+ atgacggaggatga
+ occurs at  10481
+ occurs at  19926
+ gcggcgaacgaggc
+ occurs at  11352
+ occurs at  18718
+ ? Show repeats for words of length (6-15) (15) =!
+
+Example of not enough memory
+----------------------------
+
+ Expected length of longest repeat    14
+ ? Minumim word length (1-6) (6) =1
+ Working
+ Not enough memory
+ Memory used in bytes 1125996. Length of longest repeat     5
+ ? Show repeat frequencies for words of at least length (1-5) (5) =!
+
+.end lit
+.left margin1
+@39. TX 5 @ Translate and list in upto six phases
+.LEFT MARGIN2
+.para
+This is a general listing function that will perform translations and 
+produce several forms of output. The possibilities are:
+.lit
+1) no translation, list one or two strands, two ways of numbering the 
+sequence.
+2) translation, one or two strands, one or three letter codes.
+ Positions defined by:
+  a) open reading frames of some minimum length l, l can be 0, hence giving 
+a complete six phase translation.
+  b) positions typed on keyboard, again 1 to 6 phases, translations appearing 
+above and below the dna.
+  c) positions read from a feature table.
+
+It should be used in preference to option 5. For publication 
+without a translation, the option to number ends of lines is more compact 
+than option 5. Some examples and typical dialogue are given below. Note the 
+requirement for d39.
+
+? Menu or option number=D39
+Find open reading frames, translate and list
+? (y/n) (y) Show translation
+ 
+The segments to translate can be
+   1 Typed on the keyboard
+   2 Read from a feature table
+X  3 Open reading frames
+? 1,2,3 =
+? Minimum open frame in amino acids (0-7238) (30) =
+? (y/n) (y) Use 1 letter codes
+Define section of DNA to display
+? start (1-7238) (1) =
+? end (2-7238) (7238) =300
+? Line length (30-120) (60) =
+Which strands should be shown
+X  1 + strand only
+   2 - strand only
+   3 Both strands
+? 1,2,3 =3
+? (y/n) (y) Number ends of lines
+ 
+ 
+    N  A  T  T  I  S  R  I  D  A  T  F  S  A  R  A  P  N  E  N
+   AACGCTACTACTATTAGTAGAATTGATGCCACCTTTTCAGCTCGCGCCCCAAATGAAAAT      60
+       .    :    .    :    .    :    .    :    .    :    .    :
+   TTGCGATGATGATAATCATCTTAACTACGGTGGAAAAGTCGAGCGCGGGGTTTACTTTTA
+                                        *  S  A  G  W  I  F  I
+      A  V  V  I  L  L  I  S  A  V  K  E  A  R  A  G  F  S  F
+ 
+    I  A  K  Q  V  I  D  H  L  R  N  V  S  N  G  Q  T  K  S  T
+        L  N  R  L  L  T  I  C  E  M  Y  L  M  V  K  L  N  L  L
+   ATAGCTAAACAGGTTATTGACCATTTGCGAAATGTATCTAATGGTCAAACTAAATCTACT     120
+       .    :    .    :    .    :    .    :    .    :    .    :
+   TATCGATTTGTCCAATAACTGGTAAACGCTTTACATAGATTACCAGTTTGATTTAGATGA
+    Y  S  F  L  N  N  V  M  Q  S  I  Y  R  I  T  L  S  F  R  S
+   I  A  L  C  T  I  S  W  K  R  F  T  D  L  P  *  V  L  D  V
+ 
+    R  S  Q  N  W  E  S  T  V  T  W  N  E  T  S  R  H  R  T  L
+     V  R  R  I  G  N  Q  L  L  H  G  M  K  L  P  D  T  V  L  *
+   CGTTCGCAGAATTGGGAATCAACTGTTACATGGAATGAAACTTCCAGACACCGTACTTTA     180
+       .    :    .    :    .    :    .    :    .    :    .    :
+   GCAAGCGTCTTAACCCTTAGTTGACAATGTACCTTACTTTGAAGGTCTGTGGCATGAAAT
+    T  R  L  I  P  F
+   R  E  C  F  Q  S  D  V  T  V  H  F  S  V  E  L  C  R  V  K
+ 
+    V  A  Y  L  K  H  V  E  L  Q  H  Q  I  Q  Q  L  S  S  K  P
+   GTTGCATATTTAAAACATGTTGAGCTACAGCACCAGATTCAGCAATTAAGCTCTAAGCCA     240
+       .    :    .    :    .    :    .    :    .    :    .    :
+   CAACGTATAAATTTTGTACAACTCGATGTCGTGGTCTAAGTCGTTAATTCGAGATTCGGT
+   T  A  Y  K  F  C  T  S  S  C  C  W  I
+ 
+    S  A  K  M  T  S  Y  Q  K  E  Q  L  K  V  L  S  N  P  D  L
+   TCCGCAAAAATGACCTCTTATCAAAAGGAGCAATTAAAGGTACTCTCTAATCCTGACCTG     300
+       .    :    .    :    .    :    .    :    .    :    .    :
+   AGGCGTTTTTACTGGAGAATAGTTTTCCTCGTTAATTTCCATGAGAGATTAGGACTGGAC
+ 
+ 
+? Menu or option number=D39
+Find open reading frames, translate and list
+? (y/n) (y) Show translation N
+Define section of DNA to display
+? start (1-7238) (1) =
+? end (2-7238) (7238) =300
+? Line length (30-120) (60) =
+Which strands should be shown
+X  1 + strand only
+   2 - strand only
+   3 Both strands
+? 1,2,3 =
+? (y/n) (y) Number ends of lines
+ 
+ 
+   AACGCTACTACTATTAGTAGAATTGATGCCACCTTTTCAGCTCGCGCCCCAAATGAAAAT      60
+ 
+   ATAGCTAAACAGGTTATTGACCATTTGCGAAATGTATCTAATGGTCAAACTAAATCTACT     120
+ 
+   CGTTCGCAGAATTGGGAATCAACTGTTACATGGAATGAAACTTCCAGACACCGTACTTTA     180
+ 
+   GTTGCATATTTAAAACATGTTGAGCTACAGCACCAGATTCAGCAATTAAGCTCTAAGCCA     240
+ 
+   TCCGCAAAAATGACCTCTTATCAAAAGGAGCAATTAAAGGTACTCTCTAATCCTGACCTG     300
+ 
+ 
+? Menu or option number=D39
+Find open reading frames, translate and list
+? (y/n) (y) Show translation
+The segments to translate can be
+   1 Typed on the keyboard
+   2 Read from a feature table
+X  3 Open reading frames
+? 1,2,3 =
+? Minimum open frame in amino acids (0-7238) (30) =0
+? (y/n) (y) Use 1 letter codes N
+Define section of DNA to display
+? start (1-7238) (1) =
+? end (2-7238) (7238) =300
+? Line length (30-120) (60) =
+Which strands should be shown
+X  1 + strand only
+   2 - strand only
+   3 Both strands
+? 1,2,3 =3
+? (y/n) (y) Number ends of lines
+ 
+ 
+   AsnAlaThrThrIleSerArgIleAspAlaThrPheSerAlaArgAlaProAsnGluAsn
+    ThrLeuLeuLeuLeuValGluLeuMetProProPheGlnLeuAlaProGlnMetLysIle
+     ArgTyrTyrTyr******Asn***CysHisLeuPheSerSerArgProLys***Lys
+   AACGCTACTACTATTAGTAGAATTGATGCCACCTTTTCAGCTCGCGCCCCAAATGAAAAT      60
+       .    :    .    :    .    :    .    :    .    :    .    :
+   TTGCGATGATGATAATCATCTTAACTACGGTGGAAAAGTCGAGCGCGGGGTTTACTTTTA
+   ValSerSerSerAsnThrSerAsnIleGlyGlyLys***SerAlaGlyTrpIlePheIle
+    Arg************TyrPheGlnHisTrpArgLysLeuGluArgGlyLeuHisPheTyr
+     AlaValValIleLeuLeuIleSerAlaValLysGluAlaArgAlaGlyPheSerPhe
+ 
+   IleAlaLysGlnValIleAspHisLeuArgAsnValSerAsnGlyGlnThrLysSerThr
+    ***LeuAsnArgLeuLeuThrIleCysGluMetTyrLeuMetValLysLeuAsnLeuLeu
+  TyrSer***ThrGlyTyr***ProPheAlaLysCysIle***TrpSerAsn***IleTyr
+   ATAGCTAAACAGGTTATTGACCATTTGCGAAATGTATCTAATGGTCAAACTAAATCTACT     120
+       .    :    .    :    .    :    .    :    .    :    .    :
+   TATCGATTTGTCCAATAACTGGTAAACGCTTTACATAGATTACCAGTTTGATTTAGATGA
+   TyrSerPheLeuAsnAsnValMetGlnSerIleTyrArgIleThrLeuSerPheArgSer
+    Leu***ValPro***GlnGlyAsnAlaPheHisIle***HisAspPhe***Ile***Glu
+  IleAlaLeuCysThrIleSerTrpLysArgPheThrAspLeuPro***ValLeuAspVal
+ 
+   ArgSerGlnAsnTrpGluSerThrValThrTrpAsnGluThrSerArgHisArgThrLeu
+    ValArgArgIleGlyAsnGlnLeuLeuHisGlyMetLysLeuProAspThrValLeu***
+  SerPheAlaGluLeuGlyIleAsnCysTyrMetGlu***AsnPheGlnThrProTyrPhe
+   CGTTCGCAGAATTGGGAATCAACTGTTACATGGAATGAAACTTCCAGACACCGTACTTTA     180
+       .    :    .    :    .    :    .    :    .    :    .    :
+   GCAAGCGTCTTAACCCTTAGTTGACAATGTACCTTACTTTGAAGGTCTGTGGCATGAAAT
+   ThrArgLeuIleProPhe***SerAsnCysProIlePheSerGlySerValThrSer***
+    AsnAlaSerAsnProIleLeuGln***MetSerHisPheLysTrpValGlyTyrLysLeu
+  ArgGluCysPheGlnSerAspValThrValHisPheSerValGluLeuCysArgValLys
+ 
+   ValAlaTyrLeuLysHisValGluLeuGlnHisGlnIleGlnGlnLeuSerSerLysPro
+    LeuHisIle***AsnMetLeuSerTyrSerThrArgPheSerAsn***AlaLeuSerHis
+  SerCysIlePheLysThrCys***AlaThrAlaProAspSerAlaIleLysLeu***Ala
+   GTTGCATATTTAAAACATGTTGAGCTACAGCACCAGATTCAGCAATTAAGCTCTAAGCCA     240
+       .    :    .    :    .    :    .    :    .    :    .    :
+   CAACGTATAAATTTTGTACAACTCGATGTCGTGGTCTAAGTCGTTAATTCGAGATTCGGT
+   AsnCysIle***PheMetAsnLeu***LeuValLeuAsnLeuLeu***AlaArgLeuTrp
+    GlnMetAsnLeuValHisGlnAlaValAlaGlySerGluAlaIleLeuSer***AlaMet
+  ThrAlaTyrLysPheCysThrSerSerCysCysTrpIle***CysAsnLeuGluLeuGly
+ 
+   SerAlaLysMetThrSerTyrGlnLysGluGlnLeuLysValLeuSerAsnProAspLeu
+    ProGlnLys***ProLeuIleLysArgSerAsn***ArgTyrSerLeuIleLeuThrCys
+  IleArgLysAsnAspLeuLeuSerLysGlyAlaIleLysGlyThrLeu***Ser***Pro
+   TCCGCAAAAATGACCTCTTATCAAAAGGAGCAATTAAAGGTACTCTCTAATCCTGACCTG     300
+       .    :    .    :    .    :    .    :    .    :    .    :
+   AGGCGTTTTTACTGGAGAATAGTTTTCCTCGTTAATTTCCATGAGAGATTAGGACTGGAC
+   GlyCysPheHisGlyArgIleLeuLeuLeuLeu***LeuTyrGluArgIleArgValGln
+    ArgLeuPheSerArgLysAspPheProAlaIleLeuProValArg***AspGlnGlyThr
+  AspAlaPheIleValGlu******PheSerCysAsnPheThrSerGluLeuGlySerArg
+ 
+ 
+? Menu or option number=D39
+Find open reading frames, translate and list
+? (y/n) (y) Show translation
+The segments to translate can be
+   1 Typed on the keyboard
+   2 Read from a feature table
+X  3 Open reading frames
+? 1,2,3 =1
+? (y/n) (y) Use 1 letter codes
+Define section of DNA to display
+? start (1-7238) (1) =
+? end (2-7238) (7238) =300
+? Line length (30-120) (60) =
+Which strands should be shown
+X  1 + strand only
+   2 - strand only
+   3 Both strands
+? 1,2,3 =
+? (y/n) (y) Number ends of lines N
+Translate
+? From (0-300) (0) =101
+? To (1-300) (300) =300
+Translate
+? From (0-300) (0) =102
+? To (1-300) (300) =200
+Translate
+? From (0-300) (0) =
+ 
+ 
+   AACGCTACTACTATTAGTAGAATTGATGCCACCTTTTCAGCTCGCGCCCCAAATGAAAAT
+           10        20        30        40        50        60
+ 
+                                            M  V  K  L  N  L  L
+                                             W  S  N  *  I  Y
+   ATAGCTAAACAGGTTATTGACCATTTGCGAAATGTATCTAATGGTCAAACTAAATCTACT
+           70        80        90       100       110       120
+ 
+     V  R  R  I  G  N  Q  L  L  H  G  M  K  L  P  D  T  V  L  *
+   S  F  A  E  L  G  I  N  C  Y  M  E  *  N  F  Q  T  P  Y  F
+   CGTTCGCAGAATTGGGAATCAACTGTTACATGGAATGAAACTTCCAGACACCGTACTTTA
+          130       140       150       160       170       180
+ 
+     L  H  I  *  N  M  L  S  Y  S  T  R  F  S  N  *  A  L  S  H
+   S  C  I  F  K  T  C
+   GTTGCATATTTAAAACATGTTGAGCTACAGCACCAGATTCAGCAATTAAGCTCTAAGCCA
+          190       200       210       220       230       240
+ 
+     P  Q  K  *  P  L  I  K  R  S  N  *  R  Y  S  L  I  L  T  C
+   TCCGCAAAAATGACCTCTTATCAAAAGGAGCAATTAAAGGTACTCTCTAATCCTGACCTG
+          250       260       270       280       290       300
+ 
+ 
+? Menu or option number=D39
+Find open reading frames, translate and list
+? (y/n) (y) Show translation
+The segments to translate can be
+   1 Typed on the keyboard
+   2 Read from a feature table
+X  3 Open reading frames
+? 1,2,3 =2
+? Embl feature table file=1.FT
+? (y/n) (y) Use 1 letter codes
+Define section of DNA to display
+? start (1-7238) (1) = 
+? end (2-7238) (7238) =300
+? Line length (30-120) (60) =
+Which strands should be shown
+X  1 + strand only
+   2 - strand only
+   3 Both strands
+? 1,2,3 =3
+? (y/n) (y) Number ends of lines
+ 
+ 
+    N  A  T  T  I  S  R  I  D  A  T  F  S  A  R  A  P  N  E  N
+   AACGCTACTACTATTAGTAGAATTGATGCCACCTTTTCAGCTCGCGCCCCAAATGAAAAT      60
+       .    :    .    :    .    :    .    :    .    :    .    :
+   TTGCGATGATGATAATCATCTTAACTACGGTGGAAAAGTCGAGCGCGGGGTTTACTTTTA
+                                        *  S  A  G  W  I  F  I
+      A  V  V  I  L  L  I  S  A  V  K  E  A  R  A  G  F  S  F
+ 
+    I  A  K  Q  V  I  D  H  L  R  N  V  S  N  G  Q  T  K  S  T
+        L  N  R  L  L  T  I  C  E  M  Y  L  M  V  K  L  N  L  L
+   ATAGCTAAACAGGTTATTGACCATTTGCGAAATGTATCTAATGGTCAAACTAAATCTACT     120
+       .    :    .    :    .    :    .    :    .    :    .    :
+   TATCGATTTGTCCAATAACTGGTAAACGCTTTACATAGATTACCAGTTTGATTTAGATGA
+    Y  S  F  L  N  N  V  M  Q  S  I  Y  R  I  T  L  S  F  R  S
+   I  A  L  C  T  I  S  W  K  R  F  T  D  L  P  *  V  L  D  V
+ 
+    R  S  Q  N  W  E  S  T  V  T  W  N  E  T  S  R  H  R  T  L
+     V  R  R  I  G  N  Q  L  L  H  G  M  K  L  P  D  T  V  L  *
+   CGTTCGCAGAATTGGGAATCAACTGTTACATGGAATGAAACTTCCAGACACCGTACTTTA     180
+       .    :    .    :    .    :    .    :    .    :    .    :
+   GCAAGCGTCTTAACCCTTAGTTGACAATGTACCTTACTTTGAAGGTCTGTGGCATGAAAT
+    T  R  L  I  P  F
+   R  E  C  F  Q  S  D  V  T  V  H  F  S  V  E  L  C  R  V  K
+ 
+    V  A  Y  L  K  H  V  E  L  Q  H  Q  I  Q  Q  L  S  S  K  P
+   GTTGCATATTTAAAACATGTTGAGCTACAGCACCAGATTCAGCAATTAAGCTCTAAGCCA     240
+       .    :    .    :    .    :    .    :    .    :    .    :
+   CAACGTATAAATTTTGTACAACTCGATGTCGTGGTCTAAGTCGTTAATTCGAGATTCGGT
+   T  A  Y  K  F  C  T  S  S  C  C  W  I
+ 
+    S  A  K  M  T  S  Y  Q  K  E  Q  L  K  V  L  S  N  P  D  L
+   TCCGCAAAAATGACCTCTTATCAAAAGGAGCAATTAAAGGTACTCTCTAATCCTGACCTG     300
+       .    :    .    :    .    :    .    :    .    :    .    :
+   AGGCGTTTTTACTGGAGAATAGTTTTCCTCGTTAATTTCCATGAGAGATTAGGACTGGAC
+                                     *  L  Y  E  R  I  R  V  Q
+                        *  F  S  C  N  F  T  S  E  L  G  S  R
+.end lit
+.left margin1
+@40. TX 5 @ Translate and write the protein sequence to disk
+.LEFT MARGIN2
+.para
+This routine allows the user to translate sections of the sequence into 
+the 
+1 letter amino acid codes and store the resulting amino acid sequences in
+a disk file.
+Two modes of use are possible. Either all open reading frames of at least 
+some minimum length will 
+automatically be found and translated, or the user can specify that 
+particular segments be translated.
+.para
+Mode 1: the user selects to to translate all open reading frames.
+.para
+Either, or both, strands can be 
+translated.
+ The output file is in the same format as a PIR .seq file. 
+Each protein segment is given an entry name that is its start base in 
+the DNA, and a title that includes its end position, 
+reading frame and strand (+ for plus, - for minus). 
+Each segment is terminated by * whether or not 
+there is a stop codon in the DNA. The file is therefore suitable for input 
+to FASTA, ALIGNL and ANALYSEPL.
+.para
+Mode 2: the user selects to identify the segments to translate.
+.para
+Either, or both, strands can be 
+translated.
+If multiple coding regions 
+are translated each will be separated from the previous one by a gap of 5 
+dashes (-----).
+The sections to translate can be 
+defined from the keyboard or by supplying the name of the appropriate 
+EMBL
+library feature table.
+.para
+Typical dialogue follows.
+.lit
+? Menu or option number=40
+ Translate and write protein sequence to disk
+? (y/n) (y) Translate selected regions
+? (y/n) (y) Define segments using keyboard
+Translate
+? From (0-1023) (0) =1
+? To (1-1023) (1023) =111
+? (y/n) (y) + strand
+Translate
+? From (0-1023) (0) =
+? Output file name=1.OUT
+ 
+ ? Menu or option number=40
+ Translate and write protein sequence to disk
+? (y/n) (y) Translate selected regions n
+? Minimum open frame in amino acids (5-1000) (30) =
+ 
+X 1 + strand only
+  2 - strand only
+  3 Both strands
+? 0,1,2,3 =3
+? File name for translation=1.OUT
+ 
+? Menu or option number=6
+Page through text files
+? Name of file to read=1.OUT
+>P1;    25
+    135     1 +
+ GAQRLLRRSCWCWRCGGRQRTQGSAGRGRRRRGGGG*
+>P1;   238
+    486     1 +
+ IRCRDCGQRRRGIFDLVDDFHVRRHIVLARKLFEAEGTGVHFHISLMGGNIVTAEVTNVR
+ VDAGADFAAVRMLALFGAVVPH*
+>P1;   556
+    795     1 +
+ 
+ SSTQVRRASAQTSSLQLESIVAVVNVEVFLAAKHSRFYIAVLFAQFGPLLDARLDRGCGK
+ GAGRRDQWRGGGVDLANGR*
+>P1;   796
+    987     1 +
+ 
+ FGYADHAFHLRSTSRHSDNVKFDSAGRRRCCCFHLVFSLGSDEEGLLARLLVEVTTIRVV
+ LRG*
+>P1;     2
+    163     2 +
+ NSVWAWCEVPRDYCAAAAGAGGAEVVNGPRDPLDEDVDDEEEVDSALLVAGSD*
+>P1;   176
+    391     2 +
+ PLRSGGGGVEAPETPSGWPARFAAATVANAVEGFSILWMIFTCAVILSLRVNSLKQKGQG
+ YTFTFRLWEVT*
+>P1;   476
+    628     2 +
+ SLTEPSASPSPTLLLRFSLVLTEGVPNPALRFGVLPLRPAAFNLNPSLLL*
+>P1;   629
+    958     2 +
+ MSRYSWLLNTAGFTSPFCLPSLGRFWTRGLTVAVEKEPAGETNGVEAALTLPMGVSLGML
+ TMLFTCAPPAAIPIMLSLIPLAAAAAAVSTWCFLWAAMRKACWRACSLR*
+>P1;     3
+    293     3 +
+ IRFGLGVRCPEITAPQLLVLAVRRSSTDPGIRWTRTSTTRRRWIAHCWWLAATDLSSDHS
+ DPAAEASRLPKLPVAGLLDSLPRLWPTPSRDFRSCG*
+>P1;   411
+    521     3 +
+ CACRRGSRLCSGTYARPLWCSSPSLSPPPRPRQRCC*
+>P1;  1020
+     37     1 -
+ EFGKYNPLTDNSSPTQDHTDGSHLNEQARQQAFLIAAQRKHQVETAAAAAASGIKLNIIG 
+ MAAGGAQVKSMVSIPKLTPIGKVNAASTPLVSPAGSFSTATVKPRVQKRPKLGKQNGDVK
+ PAVFSSQEYLDIYNSNDGFKLKAAGLSGSTPNLSAGLGTPSVKTKLNLSSNVGEGEAEGS
+ VRDYCTKEGEHTYRCKVCSRVYTHISNFCRHYVTSHKRNVKVYPCPFCFKEFTRKDNMTA
+ HVKIIHKIENPSTALATVAAANLAGQPLGVSGASTPPPPDLSGQNSNQSLPATSNALSTS
+ SSSSTSSSSGSLGPLTTSAPPAPAAAAQ*
+>P1;   373
+     -1     2 -
+ AKCESVPLSLLLQRVYAQGQYDGARENHPQDRKSLDGVGHSRGSESSRPATGSFGSLDAS
+ AAGSEWSELKSVAASHQQCAIHLLLVVDVLVQRIPGSVDDLRTASTSSCGAVISGHLTPS
+ PNRI*
+>P1;   517
+    407     2 -
+ QQRWRGRGGGLSEGLLHQRGRAYVPLQSLLPRLHAH*
+>P1;   649
+    518     2 -
+ QPGIPRHLQQQRWIQVEGCWSERKHAEPECWIRNSLCQNQAES*
+>P1;   853
+    650     2 -
+ HYRNGGWWSAGEKHGQHTQTNAHWQGQRRLHAIGLACRLLFHSHGQAARPEAAQTQTER
+ RCKTGCV*
+>P1;   958
+    854     2 -
+ SPQRAGAPTSLPHRCPEKTPGGNSSSGGGQRNQT*
+>P1;   179
+     78     3 -
+ VVRTQISRCQPPAMRYPPPPRRRRPRPADPWVR*
+>P1;   479
+    363     3 -
+ GTTAPKRASIRTAAKSAPASTRTLVTSAVTMLPPISEM*
+>P1;   791
+    666     3 -
+ RPLARSTPPPRHWSRLPAPFPQPRSSRASRSGPNWANRTAM*
+>P1;  1022
+    819     3 -
+ SNSASTTRSPTTAHPRRTTRMVVTSTSRRANKPSSSLPRENTRWKQQQRRRPAESNLTLS
+ EWRLVERR*
+End of file
+.end lit 
+
+.LEFT MARGIN1
+@41. TX 5 @ Calculate and write codon table to disk
+.LEFT MARGIN2
+.para
+This routine calculates codon usage tables
+for sections of the sequence
+and stores the resulting tables on disk.
+The sections to translate can be 
+defined from the keyboard or by supplying the name of the appropriate 
+EMBL
+library feature table.
+.para
+If required users can add to an existing codon table stored as a disk file. 
+Choose between storing observed counts or having them normalised so 
+that the totals for each amino acid sum to 100. Select between defining 
+segments at the keyboard or using an EMBL feature table. Define 
+segments. Signal completion with a zero start. Supply a file name. For 
+each segment the program will display the counts, at the end it will 
+display the accumulated totals.
+.lit
+
+ Typical dialogue follows.
+? Menu or option number=41
+ Calculate and write codon table to disk
+? (y/n) (y) Start with empty table
+? (y/n) (y) Show observed counts
+? (y/n) (y) Define segments using keyboard
+? Count from (0-1023) (0) =1
+? Count to (1-1023) (1023) =111
+? (y/n) (y) + strand
+ 
+     ===========================================
+     F TTT   0. S TCT   0. Y TAT   0. C TGT   0.
+     F TTC   1. S TCC   1. Y TAC   0. C TGC   3.
+     L TTA   1. S TCA   0. * TAA   0. * TGA   1.
+     L TTG   2. S TCG   0. * TAG   0. W TGG   2.
+     ===========================================
+     L CTT   0. P CCT   0. H CAT   0. R CGT   2.
+     L CTC   0. P CCC   0. H CAC   0. R CGC   2.
+     L CTA   0. P CCA   0. Q CAA   1. R CGA   1.
+     L CTG   1. P CCG   0. Q CAG   2. R CGG   2.
+     ===========================================
+     I ATT   0. T ACT   0. N AAT   0. S AGT   0.
+     I ATC   0. T ACC   1. N AAC   0. S AGC   1.
+     I ATA   0. T ACA   0. K AAA   0. R AGA   1.
+     M ATG   0. T ACG   0. K AAG   0. R AGG   0.
+     ===========================================
+     V GTT   0. A GCT   1. D GAT   0. G GGT   3.
+     V GTC   0. A GCC   1. D GAC   0. G GGC   1.
+     V GTA   0. A GCA   0. E GAA   1. G GGA   4.
+     V GTG   1. A GCG   0. E GAG   0. G GGG   0.
+     ===========================================
+? Count from (0-1023) (0) =
+ 
+    Codon totals over all genes
+     ===========================================
+     F TTT   0. S TCT   0. Y TAT   0. C TGT   0.
+     F TTC   1. S TCC   1. Y TAC   0. C TGC   3.
+     L TTA   1. S TCA   0. * TAA   0. * TGA   1.
+     L TTG   2. S TCG   0. * TAG   0. W TGG   2.
+     ===========================================
+     L CTT   0. P CCT   0. H CAT   0. R CGT   2.
+     L CTC   0. P CCC   0. H CAC   0. R CGC   2.
+     L CTA   0. P CCA   0. Q CAA   1. R CGA   1.
+     L CTG   1. P CCG   0. Q CAG   2. R CGG   2.
+     ===========================================
+     I ATT   0. T ACT   0. N AAT   0. S AGT   0.
+     I ATC   0. T ACC   1. N AAC   0. S AGC   1.
+     I ATA   0. T ACA   0. K AAA   0. R AGA   1.
+     M ATG   0. T ACG   0. K AAG   0. R AGG   0.
+     ===========================================
+     V GTT   0. A GCT   1. D GAT   0. G GGT   3.
+     V GTC   0. A GCC   1. D GAC   0. G GGC   1.
+     V GTA   0. A GCA   0. E GAA   1. G GGA   4.
+     V GTG   1. A GCG   0. E GAG   0. G GGG   0.
+     ===========================================
+? (y/n) (y) Save table in a file n
+.end lit
+
+.left margin1
+@42. TX 6 @ Codon usage method
+.LEFT MARGIN2
+.para
+Used to find protein coding regions. For each window length of the 
+sequence the routine measures the closeness to an expected codon usage. 
+Results are plotted for each of the three reading frames. Stop and start 
+codons are also marked on the plots. Has the highest resolution of all 
+such methods, but makes the strongest assumption, i.e. that the codon 
+usage is known. The latest version is described in Methods in Enzymology 
+183, 193-211.
+.para
+Choose whether to use an internal standard (i.e. part of the current 
+sequence known to code for a protein). If so define its end points, and 
+those of any others. Otherwise supply the name of a disk file containing a 
+table of codon usage. Tables are listed. Choose between using the 
+observed counts, or two types of normalisation: normalised to give an 
+average amino acid composition; normalised to no amino acid bias. The 
+first normalisation is clearly often sensible, but the second removes 
+valuable information and is only made availabe for special 
+circumstances. The final table will be displayed, followed by the 
+expected scores for window lengths 21, 31 and 41 codons. The scores for 
+each of the three reading frames are shown (they are logarithmic values) 
+to help users choose a window length for the analysis. Define a window 
+length and plot interval. Plotting will start.
+.para
+The method was first described in
+Staden and McLachlan Nucl. Acid Res. 10 141-156 (1982) and the 
+following is a summary of the initial ideas.
+The method makes the following main assumptions: the codon 
+preferences 
+of all the 
+genes in the sequence we are examining are similar to those of the 
+standard; 
+the sequence is coding 
+throughout its whole length in only one reading frame; in the coding 
+frame 
+the frequency of codon abc has a definite value Fabc 
+.LEFT MARGIN2
+If we select a sequence  a1b1c1a2b2c2a3b3c3,...,anbncnan+1bn+1cn+1 
+then the 
+probability of selecting it in each of the three frames is:
+.left margin15
+frame 1: p1=Fa1b1c1.Fa2b2c2....Fanbncn
+.left margin15
+frame 2: p2=Fb1c1a2.Fb2c2a3...Fbncnan+1
+.left margin15
+frame 3: p3=Fc1a2b2.Fc2a3b3...Fcnan+1bn+1
+.LEFT MARGIN2
+The probability that selection of a particular sequence was "caused" by it 
+being a coding sequence is:
+.LEFT MARGIN2
+P1=p1/(p1+p2+p3), P2=p2/(p1+p2+p3), P3=p3/(p1+p2+p3).
+.LEFT MARGIN2
+The program calculates these values for the given window length but 
+plots 
+Log(P/(1-P)) for each of the three frames. At each point along the 
+sequence 
+that the program has a 
+point to plot it finds which of the three values is highest and places a 
+single point at the 50% level for the corresponding frame. These single 
+points will join to form a solid line if one frame is consistently the 
+highest scoring. In addition stop codons are shown as short vertical lines 
+that bisect the 50% 
+level of probability. When looking for coding regions 
+the user should look for solid horizontal lines at the 
+50% level that are not interrupted by these short vertical lines.
+.para
+Changes.
+ Two normalisations are offered: 1) to remove all amino acid 
+compositional components from the tables, hence leaving only the codon 
+preference components. In general this is not recommended as the amino 
+acid 
+component alone is often sufficient to choose correctly between frames, 
+but 
+may be useful in special circumstances. 2) to change the amino acid 
+composition components to give an average amino acid composition 
+rather the 
+the one contained in the standard (this leaves the codon preference 
+components unchanged). In general this should be useful as the average 
+amino acid composition is likely to be closer to the composition of the 
+genes being hunted, than is that of the standard table of codon 
+preferences. 
+The average composition 
+is that recently published by Argos, not the Dayhoff one that we have 
+used 
+before.
+.para
+Typical dialogue follows.
+.lit
+ 
+? Menu or option number=42
+Staden and McLachlan codon usage method
+Codon tables for standards may be read from disk
+or calculated from parts of the current sequence
+? (y/n) (y) Define internal standard
+Define standard
+? start (0-1023) (0) =1
+? end (2-1023) (1023) =1000
+     ===========================================
+     F TTT  13. S TCT   1. Y TAT   1. C TGT   3.
+     F TTC   4. S TCC  10. Y TAC   1. C TGC   7.
+     L TTA   1. S TCA   0. * TAA   1. * TGA   4.
+     L TTG   4. S TCG   1. * TAG   3. W TGG   5.
+     ===========================================
+     L CTT   9. P CCT   1. H CAT   3. R CGT  14.
+     L CTC   7. P CCC   0. H CAC   7. R CGC  14.
+     L CTA   0. P CCA   0. Q CAA   4. R CGA   9.
+     L CTG  12. P CCG   1. Q CAG   9. R CGG   8.
+     ===========================================
+     I ATT   7. T ACT   4. N AAT   4. S AGT   1.
+     I ATC   4. T ACC   5. N AAC   3. S AGC   7.
+     I ATA   1. T ACA   1. K AAA   3. R AGA   2.
+     M ATG   2. T ACG   1. K AAG   2. R AGG   2.
+     ===========================================
+     V GTT  11. A GCT  13. D GAT   6. G GGT   9.
+     V GTC   5. A GCC  10. D GAC   9. G GGC  11.
+     V GTA   6. A GCA   5. E GAA   6. G GGA  12.
+     V GTG   8. A GCG   5. E GAG   3. G GGG   8.
+     ===========================================
+Define standard
+? start (0-1023) (0) =
+Total codons in standard=     333.
+X 1 Use observed frequencies
+  2 Normalize to average amino acid composition
+  3 Normalize to no amino acid bias
+? 0,1,2,3 =2
+     ===========================================
+     F TTT  19. S TCT   2. Y TAT  10. C TGT   3.
+     F TTC   6. S TCC  22. Y TAC  10. C TGC   8.
+     L TTA   2. S TCA   0. * TAA   0. * TGA   0.
+     L TTG   7. S TCG   2. * TAG   0. W TGG   8.
+     ===========================================
+     L CTT  16. P CCT  16. H CAT   4. R CGT  10.
+     L CTC  12. P CCC   0. H CAC  10. R CGC  10.
+     L CTA   0. P CCA   0. Q CAA   8. R CGA   7.
+     L CTG  21. P CCG  16. Q CAG  18. R CGG   6.
+     ===========================================
+     I ATT  19. T ACT  13. N AAT  16. S AGT   2.
+     I ATC  11. T ACC  17. N AAC  12. S AGC  15.
+     I ATA   3. T ACA   3. K AAA  22. R AGA   1.
+     M ATG  15. T ACG   3. K AAG  15. R AGG   1.
+     ===========================================
+     V GTT  15. A GCT  21. D GAT  14. G GGT  10.
+     V GTC   7. A GCC  16. D GAC  20. G GGC  13.
+     V GTA   8. A GCA   8. E GAA  26. G GGA  14.
+     V GTG  11. A GCG   8. E GAG  13. G GGG   9.
+     ===========================================
+Span length  21 expected mean values:   4.8  -5.7  -4.8
+Span length  31 expected mean values:   7.1  -8.4  -7.2
+Span length  41 expected mean values:   9.5 -11.1  -9.5
+? odd span length (11-101) (25) =41
+? plot interval (1-11) (5) =
+ 
+ Missing graphics display here
+
+.end lit
+
+.left margin1
+@43. TX 6 @ Positional base preference method. 
+.LEFT MARGIN2
+.para
+Used to find protein coding regions. For each window length of the 
+sequence the routine measures the closeness to an expected pattern of 
+base frequencies . Results are plotted for each of the three reading 
+frames. Stop and start codons are also marked on the plots.  The method 
+is particularly useful for showing which reading frame is the most likely 
+to be coding. The latest version is described in a forthcoming issue of 
+Methods in Enzymology, but the original ideas were given in
+Staden, R. Nucl. Acid Res. 12 551-567 (1984).
+.para
+If dialogue is requested the following inputs are needed, otherwise the 
+standard analysis is performed. Choose between a "global" standard, or a 
+selected one. If the global standard is selected the 
+expected scores are displayed and the user asked to define a span length 
+and a plot interval. Then users choose between plotting relative or 
+absolute scores, and can reset the scaling values employed for plotting.
+If the global standard is not selected users must define a region of the 
+sequence to use as a standard, or they can read in a codon table from which 
+the
+program will calculate one. Then they can either, use the values 
+observed in this standard, or they can combine its values for the third 
+positions in codons, with those from the global standard. Next they can 
+give different weightings to each of the three positions in codons.
+.para
+In its original form the method
+ took advantage of the
+uneven 
+use of amino acids by proteins and the structure of the genetic code table
+and assumed that there is a typical ("global")
+amino acid composition 
+and no codon preference. The typical amino acid composition is the 
+average 
+composition found by Argos (see below).
+ This composition and no codon preference 
+determines the frequency of each of the four bases in each of the three 
+codon positions. This 3x4 frequency table shows unequal use of the bases 
+and in particular a marked use of G in position 1 and of A in position 2 
+(at the expence of G). The routine slides a window along the sequence and 
+calculates a score for each of the three reading 
+frames at each window position. It assumes the sequence is coding 
+throughout its whole length and calcualtes the probability that it is 
+coding in each of the three frames. 
+When tested against all the E. coli sequences in the EMBL sequence 
+library 
+it correctly identified the coding frame for 91% of window positions.
+(The E. coli 
+sequences were chosen only for technical reasons: I have no reason to 
+think 
+the method would work less well on other organisms with roughly even 
+base composition.)
+The routine can plot either absolute or relative values: ie absolute values 
+are the values found by summing the scores for each frame (say p1, p2 
+and 
+p3), and the relative values are then p1/(p1+p2+p3), p2/(p1+p2+p3) and 
+p3/(p1+p2+p3). 
+.para
+At each point along the sequence 
+that the program has a 
+point to plot it finds which of the three values is highest and places a 
+single point at the 50% level for the corresponding frame. These single 
+points will join to form a solid line if one frame is consistently the 
+highest scoring. In addition stop codons are shown as short vertical lines 
+that bisect the 50% 
+level of probability. When looking for coding regions 
+the user should look for solid horizontal lines at the 
+50% level that are not interrupted by these short vertical lines.
+
+The absolute mean
+values expected on the complement of 
+the coding strand (and in the same frame) 
+are 5% lower than those on the coding strand but the relative values 
+are the same on both strands. Although the 
+relative values give smoother plots and tend to emphasize the coding 
+frame
+they therefore, cannot be used to decide which strand is coding. The 
+absolute values plot should be used for this purpose but bearing in mind 
+the fact the the differences between strands are quite small. 
+.para
+The method has been improved in two overall ways: first it now allows 
+users to 
+define their own typical amino acid composition by selecting a standard 
+sequence from within the sequence they are analysing or from a codon table;
+secondly it allows the inclusion of third position preferences. 
+Again these third position preferences are defined by the use of an 
+internal standard sequence. Not only can users define their own standards 
+but they can also give weights to each of the three positions in codons. 
+This allows different emphasis to be used for each of the three positions. 
+As an example of its use, by giving, in turn, weights of 1.0, 0.0, 0.0, and 
+0.0, 1.0, 0.0, and finally 0.0, 0.0, 1.0, you could see the separate 
+contribution made by each of the three positions. It is also possible to 
+use the third position preferences with the values for the first two 
+positions taken from the "global"  amino acid composition. 
+ In all cases users may choose to plot 
+absolute or relative values. The expected scores are displayed before 
+each 
+analysis and scales are drawn on the plots.
+At present this method does not give probabilities of coding; it has only 
+been tested for its ability to choose the correct reading frame (see 
+above). It could be used to give probabilities of coding if was applied to 
+all known coding and non-coding sequences in the way that the uneven 
+positional base frequencies method was. It is designed to be used in 
+conjunction with this method. Note that the average amino composition 
+used 
+to derive the base frequencies was changed on 17-11-1988, to be
+ the new average given by McCaldon and Argos in Proteins 4 99-122 
+(1988).
+A further change is to allow users to select their own scales for 
+producing the plots. It can be helpful if they want to emphasise or 
+diminish 
+certain features.
+.para
+Typical dialogue follows.
+.lit
+? Menu or option number=D43
+Positional base preferences method to find protein genes
+Select standard source
+X  1 Use global standard         
+   2 Use internal standard       
+   3 Use codon usage table       
+? Selection  (1-3) (1) =2
+Define region for standard
+? start (0-8134) (0) =3171
+? end (3172-8134) (8134) =4700
+Select normalisation
+X  1 Use observed frequencies    
+   2 Combine with global standard
+? Selection  (1-2) (1) =1
+          T      C      A      G      Range
+      1  0.125  0.249  0.230  0.397  0.272
+      2  0.298  0.245  0.292  0.165  0.132
+      3  0.288  0.313  0.169  0.230  0.144
+? (y/n) (y) Use 1.0 for positional weights 
+Give weights between 0.0 and 1.0
+to each of the 3 codon positions
+? Position 1 (0.00-1.00) (1.00) =
+? Position 2 (0.00-1.00) (1.00) =
+? Position 3 (0.00-1.00) (1.00) =
+Expected scores per codon in each frame
+       0.136     0.122     0.123
+? odd span length (31-101) (67) =
+? plot interval (1-11) (5) =
+? (y/n) (y) Plot relative scores 
+Scaling values:
+   Minimum  maximum    range
+    0.3121   0.3656   0.0382
+? (y/n) (y) Leave scaling values unchanged 
+
+  Graphics not shown
+
+? Menu or option number=D43
+Positional base preferences method to find protein genes
+Select standard source
+X  1 Use global standard         
+   2 Use internal standard       
+   3 Use codon usage table       
+? Selection  (1-3) (1) =3
+? File name of standard=atpase.cods
+     ===========================================
+     F TTT  21. S TCT  33. Y TAT  15. C TGT   5.
+     F TTC  55. S TCC  40. Y TAC  40. C TGC   4.
+     L TTA   8. S TCA   7. * TAA   8. * TGA   0.
+     L TTG  19. S TCG  12. * TAG   1. W TGG  17.
+     ===========================================
+     L CTT  22. P CCT  17. H CAT   6. R CGT  73.
+     L CTC  21. P CCC   4. H CAC  30. R CGC  23.
+     L CTA   1. P CCA  10. Q CAA  19. R CGA   5.
+     L CTG 168. P CCG  48. Q CAG  80. R CGG   3.
+     ===========================================
+     I ATT  47. T ACT  14. N AAT  17. S AGT   8.
+     I ATC  98. T ACC  54. N AAC  52. S AGC  26.
+     I ATA   6. T ACA   7. K AAA  85. R AGA   0.
+     M ATG  75. T ACG  13. K AAG  28. R AGG   0.
+     ===========================================
+     V GTT  67. A GCT  56. D GAT  41. G GGT  90.
+     V GTC  29. A GCC  53. D GAC  66. G GGC  66.
+     V GTA  49. A GCA  59. E GAA 101. G GGA   5.
+     V GTG  57. A GCG  64. E GAG  41. G GGG   8.
+     ===========================================
+Select normalisation
+X  1 Use observed frequencies    
+   2 Combine with global standard
+? Selection  (1-2) (1) =2
+          T      C      A      G      Range
+      1  0.177  0.211  0.277  0.336  0.159
+      2  0.271  0.238  0.310  0.182  0.128
+      3  0.242  0.301  0.168  0.289  0.132
+? (y/n) (y) Use 1.0 for positional weights 
+Expected scores per codon in each frame
+       0.785     0.736     0.736
+? odd span length (31-101) (67) =
+? plot interval (1-11) (5) =
+? (y/n) (y) Plot relative scores 
+Scaling values:
+   Minimum  maximum    range
+    0.3219   0.3519   0.0214
+? (y/n) (y) Leave scaling values unchanged 
+
+  Graphics not shown
+.end lit
+.left margIN1
+@44. TX 6 @ Uneven positional base frequencies.
+.LEFT MARGIN2
+.para
+Used to find regions of a sequence that might be coding for a protein. The 
+method looks for sections of the sequence in which the frequency at 
+which each of the four bases occupies the three positions in codons is 
+nonrandom. The level of nonrandomness is plotted on a scale that shows 
+the probability that the sequence is coding. At each position along a 
+sequence the calculation gives the same value for all six possible reading 
+frames, so only one value is plotted.
+.para
+Define the window length and plot interval.
+.para
+The results are plotted in a box divided by a horizontal line marked "76%". 
+76% of coding regions achieve values above this line and 76% of 
+noncoding regions achieve scores below the line.
+.para
+This method, first described in  Staden R. Nucl. Acid Res. 12 551-567 
+1984,
+looks for uneven positional 
+usage of bases in codons.
+It looks through the sequence in one fixed 
+phase and counts the number of times each base apears in each of the 
+three 
+codon positions: for each window position it counts A1,A2,A3 and 
+C1,C2,C3 
+and G1,G2,G3 and T1,T2,T3 and calculates AMEAN=(A1+A2+A3)/3, and 
+similarly 
+CMEAN, GMEAN 
+and TMEAN; it then calculates 
+ADIF=abs(A1-AMEAN)+abs(A2-AMEAN)+abs(A3-AMEAN) and similarly 
+CDIF, GDIF and 
+TDIF to measure the differences between an even base usage for all 
+positions in the codons and the observed usage. The routine then 
+calculates 
+the sum ADIF+CDIF+GDIF+TDIF and plots this value on the following scale: 
+the base level is such that no known window in a coding region has a 
+lower 
+value, whereas 14% of windows in noncoding sequences score below it. 
+The
+top of the scale is not achieved by any known noncoding
+region, but is reached by 16% of known coding regions. 
+The bar drawn across the 
+plot corresponds to a level that is exceeded by 76% of windows in known 
+coding regions
+but is reached by only 24% of windows in known noncoding regions. ie 
+76% of 
+coding windows score above and 76% of noncoding windows score below.
+This is similar to Ficketts method but without 
+the probabilities and weightings from the Los Alamos sequence library: it 
+is therefore unbiased but may well give very similar results.
+.left margin1
+@45. TX 6 @ Codon improbability on base composition
+.LEFT MARGIN2
+.para
+Used to find regions of a sequence that might code for a protein.
+.para
+If dialogue is requested define a window length and plot interval.
+.para
+ The idea of the method is, that of all sequence features 
+that we know, it is only 
+coding regions that will give rise to codon biases well above those 
+expected 
+from the base composition.
+If a region of sequence shows sufficiently strong
+codon bias then we conclude that it is coding for a protein.
+ Using the multinomial distribution we
+have derived a function to measure the improbability of observing a 
+set of codons from a sequence of the given composition. Using the 
+Poisson 
+distribution we have worked out the distribution 
+of the improbability. The program plots the observed improbability minus 
+the expected improbability (the mean as calculated from the Poisson 
+distribution). The plots are presented against a scale of units of standard 
+deviation as measured from the Poisson distribution. As with the other 
+Staden and McLachlan method the program puts an extra point at a fixed 
+level for the highest of the three probabilities; for this function this 
+point is placed at six standard deviations above the mean expected level. 
+The top of each plot corresponds to 12 standard deviations above the 
+expected level and the bottom corresponds to the expected value.
+.para
+Analysis of the application 
+of the method to the EMBL sequence library indicates that the method 
+does 
+work for most sequences and that the levels of improbability roughly 
+correlate with levels of expression. 
+Coding regions will show high peaks in all three frames making 
+interpretation more difficult than for some of the other methods.
+.left margin1
+@46. TX 6 @ Codon improbability on amino acid composition
+.LEFT MARGIN2
+.para
+Used to finds regions of a sequence that might code for a protein.
+.para
+If dialogue is requested define a window length and a plot interval.
+.para
+The idea of the method is, that of all sequence features 
+that we know, it is only 
+coding regions that will give rise to codon biases such that, for each 
+amino acid, some codons are used far more frequently than others. The 
+method is independent of what the bias actually is, requiring only that it 
+is present.
+If a region of sequence shows sufficiently strong
+codon bias then we conclude that it is coding for a protein.
+ Using the multinomial distribution we
+have derived a function to measure the improbability of observing a 
+set of codons from a sequence of the given composition. Using the 
+Poisson 
+distribution we have worked out the distribution 
+of the improbability. The program plots the observed improbability minus 
+the expected improbability (the mean as calculated from the Poisson 
+distribution). The plots are presented against a scale of units of standard 
+deviation as measured from the Poisson distribution. As with the other 
+Staden and McLachlan method the program puts an extra point at a fixed 
+level for the highest of the three probabilities; for this function this 
+point is placed at six standard deviations above the mean expected level. 
+The top of each plot corresponds to 12 standard deviations above the 
+expected level and the bottom corresponds to the expected value.
+.left margin1
+@47. TX 6 @ Shepherd RNY preference method
+.LEFT MARGIN2
+.para
+Used to find regions of a sequence that might code for a protein. Based on 
+the method of Shepherd
+(PNAS 78 1596-1600, 1981). 
+.para
+If dialogue is requested define a window length and plot interval.
+.para
+Shepherd has found that 
+many genes have a preference for the use of codons of the form RNY 
+where 
+R=purine, Y=pyrimidine and N=any base. He has attributed this to being 
+due 
+to remants of a primitive genetic code. The calculation is similar to that 
+for the Staden and McLachlan method, the p1's being simply the number of 
+RNY codons found in frame 1 etc and the P's being p/(p1+p2+p3).
+.left margIN1
+@48. TX 6 @ Ficketts method
+.LEFT MARGIN2
+.para
+Used to find regions of a sequence that might code for a protein. Based on 
+the method of Fickett
+(Nucl. Acid Res.10 
+1982), but plots values for fixed window lengths rather than over the 
+whole of open reading frames.
+.para
+If dialogue is requested define a window length and plot interval. The 
+results are plotted in a box divided into three horizontal strips.
+.para
+Sections of the sequence with values plotted in the top strip of the box 
+are adjudged to be coding, those in the middle strip "no decision", and 
+those in the bottom "not coding".
+.para
+The program performs the following calculations: let A1 = the number of 
+occurences of base A in position 1 of codons, A2 for position 2 etc. 
+Similarly for bases C,G and T. For each window position calculate 
+Apos=max(A1,A2,A3)/min(A1,A2,A3)+1. Similarly for C,G and T to give 4 
+positional values. Also count the base composition for the window to 
+give 
+Acomp, Ccomp etc. Fickett  tested each of these 8 parameters singly as 
+to 
+their ability to distinguish coding from noncoding regions and arived at 
+probabilities of coding for the range of values each can take = Pcod. He 
+also measured their relative abilities and given weightings to each of 
+the 8 parameters = Pw. To calculate the "TESTCODE" for a window we 
+first lookup the Pcod for each of the calculated compositional and 
+positional values and then calculate TESTCODE=sum(Pcod*Pw). TESTCODE 
+is 
+plotted relative to three levels of decision: the top division="coding",
+the middle="no opinion" and the bottom division="non coding".
+.left margin1
+@49. TX 6 @ tRNA gene search. 
+.LEFT MARGIN2
+.para
+Used to find segments of a sequence that might code for tRNAs. Looks for 
+potential cloverleaf forming structures and then for the presence of 
+expected conserved bases. Presents results graphically or draws out the 
+cloverleafs.
+.para
+If dialogue is requested a large number of parameters need to be given 
+values, including some loop lengths, scores for each of the four stems, 
+and scores for the conserved bases.
+.para
+The program was first described in 
+Staden Nucl. Acid Res 817-825 (1980). 
+                The tRNA's  that  have
+          been  sequenced  so far have two characteristics that can be used 
+to
+          locate their genes within long DNA sequences.  Firstly they  have  a
+          common   secondary  structure  -  the  cloverleaf  -  and  secondly,
+          particular bases almost always appear at certain  positions  in  
+the
+          cloverleaf.   The  cloverleaf  is composed of four base-paired 
+stems
+          and four loops.  Three of the stems are  of  fixed  length  but  the
+          fourth,  the  dhu  stem which usually has four base pairs, 
+sometimes
+          has only three.  All of the loops can vary in size.   The  following
+          relationships between the stems in the cloverleaf are assumed in 
+the
+          program:  (a) there are no bases between one end  of  the  
+aminoacyl
+          stem  and  the  adjoining tuc stem;  (b) there are two bases 
+between
+          the aminoacyl stem and the dhu stem;  (c) there is one base  
+between
+          the  dhu  stem and the anticodon stem;  (d) there are at least three
+          bases between the anticodon stem and the tuc stem.
+                The program looks first for cloverleaf structure and then,  if
+          required,  for  conserved bases.  The sizes of the loops, the number
+          of basepairs in the stems and the required conserved bases  may  
+all
+          be  specified  by the user.  The process of looking for the presence
+          of conserved bases can reduce the  number  of  potential  
+structures
+          found considerably.
+ The
+          user may also specify that an intron may be present in the 
+anticodon
+          loop.
+.para
+The user may define a minimum number of 
+base pairs for each stem using the scoring system G-C, A-T=2 and G-T=1 
+and 
+scores for each of the conserved bases. Recommended values for the stem 
+scores are given by the prompts and the percentage conservation of the 
+conserved bases as found in the Nucl. Acid Res 1979  paper Gauss, Gruter
+ and Sprinzl  are also given,
+but the user must decide which bases are most 
+likely to be conserved for the sequence being examined.
+The output shows the position of the possible gene in the sequence by a 
+vertical line the height of which shows the number of basepairs made in 
+the 
+stems. The cloverleaf structure is also drawn but will scroll up off the 
+screen. Output of the cloverleafs will look like:
+.lit
+
+       6942
+                    A              
+                  A-U              
+                  A-U              
+                  G-C              
+                  A-U              
+                  U-A              
+                  A-U              
+                  U-A      AAU      
+                  U   UAUCU         
+          AA    A    !!!!!         
+            AAUG     AUAGA   A     
+         U  !!!!     U    UCA      
+         C  UUAC      U            
+          AA    A                  
+                 U-AA A            
+                 A-U               
+                 A-U               
+                 C-G               
+                 U-A               
+                U   A              
+                U   A               
+                 GUC               
+
+ Typical dialogue follows.
+ 
+? Menu or option number=D49
+ tRNA search
+? Maximum trna length (70-130) (92) =
+? Aminoacyl stem score (0-14) (11) =
+? Tu stem score (0-10) (8) =
+? Anticodon stem score (0-10) (8) =
+? D stem score (0-8) (3) =
+? Minimum base pairing total (30-32) (32) =
+? Minimum intron length (0-30) (0) =
+? Minimum length for TU loop (4-12) (6) =
+? Maximum length for TU loop (6-12) (9) =
+? (y/n) (y) Skip search for conserved bases n
+Give a score for each base, then a minimum total at the end
+? Base  8, T is 100% conserved. Score (0-100) (0) =
+? Base 10, G is  95% conserved. Score (0-100) (0) =
+? Base 11, Y is  96% conserved. Score (0-100) (0) =
+? Base 14, A is 100% conserved. Score (0-100) (0) =
+? Base 15, R is 100% conserved. Score (0-100) (0) =
+? Base 21, A is  97% conserved. Score (0-100) (0) =
+? Base 32, Y is 100% conserved. Score (0-100) (0) =
+? Base 33, T is  98% conserved. Score (0-100) (0) =
+? Base 37, A is  91% conserved. Score (0-100) (0) =
+? Base 48, Y is 100% conserved. Score (0-100) (0) =
+? Base 53, G is 100% conserved. Score (0-100) (0) =
+? Base 54, T is  95% conserved. Score (0-100) (0) =
+? Base 55, T is  97% conserved. Score (0-100) (0) =
+? Base 56, C is 100% conserved. Score (0-100) (0) =
+? Base 57, R is 100% conserved. Score (0-100) (0) =
+? Base 58, A is 100% conserved. Score (0-100) (0) =
+? Base 60, Y is  92% conserved. Score (0-100) (0) =
+? Base 61, C is 100% conserved. Score (0-100) (0) =
+? Minimum total conserved base score (0-0) (0) =
+? (y/n) (y) Plot results n
+ 
+ Searching
+ 
+       306
+                   C
+                 C-G
+                 C-G
+                 G-C
+                 T-A
+                 C-G
+                 A-T
+                 T+G     AT
+                A   ATACA
+        TTC    T    !!!!   G
+           CTGT     TATGG  G
+       G    ! !     T    GA
+       C   TAAA      C
+        GCG    C      G
+                T+GA   C
+                C-G C   T
+                T+G  A   T
+                T-A   G   T
+                T-A    G   A
+               G   G    G   C
+               A   A     G   A
+                AGC       T   C
+                           A   T
+                            C   T
+                             A
+                              C T
+ 
+
+.end lit
+.left margIN1
+.left margIN1
+@50. TX 7 @ Plot start codons
+.left margin2
+.para
+This function plots the positions of all start codons for each of the three 
+reading frames.
+.left margin1
+@51. TX 7 @ Plot stop codons
+.left margin2
+.para
+This function plots the positions of all stop codons for each of the three 
+reading frames.
+.left margIN1
+@52. TX 7 @ Plot stop codons on the complementary strand
+.left margin2
+.para
+This function plots the positions of all stop codons for each of the three 
+reading frames on the complementary strand.
+.left margin1
+@53. TX 7 @ Plot stop codons on both strands
+.left margin2
+.para
+This function plots the positions of all stop codons for each of the three 
+reading frames on both strands.
+.left margin1
+@54. TX 5 @ Search for longest open reading frames
+.left margin2
+.para
+This function will report the positons of the ends of
+all sections of sequence that contain no stop codons. All six reading 
+frames are examined. Results are presented in the form of an EMBL feature
+table. Hence if the results are stored in a file by use of "direct output 
+to disk", the file
+ can be used to translate the 
+open reading frames in a sequence.
+Note that in order for the file to be used as a feature table it
+must include either EMBL
+or GenBank headers, and a suitable "tail". The simplest header is the word
+FEATURES starting in column 1 of the first line of the file. The simplest
+tail is 2 empty lines at the end of the file. These lines are not included
+when nip writes out results in feature table format.
+.para
+Define the minimum length of open reading frame to report (in amino 
+acids).
+Choose to search either or both strands. The program displays the end 
+points, the reading frame and strand.
+.para
+Typical dialogue follows.
+.lit
+
+? Menu or option number=D54
+ Find open reading frames
+? Minimum open frame in amino acids (5-1000) (30) =100
+ 
+X 1 + strand only
+  2 - strand only
+  3 Both strands
+? 0,1,2,3 =3
+
+FT   CDS           1    831       1    831
+FT   CDS        1540   2853       1   1314
+FT   CDS        3130   4242       1   1113
+FT   CDS        5761   6114       1    354
+FT   CDS        6187   6711       1    525
+FT   CDS        1766   2077       2    312
+FT   CDS        2078   2446       2    369
+FT   CDS        4136   5500       2   1365
+FT   CDS        1335   1637       3    303
+FT   CDS        2844   3194       3    351
+FT   CDS        6819   7238       3    420
+FT   CDS        2073   1711  C    1    363
+FT   CDS        2469   2149  C    1    321
+FT   CDS        6542   6144  C    3    399
+
+.end lit
+.left margin1
+@55. TX 8 @ Search for E. coli promoter (general)
+.LEFT MARGIN2
+.para
+Searches for E coli promoter like sequences using a standard weight 
+matrix. The positions of the matches are plotted. No dialogue is required.
+.para
+The method was first described in
+ Staden R. Nucl. Acid Res. 12 505-519 1984.
+This search uses a weight matrix taken from the frequency tables 
+contained 
+in Hawley, D. K. and McClure, R., nar 11 2237-2255 (1983).
+ The weight matrix is 
+divided into 3 sections that are separated by varying sizes of gap: the -
+35 
+region, the -10 and the +1 region.
+The algorithm first looks for a sufficiently good -35 region, then for the 
+best -10 region within range and then for the best +1 region within range 
+of the -10; each separate region must score above the lowest known 
+score 
+for the corresponding section. The gap penalty is then applied and two 
+plots
+produced: one with gap penalties, one without.
+ Scaling is such that no 
+known promoter scores below the bottom level and no known promoter 
+scores 
+above the top level when the weight matrix is applied.
+.para
+Two other functions also look for E. coli promoters: 92 looks for sites on 
+the complementary strand and 93 looks for individual -35 and -10 
+regions 
+and plots them on a scale such the top is the highest known value +10% 
+and 
+the bottom is the lowest known -10%
+.LEFT MARGIN1
+.lit
+weights for E. coli promoters 
+-35 region:
+P -50-49-48-47-46-45-44-43-42-41-40-39-38-37-36-35-34-33-32-31-30-29-28-27-26
+  
+107109109110110110110110110111111110111112112112112112112112112112112112112
+T  41 33 32 25 34 22 35 35 42 27 32 42 47 14 92 94 11 19 15 37 46 34 38 48 34
+C  22 27 18 29 20 14 20 12 22 23 16 25 10 43  7  6 11 18 60  8 25 23 23 17 20
+A  28 38 30 37 35 56 42 42 37 42 39 18 25 26  2  6  2 72 26 50 26 34 25 26 31
+G  16 11 29 19 21 18 13 21  9 19 24 26 29 29 11  6 88  3 11 17 15 21 26 21 27
+-10 region:
+P -23-22-21-20-19-18-17-16-15-14-13-12-11-10 -9 -8 -7 -6 -5
+  112112112112112112112112112112112112112112112112112112112
+T  35 28 28 27 39 51 34 43 26 31 89  3 49 15 19108 31 29 21
+C  34 21 24 27 12 25 20 25 20 27 10  2 16 14 22  3 13 16 30
+A  20 39 33 33 39 23 29 16 23 19  2106 29 66 57  1 35 23 31
+G  23 24 27 25 22 13 29 28 43 35 11  1 18 17 14  0 33 24 30
++ region:
+P -2 -1  1  2  3  4  5  6  7  8  9 10
+  86 88 85 88 88 88 88 88 88 88 88 88
+T 16 22  2 42 27 23 20 25 27 15 16 29
+C 29 49  4 25 25 13 18 22 17 17 16 17
+A 20  9 45 16 24 25 28 24 24 32 35 26
+G 21  8 37  5 12 27 22 17 20 24 21 16
+.end lit
+Notes:
+E. coli promoters have been shown to contain 2 regions of conserved 
+sequence
+located about 10 and 35 bases upstream of the transcription startsite. 
+These
+are TATAAT and TTGACA with an allowed spacing of 15 to 21 bases 
+between. The
+spacing with maximum efficiency was 17 bases and all but 12 of the 112 
+sequences could be aligned with a separation of 17 +or-1 bases. The 
+standard
+promoter has spacing 7 and 17 bases between the startsite and the -10 
+region,
+and the -10 and -35 regions, respectively. The spacing between the -10 
+region
+and the startsite is usually 6 or 7 bases but varies between 4 and 8 
+bases.
+There is an AT rich region of 8 to 10 bases upstream of the -35 region.
+Iniation with a purine is highly prefered with G being used if A is not
+present.
+.lit
+Gap penalties:
+	15 0.02   (only exists as mutant)
+	16 0.2
+	17 1.0
+	18 0.2
+	19 0.05   (guess)
+	20 0.02   (guess)
+	21 0.01   (guess)
+.end lit
+.left margin1
+@56. TX  8 @ Search for E. coli promoter (general)
+strand
+.LEFT MARGIN2
+.para
+This function searches for E. Coli promoters on the complementary strand 
+of 
+the sequence. See the notes on option 55.
+.left margin1
+@57. TX 8 @ Search for E. coli promoter sequences. (-35 and -10) 
+.LEFT MARGIN
+.para
+This function searches separately for the -35 and -10 sequences of an E. 
+coli promoter. See the notes on option 55.
+.left margIN1
+@58. TX 8 @ Search for procaryotic ribosome binding sites
+.LEFT MARGIN2
+.para
+This function searches for the 5' ends of prokaryotic genes using an 
+unusual weight matrix. The search is relatively slow because the matrix 
+is 101 bases in length. No dialogue is required.
+.para
+The method was first described in
+ Staden Nucl. Acid Res. 12 505-519 1984. This actually looks for more 
+than 
+a ribosome binding site as is explained below.  This uses their weight 
+matrix w101 of Stormo and 
+Schneider (NAR 10 2971-3024, 1982)
+which with a value of 2 finds all gene starts in their library. 
+.LEFT MARGIN1
+.lit
+ P-60-59-58-57-56-55-54-53-52-51-50-49-48-47-46-45-44-43-42-41-40-39-38-37-36
+ T  5  1 -3  9-14  7 15 -5  3-16-17  4 18  5 -3 -1  2  4  5 -5  7  8 -5-15  6
+ C-21 -6-11-21  0  8 -7-12 -1  1  0-19 12 -3 -1 10  2 -8 -5-11  8  1 23  6 -5
+ A  7 -2 13 -2 -8-13-18  5  0 -5 13  8-15  9 -4 -7  9  0 -8-11-10 -6 -7 -5 -6
+ G -6 -9 -7  0  8-16 -4 -2-16  1 -4  8-14  5 11-13-24  3  7 22-11 -9-15 10 -4
+
+ P-35-34-33-32-31-30-29-28-27-26-25-24-23-22-21-20-19-18-17-16-15-14-13-12-11
+ T  3  4 16 -4  7 11 -4 -1 12  8 10 -1  1  8  2-10-16 11  1 -3 16 -3-36 -8-27
+ C  2-14 -3 -8-10-21  2  0 -2 -1-11 -3 -1  5-11 -4  7  0-14  6 -8-20 -7-36-44
+ A-12 -1-27 -3 -6  0-12 -3 -4 -7 14 -2 -4 -6  0 12  5 -9  0-11-11 10  8  2  8
+ G  4 -5 -6 -3 -1 -4 -1 -4-15  0-14  3 10-19 -3-10 -7 -7  7  1 -8 -6 15 21 42
+
+ P-10 -9 -8 -7 -6 -5 -4 -3 -2 -1  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14
+ T-53-27-26-23  2 -7-14-40-28  0-53 75-62-20-40-10-35 -5-12 -1  4 14-23  7 -2
+ C-15-50-43-35-38-29-29  1 -9  1-87-55-64-45 11-22-14-20-15-15-10-22 -5  2  6
+ A  0 -3 -5  4-20-11  5  6 -2-15 66-69-52 -5 -4  6  8-24 -7-10 -7 13 14 -9-18
+ G 35 22 16 -6 -5-15-25-33-28-53-36-50107 -5-37-44-27-15-23-16-29-47-17-29-15
+
+ P 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39
+ T-26  1  4 -7  3 -4  0-10  8-18  7-22-21  8  4 -3 -6  7 -8  1 -5-16-16  7 -6
+ C  6 -8 19 -7  9 -3 17 -2  3 -9  5 22 22  8 -1  1 18  6 11-10 -8  7 10  0  7
+ A 14-12-42  1 -5 -4-32 12-10 20 -6 -1  3 -4  4-10 -1 -2-14 11 14 -3  2-13  5
+ G-23 -7 -1 -6-17 -4  0-15-14 -4-17-10 -5-13 -8 10-13-13  9 -4 -3 10  2  4 -8
+
+ P 40
+ T  0
+ C 14
+ A  5
+ G-21
+.END LIT
+These come from w101 of Stormo, Schneider, Gold and Ehrenfeucht Nucl. 
+Acid Res. 10 2997-
+3011, 1982. They report that this matrix gives a score of at least 2 for 
+all
+gene starts in their library whereas all other sequences score 1 or less. 
+.left margin1
+@29. TX 1 @ Reverse and complement the sequence
+.LEFT MARGIN2
+.para
+Reverses and complements the current active region of the sequence.
+.left margin1
+@60. TX 7 @ Search using a dinucleotide weight matrix
+.LEFT MARGIN2
+.para
+This function performs searches for short sequence
+motifs using an appropriate  dinucleotide weight matrix. In addition it 
+can be used to create or modify weight matrices. In order to perform a 
+search the only input 
+required is the name of the file containing the weight matrix.
+The results can be presented graphically or listed. The graphical 
+presentation will draw line at the position of any matches found; the 
+height of the line is proportional to the score. The method is identical to 
+that using weight matrices derived from nucleotide frequencies, except 
+that here we use the frequencies of dinucleotides.
+.para
+For a search, select "use weight matrix", supply the name of the file 
+containing the weight matrix, and choose between having results plotted 
+or listed. If dialogue is requested when the function is selected users can 
+alter the cutoff score employed.
+.para
+To create a weight matrix several steps are involved. A file containing an 
+alignment of known motifs is required. (This file must be created before 
+the current option is selected. The format is a follows: each sequence is 
+written on a separate line with at least one space at the beginning; each 
+sequence is terminated by a space character, and can be followed by a 
+name. The sequences must be aligned.) Supply the name of the file of 
+aligned sequences. The program reads and displays the sequences. Choose 
+between "summing logs of weights" or summing weights (i.e. whether to 
+multiply or add weights). If logs are used all scores will be negative. 
+Choose if all positions in the set of aligned sequences should be used or 
+if a mask should be applied. If so selected, define a mask as a string of 
+symbols, in which symbol - means ignore and any other symbol means 
+use. E.g. xx-x--abc means use all positions except 3,5 and 6.
+.para
+The program will calculate weights as the frequencies of the 
+dinucleotides at each unmasked position in the set of aligned sequences. 
+These weights are then applied to the set of aligned sequences to give a 
+range  of "observed" scores. The mean and standard deviation of these 
+scores is displayed. The user is asked to supply several values to be used 
+when the weight matrix is applied to other sequences: a cutoff score (by 
+default, the mean minus 3 standard deviations), a top score for scaling 
+graphical results (by default, the mean plus 3 standard deviations), and a 
+position to identify (this means that if a particular base within the 
+motif is used as a "landmark", such as the A of the AG in splice acceptor 
+sites, then its position will be marked in plots). All these values are 
+stored along with the weight matrix. Finally supply the name of a file to 
+contain the weight matrix.
+.para
+Weight matrices can be "rescaled" using a set of aligned sequences in 
+much the same ways as a matrix is created. The purpose is to redefine 
+the cutoff scores, and rescaling does not alter any other values in the 
+weight matrix file.
+.para
+ The methods have always had to deal with the problem of zeroes in the 
+matrices. The current versions 
+employ "Laplaces Law of Succession" in which 1 is 
+added to each term.
+
+.lit
+Typical dialogue follows.
+ 
+? Menu or option number=D60
+ 
+ Motif search using dinucleotide weight matrix
+X 1 Use weight matrix
+  2 Make weight matrix
+  3 Rescale weight matrix
+? 0,1,2,3 = 2
+? Name of aligned sequences file=[RS.MOTIFS]GCN4.SEQ
+ 
+ 
+     1 AGCGTGACTCTTCCCGGAA HIS1
+     2 GAGGTGACTCACTTGGAAG HIS1
+     3 CGGATGACTCTTTTTTTTT HIS3
+     4 ACAGTGACTCACGTTTTTT HIS4
+     5 GTCGTGACTCATATGCTTT ARG3
+     6 TGAATGACTCACTTTTTGG ARG4
+     7 TTCTTGACTCGTCTTTTCT CPA1
+     8 CGAATGACTCTTATTGATG CPA2
+     9 AGAATGACTAATTTTACTA TRP5
+    10 TCGTTGACTCATTCTAATC TRP3
+    11 TTGCTGACTCATTACGATT TRP2
+    12 GAGATGACTCTTTTTCTTT IV1
+    13 GCGATGATTCATTTCTCTG IV2
+    14 TAGATGACTCAGTTTAGTC LEU1
+    15 TAAGTGACTCAGTTCTTTC LEU4
+    16 ATGATGACTCTTAAGCATG ILS1
+Length of motif    18
+? (y/n) (y) Sum logs of weights n
+? (y/n) (y) Use all motif positions n
+x means use, - means ignore
+e.g. xx-x---x-x means use positions 1,2,4,8,10
+? Mask=----XXXXXXXX--------
+ Applying weights to input sequences
+   1       89.000 AGCGTGACTCTTCCCGGA
+   2       91.000 GAGGTGACTCACTTGGAA
+   3       93.000 CGGATGACTCTTTTTTTT
+   4       90.000 ACAGTGACTCACGTTTTT
+   5       94.000 GTCGTGACTCATATGCTT
+   6       91.000 TGAATGACTCACTTTTTG
+   7       81.000 TTCTTGACTCGTCTTTTC
+   8       90.000 CGAATGACTCTTATTGAT
+   9       75.000 AGAATGACTAATTTTACT
+  10       97.000 TCGTTGACTCATTCTAAT
+  11       97.000 TTGCTGACTCATTACGAT
+  12       93.000 GAGATGACTCTTTTTCTT
+  13       69.000 GCGATGATTCATTTCTCT
+  14       90.000 TAGATGACTCAGTTTAGT
+  15       90.000 TAAGTGACTCAGTTCTTT
+  16       90.000 ATGATGACTCTTAAGCAT
+Top score      97.000  Bottom score      69.000
+Mean      88.750  Standard deviation       7.319
+Mean minus 3.sd      66.794  Mean plus 3.sd     110.706
+? Cutoff score (-999.00-9999.00) (66.79) =
+? Top score for scaling plots (66.79-999.00) (110.71) =
+? Position to identify (0-18) (1) =
+? Title=GCN4 DI WTS
+? Name for new weight matrix file=3.WTS
+  
+? Menu or option number=D60
+ Motif search using dinucleotide weight matrix
+X 1 Use weight matrix
+  2 Make weight matrix
+  3 Rescale weight matrix
+? 0,1,2,3 =
+? Motif weight matrix file=3.WTS
+ GCN4 DI WTS
+? Cutoff score (-9999.00-9999.00) (66.79) =40
+? (y/n) (y) Plot results n
+     15     42.00 CAACCCGCTCACCGACAA
+     29     42.00 ACAACAGCTCACCCACGC
+     93     46.00 AGCCTTCCTCATCGCTGC
+    153     40.00 CAGCGGAATCAAACTTAA
+    408     42.00 CGATGGATTCAAGTTGAA
+    469     47.00 TTAGGAACTCCCTCTGTC
+    493     60.00 AAGCTGAATCTTAGCAGC
+    530     43.00 CGGAGGGCTCAGTGAGGG
+    542     47.00 TGAGGGACTACTGCACCA
+    678     41.00 CTTCTGCTTCAAAGAGTT
+    709     47.00 AATATGACGGCGCACGTG
+    848     54.00 GTCAGAACTCAAATCAGT
+    940     49.00 CCGTTGACGACCTCCGCA
+    992     42.00 TGGGCACCTCACACCAAG
+ 
+
+.end lit
+.left margIN1
+@61. TX 8 @ Search for eukaryotic ribosome binding sites
+.LEFT MARGIN2
+.para
+Searches for eukaryotic ribosome binding sites using weightings derived 
+from
+ Sargan,Gregory,Butterworth febs let 147 133-136 1982.  No dialogue is 
+required. First described in Staden Nucl. Acid Res. 12 505-519 1984.
+
+.LEFT MARGIN1
+.lit
+mRNA WTS FOR EUKARYOTES SARGAN,GREGORY,BUTTERWORTH FEBS LET 
+147 133-136 1982
+P  -7 -6 -5 -4 -3 -2 -1  1  2  3
+  102102102102102102102102102102
+T  19 24 31 12  0 18  5  0102  0
+C  20 15 32 65  5 42 52  0  0  0
+A  50 27 27 19 86 36 34102  0  0
+G   6 29 12  6 11  6 11  0  0102
+VIRAL ONLY
+P  -7 -6 -5 -4 -3 -2 -1  1  2  3
+   41 41 41 41 41 41 41 41 41 41
+T  14 12 16  4  2 13  9  0 41  0
+C   7  3 13 17  7  9 14  0  0  0
+A  15 10  6 10 27 15  9 41  0  0
+G   5 16  6 10  5  4  9  0  0 41
+.END LIT
+The Sargan et al paper puts forward the hypothesis that there is an 
+interaction between
+some mRNA leader sequences and a highly conserved structure in the 18S 
+rRNA
+of eukaryotic ribosomes. The attempt to substantiate the hypothesis 
+includes
+a table of base frequencies for sequences immediately 5' to start codons.
+They examined 102 sequences and I have used the base frequencies they 
+found
+as a weight matrix for searching for eukaryotic gene starts. I don't yet 
+know how good this method is. The viral sequences were found to be 
+slightly
+different but the separate table shown here is not used in the program.
+.left margin1
+@62. TX 8 @ Search for splice junctions
+.LEFT MARGIN2
+.para
+Used to search for mRNA splice junctions using a weight matrix. The 
+default weight matrix is still that derived from the paper of Mount (Nucl. 
+Acids Res. 10, 459-472). However users may employ their own tables.
+By default the positions of possible junctions will 
+be plotted rather than listed.
+ The diagram splits the donor plot into 3 horizontal boxes
+ so that all the 
+sites marked in any box are from the same reading frame. The acceptor 
+plot appears above the donor plot and is split in an equivalent way. So 
+sites marked as donors and acceptors in equivalent boxes are compatible. 
+i.e. donors from donor box 1 are compatible with acceptors from acceptor box 
+1, etc. Of course it is the combination of reading frame and splice sites 
+that really matters, and donors from box 1 can be compatible with acceptors 
+in box 3 if the reading frame switches.
+.para
+If dialogue is selected users can employ their own file of weights (see 
+below for the format), can change the cutoff scores, and can elect to have 
+the results listed rather than plotted. Listed results show the position 
+(of the last or first base in the exon), the frame and the matching sequence.
+The frequency table shown below is used as a default
+weight matrix and AG and GT are obligatory at the appropriate positions.
+The plots are scaled so that the top of scale is the highest value achieved 
+by 
+a junction sequence in the set used to compile the frequency table, and 
+the 
+bottom of the scale is the lowest value achieved by a junction sequence 
+in 
+the set used to compile the frequency table.
+.para
+In the light of current knowledge it would be sensible for users to use 
+the weight matrix search option (20)
+to create matrices that define  more specific splice junctions. If so it is 
+important that the positions "marked" are the last base in the donor exon and 
+the first base in the acceptor exon. To make a weight matrix suitable for 
+use with this function follow the instructions for option 20 and create 
+files for both donor and acceptor sites. Then concatenate the two matrix files 
+with the donor file first.
+Note that any positions in the weight matrix that are 
+100% conserved will be made obligatory (normally the AG and GT).
+.LEFT MARGIN1
+.lit
+
+ Mount donors redone 16-4-91                                 
+     12     3   -16.085    -7.500
+ P  -2  -1   0   1   2   3   4   5   6   7   8   9
+ N 136 136 136 136 136 136 136 136 136 136 136 136
+ T  28   8  15  17   0 136   9  16   7  84  30  36
+ C  41  60  16   7   0   0   3  13   3  17  28  39
+ A  40  56  89  12   0   0  83  91  12  23  53  33
+ G  27  12  16 100 136   0  41  16 114  12  25  28
+ Mount acceptors redone 16-4-91                              
+     18    15   -26.142   -14.400
+ P -14 -13 -12 -11 -10  -9  -8  -7  -6  -5  -4  -3  -2  -1   0   1   2   3
+ N 113 113 113 113 113 113 113 113 113 113 113 113 113 113 113 113 113 113
+ T  58  50  57  59  67  56  58  49  47  66  64  31  34   0   0  11  41  31
+ C  21  28  34  25  29  33  35  32  42  40  33  25  74   0   0  23  28  41
+ A  17  11  11  18   7  17  12  23  15   3  10  29   5 113   0  24  21  21
+ G  17  24  11  11  10   7   8   9   9   4   6  28   0   0 113  55  23  20
+.END LIT
+
+.left margIN1
+@63. TX 7 @ Search using a weight matrix (complementary)
+.LEFT MARGIN2
+.para
+This function searches the complementary strand of the sequence  using 
+a weight matrix. Many 
+motifs can bind to either strand of the DNA and this function allows 
+users to 
+search the complementary strand without having to change the
+orientation of the sequence. See option 20 for more details.
+.left margin1
+@64. TX 3 @ Plot observed-expected word frequencies
+.LEFT MARGIN2
+.PARA
+This  option is designed to examine the abundances of short 
+words in a sequence to see if particular ones are either under or over
+represented. It compares the observed and expected frequencies and 
+plots them along the sequence. There has been some work on the relative 
+amounts of CG dinucleotides in eukaryotic sequences (eg Bird, Nature 
+321, 
+209-213 (1986)) and this new routine can be used to examine such 
+biases, or 
+any others that might be interesting.
+.para
+The user selects a word - say CG -, a window length, and a maximum and 
+mininum scale for plotting the results. The 
+program examines each sucessive window length along the sequence, 
+with each 
+window overlapping the previous one by windowlength-1. 
+The program counts the base frequencies in each window, and the number 
+of 
+occurrences of the chosen word within the window. Using the base 
+frequencies it calculates an expected number of occurrences for the 
+chosen 
+word (simply by multiplying the relevant frequencies). It plots 
+observed-expected, and hence will show regions that are rich or depleted 
+in 
+the chosen word. The longest allowed word is 9 characters, but the 
+calculation of the expected frequencies becomes less appropriate as the 
+word 
+length increases above 2.
+.para
+Typical dialogue follows.
+.lit
+ 
+? Menu or option number=D64
+Plot composition differences (obs-exp))
+Default String=CG
+? String=
+? odd span length (3-401) (101) =
+? plot interval (1-20) (5) =
+? Maximum plot value (-6.31-25.25) (6.31) =
+? Minimum plot value (-25.25-6.31) (-6.31) =
+ 
+ Missing graphics display here
+
+.end lit
+.left margIN1
+@65. TX 9 @ Search for polya sites
+.LEFT MARGIN2
+.para
+Simply searches for the sequence AATAAA
+ (Proudfoot and Brownlee Nature 263, 211-214,
+ 1982) and marks it with a short vertical line.
+.left margin1
+@66. TX 1 @ Interconvert t and u
+.LEFT MARGIN2
+.para
+This function interconverts T and U characters in the active sequence i.e 
+between DNA and RNA.
+.LEFT MARGIN1
+@67. TX 7 @ Search for patterns of motifs
+.left margin2
+.para
+This option searches for patterns of motifs. Patterns can be defined 
+interactively or read from files. Results can be displayed in several ways 
+in both graphical and textual form. Used to create pattern files for 
+searching libraries. The option is extremely flexible and consequently the 
+following documentation is quite lengthy. However the routine is capable 
+of searching for almost any known pattern. In addition the flexibility 
+does not necessitate difficulty of use, and the userinterface has been 
+simplified considerably since the methods were first published.
+.para
+Users should refer to the "typical dialogue" shown below for the most 
+helpful information on using the program.
+.para
+There are currently 
+four ways to display the matching patterns: 1=each individual
+motif and its position is listed; 2=all the sequence between, and 
+including the two 
+outermost motifs is listed; 3=graphical, with a vertical line marking the 
+position 
+of the leftmost motif; 4 = EMBL feature table format, where the KEYNAM 
+field if the motif name, the FROM and TO fields denote the ends of the 
+match, and the DESCRIPTION field is "Program".
+.para
+When it is defined for the first time a pattern must be entered 
+interactively at the keyboard, but the pattern description 
+can be saved to a file. 
+This file can be used for all subsequent searches.
+.para
+When defining a pattern interactively
+select a motif class and the program will request the required inputs. 
+.para
+The program gives each motif an identifying name and number.
+For motifs other than the first, a range of allowed positions must be 
+defined (Note that sets of motifs included using the OR operator will all 
+be given the same range, and so the program will only request range 
+values 
+for the first motif in any such set).
+To specify the allowed range for a motif the user must supply the 
+following: the 
+identifying number of the motif, relative to which the current motifs 
+positions are to be defined (termed the "reference motif"); a "relative start 
+position" and a range. The relative start position can be negative or positive. 
+A negative start position means that although the reference motif 
+is searched for first, the current motif can be found to its left.
+A zero relative start position means their left ends are superimposed. The 
+default start position is to butt-joint the motif to righthand end of the 
+"reference motif". The range is "the number of extra positions" that the 
+motif can take.
+.para
+The program will display the probability of finding each motif. These 
+values are presented in the following form: .1234E-5 means 0.1234 times 
+10 
+to the power -5.
+.para
+After the pattern has been defined, the program will type a description 
+of 
+it on the screen. It will then allow the user to give an overall cutoff 
+score and overall probability cutoff.
+.para
+Typical dialogue for all the different motif classes is displayed below.
+.lit
+
+? Menu or option number=67
+  Pattern searcher
+? (y/n) (y) Read pattern from keyboard 
+X 1 Exact match
+  2 Percentage match
+  3 Cut-off score and score matrix
+  4 Cut-off score and weight matrix
+  5 Complement of weight matrix
+  6 Inverted repeat or stem-loop
+  7 Exact match, defined step
+  8 Direct repeat
+  9 Pattern complete
+? 0,1,2,3,4,5,6,7,8,9 =
+? Motif name=Ematch
+? String=AA
+Probability of score     2.0000 = 0.595E-01
+X 1 Exact match
+  2 Percentage match
+  3 Cut-off score and score matrix
+  4 Cut-off score and weight matrix
+  5 Complement of weight matrix
+  6 Inverted repeat or stem-loop
+  7 Exact match, defined step
+  8 Direct repeat
+  9 Pattern complete
+? 0,1,2,3,4,5,6,7,8,9 =2
+? Motif name=AAA
+X 1 And
+  2 Or
+  3 Not
+? 0,1,2,3 =
+? Number of reference motif (1-1) (1) =
+? Relative start position (-1000-1000) (3) =
+? Number of extra positions (0-1000) (0) =
+? string=AAA
+? Minimum matches (1.00-3.00) (3.00) =2
+Probability of score     2.0000 = 0.149E+00
+  1 Exact match
+X 2 Percentage match
+  3 Cut-off score and score matrix
+  4 Cut-off score and weight matrix
+  5 Complement of weight matrix
+  6 Inverted repeat or stem-loop
+  7 Exact match, defined step
+  8 Direct repeat
+  9 Pattern complete
+? 0,1,2,3,4,5,6,7,8,9 =3
+? Motif name=T'S
+X 1 And
+  2 Or
+  3 Not
+? 0,1,2,3 =
+? Number of reference motif (1-2) (2) =
+? Relative start position (-1000-1000) (4) =
+? Number of extra positions (0-1000) (0) =
+? String=TTT
+? Minimum score (0.00-108.00) (108.00) =72
+Probability of score    72.0000 = 0.258E+00
+  1 Exact match
+  2 Percentage match
+X 3 Cut-off score and score matrix
+  4 Cut-off score and weight matrix
+  5 Complement of weight matrix
+  6 Inverted repeat or stem-loop
+  7 Exact match, defined step
+  8 Direct repeat
+  9 Pattern complete
+? 0,1,2,3,4,5,6,7,8,9 =4
+? Motif name=GCN4
+X 1 And
+  2 Or
+  3 Not
+? 0,1,2,3 =
+? Number of reference motif (1-3) (3) =
+? Relative start position (-1000-1000) (4) =
+? Number of extra positions (0-1000) (0) =
+? Weight matrix file name=GCN4
+ GCN4 FROM WEIGHTS 17-11-87                                                    
+Probability of score   -22.0020 = 0.139E-02
+  1 Exact match
+  2 Percentage match
+  3 Cut-off score and score matrix
+X 4 Cut-off score and weight matrix
+  5 Complement of weight matrix
+  6 Inverted repeat or stem-loop
+  7 Exact match, defined step
+  8 Direct repeat
+  9 Pattern complete
+? 0,1,2,3,4,5,6,7,8,9 =5
+? Motif name=GCN4
+X 1 And
+  2 Or
+  3 Not
+? 0,1,2,3 =
+? Number of reference motif (1-4) (4) =
+? Relative start position (-1000-1000) (20) =
+? Number of extra positions (0-1000) (0) =
+? Weight matrix file name=GCN4
+ GCN4 FROM WEIGHTS 17-11-87                                                    
+Probability of score   -22.0020 = 0.606E-03
+  1 Exact match
+  2 Percentage match
+  3 Cut-off score and score matrix
+  4 Cut-off score and weight matrix
+X 5 Complement of weight matrix
+  6 Inverted repeat or stem-loop
+  7 Exact match, defined step
+  8 Direct repeat
+  9 Pattern complete
+? 0,1,2,3,4,5,6,7,8,9 =6
+? Motif name=LOOP
+X 1 And
+  2 Or
+  3 Not
+? 0,1,2,3 =
+? Number of reference motif (1-5) (5) =
+? Relative start position (-1000-1000) (20) =
+? Number of extra positions (0-1000) (0) =
+? Stem length (1-60) (6) =
+? Minimum loop length (-6-60) (0) =
+? Maximum loop length (0-60) (0) =5
+? Minimum score (1.00-12.00) (12.00) =10
+Probability of score    10.0000 = 0.598E-02
+  1 Exact match
+  2 Percentage match
+  3 Cut-off score and score matrix
+  4 Cut-off score and weight matrix
+  5 Complement of weight matrix
+X 6 Inverted repeat or stem-loop
+  7 Exact match, defined step
+  8 Direct repeat
+  9 Pattern complete
+? 0,1,2,3,4,5,6,7,8,9 =7
+? Motif name=Tstep
+X 1 And
+  2 Or
+  3 Not
+? 0,1,2,3 =
+? Number of reference motif (1-6) (6) =
+? (y/n) (y) Relative to 5 prime end 
+? Relative start position (-1000-1000) (1) =
+? Number of extra positions (0-1000) (0) =
+? String=TTT
+? Step (1-20) (3) =
+Probability of score     3.0000 = 0.367E-01
+  1 Exact match
+  2 Percentage match
+  3 Cut-off score and score matrix
+  4 Cut-off score and weight matrix
+  5 Complement of weight matrix
+  6 Inverted repeat or stem-loop
+X 7 Exact match, defined step
+  8 Direct repeat
+  9 Pattern complete
+? 0,1,2,3,4,5,6,7,8,9 =8
+? Motif name=REPEAT
+X 1 And
+  2 Or
+  3 Not
+? 0,1,2,3 =
+? Number of reference motif (1-7) (7) =
+? Relative start position (-1000-1000) (4) =
+? Number of extra positions (0-1000) (0) =2
+? Repeat length (1-60) (6) =
+? Minimum gap (0-60) (0) =
+? Maximum gap (0-60) (0) =4
+? Minimum score (1.00-6.00) (6.00) =5
+Probability of score     5.0000 = 0.554E-02
+  1 Exact match
+  2 Percentage match
+  3 Cut-off score and score matrix
+  4 Cut-off score and weight matrix
+  5 Complement of weight matrix
+  6 Inverted repeat or stem-loop
+  7 Exact match, defined step
+X 8 Direct repeat
+  9 Pattern complete
+? 0,1,2,3,4,5,6,7,8,9 =9
+? (y/n) (y) Save pattern in a file N
+
+Pattern description
+
+Motif  1 named Ematch   is of class    1
+Which is an exact match to the string
+AA
+Motif  2 named AAA      is of class    2
+which is a match of score     2. to the string
+AAA
+and the 5 prime base can take positions      3 to       3
+relative to the 5 prime end of motif   1
+It is anded with the previous motif.
+Motif  3 named T'S      is of class    3
+which is a match of score    72. to the string
+TTT
+and the 5 prime base can take positions      4 to       4
+relative to the 5 prime end of motif   2
+It is anded with the previous motif.
+Motif  4 named GCN4     is of class    4
+Which is a match to a weight matrix with score -22.002
+and the 5 prime base can take positions      4 to       4
+relative to the 5 prime end of motif   3
+It is anded with the previous motif.
+Motif  5 named GCN4     is of class    5
+Which is a match to the complement of a weight matrix with score -22.002
+and the 5 prime base can take positions     20 to      20
+relative to the 5 prime end of motif   4
+It is anded with the previous motif.
+Motif  6 named LOOP     is of class    6
+Which is a stem-loop structure with stem length    6 and score    10.
+The loop can have sizes      0 to      5
+and the 5 prime base can take positions     20 to      20
+relative to the 5 prime end of motif   5
+It is anded with the previous motif.
+Motif  7 named Tstep    is of class    7
+Which is an exact match to the string
+TTT
+with a step size of     3
+and the 5 prime base can take positions      1 to       1
+relative to the 5 prime end of motif   6
+It is anded with the previous motif.
+Motif  8 named REPEAT   is of class    8
+Which is a repeat with repeat length    6 and score     5.
+The loop-out can have sizes      0 to      4
+and the 5 prime base can take positions      4 to       6
+relative to the 5 prime end of motif   7
+It is anded with the previous motif.
+Probability of finding pattern = 0.2348E-14
+Expected number of matches  = 0.5100E-09
+? Maximum pattern probability (0.00-1.00) (1.00) =
+? Minimum pattern score (-9999.00-9999.00) (-9999.00) =
+ Select display mode
+X 1 Motif by motif
+  2 Inclusive
+  3 Graphical
+  4 EMBL feature table
+? 0,1,2,3,4 =4
+ Searching
+
+
+Total matches found      0
+
+Menus and their numbers are 
+m0 = This menu
+m1 = General
+m2 = Screen control
+m3 = Statistical analysis of content
+m4 = Structures and repeats
+m5 = Translation and codons
+m6 = Gene search by content
+m7 = Prokaryotic signal search
+m8 = Eukaryotic signal search
+ ? = Help
+ ! = Quit
+? Menu or option number=67
+  Pattern searcher
+? (y/n) (y) Read pattern from keyboard 
+X 1 Exact match
+  2 Percentage match
+  3 Cut-off score and score matrix
+  4 Cut-off score and weight matrix
+  5 Complement of weight matrix
+  6 Inverted repeat or stem-loop
+  7 Exact match, defined step
+  8 Direct repeat
+  9 Pattern complete
+? 0,1,2,3,4,5,6,7,8,9 =
+? Motif name=Arun
+? String=AAAAAA
+Probability of score     6.0000 = 0.210E-03
+X 1 Exact match
+  2 Percentage match
+  3 Cut-off score and score matrix
+  4 Cut-off score and weight matrix
+  5 Complement of weight matrix
+  6 Inverted repeat or stem-loop
+  7 Exact match, defined step
+  8 Direct repeat
+  9 Pattern complete
+? 0,1,2,3,4,5,6,7,8,9 =9
+? (y/n) (y) Save pattern in a file N
+
+Pattern description
+
+Motif  1 named Arun     is of class    1
+Which is an exact match to the string
+AAAAAA
+Probability of finding pattern = 0.2103E-03
+Expected number of matches  = 0.1522E+01
+? Maximum pattern probability (0.00-1.00) (1.00) =
+? Minimum pattern score (-9999.00-9999.00) (-9999.00) =
+ Select display mode
+X 1 Motif by motif
+  2 Inclusive
+  3 Graphical
+  4 EMBL feature table
+? 0,1,2,3,4 =4
+ Searching
+
+
+FT   Arun       1582   1587       Program
+FT   Arun       3160   3165       Program
+FT   Arun       4204   4209       Program
+FT   Arun       5691   5696       Program
+FT   Arun       6710   6715       Program
+Total matches found      5
+Minimum and maximum observed scores        6.00        6.00
+ 
+.end lit
+.para
+These methods allow users to define and search for
+complex patterns of motifs defined as single objects.
+The programs allow individual DNA motifs to be defined in eight 
+different
+ways, and protein motifs in six. Motifs are combined, using the logical 
+operators AND, OR and NOT, to describe a pattern. The pattern also 
+specifies the ranges of allowed relative separations of the individual 
+motifs. 
+.para
+First some definitions.
+.para
+A MOTIF is a contiguous subsequence of fixed length.
+At its simplest 
+it could be a single definite base or amino acid; a more complex motif 
+might be better represented as a consensus or a weight matrix; 
+two more-abstract types of 
+motif are direct and inverted repeats. 
+.para
+A PATTERN is a higher order of structure defined by a list of motifs. The 
+motifs in a pattern are combined using the logical operators AND, OR and 
+NOT. The list also defines the allowed relative separations of the 
+motifs. In the current versions of the programs up
+ to 50 motifs can be combined into a single pattern. So using these 
+definitions there are two 
+differences between motifs and patterns: 1) the distances between all 
+elements of a motif are fixed, but 
+the separations of parts of patterns can vary;
+ 2) all characters in a motif are defined 
+using the same method (class), but different parts of a pattern can be 
+defined in completely different ways.
+.para
+Each motif 
+can be represented in 9 ways (known as the motif class):
+.sk1
+.lit
+           MOTIF CLASSES
+CLASS           DESCRIPTION
+ 1       Exact match to a short defined sequence. The IUB symbols
+         can be used for DNA sequences.
+ 2       Percentage match to a defined short sequence. In nucleic acids, 
+         the IUB symbols can be used.
+ 3       Match to a defined sequence, using a score matrix and cutoff
+         score. The DNA matrix (see option 18) gives scores to IUB symbols 
+         depending on their level of redundancy. MDM78 is used for proteins.
+ 4       Match to a weight matrix with cutoff score.
+ 5       As class 4 but on the complementary strand.
+ 6       Inverted repeat or stem-loop. Fixed stem length, range of 
+         loop sizes, and cutoff score using A-T, G-C=2; G-T=1.
+ 7       Exact match to short sequence but with a defined step size.
+ 8       Direct repeat. Fixed repeat length, range of loop-out sizes,
+         cutoff score, and score matrix (for protein sequences MDM78 and
+         for nucleic acids an identity matrix).
+ 9       Membership of a set. A list of sets of allowed amino acids for 
+         each position in the motif. The sets are separated by commas(,).
+         For example IVL,,,DEKR,FYWILVM defines a motif of length 5 amino 
+         acids in which one of I,V or L must be found in the first position, 
+         then anything in the next two positions, D,E,K or R in the fourth 
+         position and F,Y,W,I,L,V or M in the fifth. This class only applies
+         to protein sequences because for nucleic acids "membership of a 
+set"
+         can be achieved using IUB symbols.
+
+    Classes 1 - 4, 8 and 9 apply to protein sequences, and classes 1-8 to 
+    nucleic acids.
+
+.end lit
+.para
+Class 1: exact match.
+.para
+The motif is defined by a short sequence, which for nucleic acids,
+ may include IUB symbols. All symbols must match.
+.para
+Class 2: percentage match
+.para
+The motif is defined by a short sequence, which for nucleic acids,
+may include IUB symbols. The minimum number of matching characters 
+must 
+also be specified.
+.para
+Class 3: match using a score matrix
+.para
+The motif is defined by a short sequence, which for nucleic acids,
+may include IUB symbols. The motif is not compared directly with the 
+sequence to count the number of matching characters. Instead a matrix is 
+used to provide a score for all possible pairs of characters. The motif 
+score for 
+any position along the sequence is the sum of the scores found by 
+looking-up the scores for each pair of aligned characters. A match is 
+declared if some minimum score is achieved.
+.para
+Class 4: weight matrix
+.para
+The motif is defined by a table of values (called weights or scores). The 
+table gives a score for finding each possible character at each position 
+along the length of the motif. It therefore 
+has dimension motif-length x character-set-size, and allows us to give 
+different scores for each character at each position. It is equivalent to 
+having a different score matrix for each position along the motif, and 
+provides the most flexible and specific method of defining motifs. The 
+weight matrices are created by program NIP option 20 and 
+stored as files. The file contains the values
+for each position, as well as an overall minimum score. 
+There are two ways in which these values can be used to calculate an 
+overall 
+score for any section of the sequence. The simplest way is to add the 
+values in the file. (This means that the highest possible score
+can be calculated by adding the top value at each column 
+position, and the lowest 
+by adding the bottom value.)
+ The normal way of using the values in the file is as 
+follows. 
+First the programs divide the values in each column by the column total 
+so 
+that they sum to 1.0
+Then the natural 
+logs of these values are used as scores. When the matrix is applied to a 
+sequence these logarithmic values are summed (which is of course 
+equivalent 
+to multiplying the frequencies).
+Note that using the natural logs of the frequencies as 
+weights and 
+adding them means that the overall cutoff score must be less than zero, 
+whereas if the original
+values in the weight matrix file are added, the cutoff score will be 
+greater than zero. The search routines therefore decide whether the user 
+wants to add values or multiply frequencies
+by examining the value of the cutoff score: it will add if the cutoff 
+is 
+greater than zero and add logs of frequencies if it is less than zero.
+ Hence we effectively get two 
+motif classes in one. The program NIP, when creating weight matrix 
+files, will ask the user whether the scores should be added or multiplied. 
+ If the values in the table have been defined 
+without using a set of aligned sequences
+it is easier for the user to 
+choose a cutoff score if the values are added.
+.para
+Class 5: complement of weight matrix
+.para
+The motif is defined by a weight matrix, but the program searches for its 
+complement.
+.para
+Class 6: inverted repeat, or stem-loop
+.para
+The motif is defined by a repeat length, a minimum score
+ and a range of loop sizes. The scores are A-T=2, G-C=2, G-T=1, else=0.
+The loop sizes are defined by a minimum 
+and maximum distance from the 3' end of the stem.
+For a stem-loop these will be positive numbers. For example to 
+define a stem of length 8 and loop sizes varying from 3 to 5, the stem 
+would be set to 8, the minimum start distance to 3 and the maximum 
+to 5. To define an 
+inverted repeat the minimum distance will be negative. For example stem 
+length=9,
+minimum distance=-9, and maximum distance=-8 will find 
+inverted repeats of lengths 9 and 10. 
+E.g. AAAAATTTT and AAAAATTTTT would be found, the first having a base 
+at 
+its centre, the second having none.
+.para
+Class 7: exact match, defined step size.
+.para
+The motif is defined by a short sequence, which for nucleic acids,
+ may include IUB symbols. All symbols must match. The class differs 
+from 
+class 1 in that searches will move in steps of some given size. For 
+example 
+we could search for a certain codon and use a step size of 3 and hence
+ keep in a 
+single reading frame.
+.para
+Class 8: direct repeat
+.para
+The motif is defined by a repeat length, a minimum score
+ and a range of loop sizes. The scores are defined using MDM78 for protein 
+sequences and an identity matrix for nucleic acids.
+The loop sizes are defined by a minimum 
+and maximum distance from the 3' end of the stem.
+.para
+Class 9: membership of a set
+.para
+This motif class is for protein sequences. It is defined by lists of 
+allowed amino acids for each position in the motif, and a cut-off score.
+Positions at which any amino acid can occur are left blank.
+All allowed amino acids for each position give a score of 1.
+The motifs can be defined in two ways: either typed at the keyboard or 
+read 
+in as a weight-matrix-like file.
+When the motif is defined at the keyboard the sets of allowed amino 
+acids
+are separated by commas(,).
+         For example IVL,,,DEKR,FYWILVM defines a motif of length 5 amino 
+         acids in which one of I,V or L must be found in the first position, 
+         then anything in the next two positions, D,E,K or R in the fourth 
+         position and F,Y,W,I,L,V or M in the fifth.  To specify that the 
+whole motif must match a score of 3 would be required (i.e. one of the 
+allowed amino acids must be found for each of the three defined 
+positions).
+If the motif is read from a file the file must have been written by 
+program 
+NIP, or have been saved by the pattern searching routines. If the 
+user 
+elects to save a pattern, and it includes class 9 motifs typed at the 
+keyboard, then the program will save the class 9 motifs as weight matrix 
+files. Therefore it will request file names for each motif of this class. 
+If the motif given above as an example were saved the weight matrix file
+would have 5 columns.
+The first column 
+would contain zeroes except for the I, V and L rows 
+which would be set to 1; the next two columns would all be zero; the next 
+would be zero except for the D,E,K and R rows which would be 1; the final 
+column would contain 1's in rows F,Y,W,I,L,V and M, with 
+the rest zero.
+.para
+
+The logical operator (AND, OR or NOT) used to add each motif to the 
+pattern
+is specified by preceding 
+the class number by the letters A, O or N. A = AND, O = OR, N = NOT.
+The default is A, so N2 means include, using the NOT operator, a class 2 
+motif; O2 means include, using the OR operator, a class 2 motif; both A2 
+and 
+2 mean include, using the AND operator, a class 2 motif.
+
+.para
+Range setting.
+.para
+The motifs in a pattern are numbered according to their order in the list. 
+Apart from the first motif in a pattern all motifs are given a range 
+of allowed positions relative to a motif further up the list. 
+For example
+suppose we have a pattern defined by A AND B AND C AND D.
+Motif A can occur anywhere, but B must have its range of allowed 
+positions defined relative to the position of motif A, and C's positions 
+can be defined relative to either A or B, depending on which is most 
+convenient, and likewise D's positions can be relative to A or B or C.
+.para
+Notice that the positions of motifs can be defined relative to more than 
+one motif. Suppose we have a pattern consisting of 
+motifs A, B and C, and that B occurs 5-10 residues right of A, C occurs 5-
+10 
+residues right of B, and also C is never more than 15 residues from A. 
+Then 
+it is quite consistent with the methods to include motif C into the 
+pattern 
+twice using the AND operator: once relative to A and once relative to B. 
+This will define the relative spacing and the ORDER of the motifs in the 
+pattern. (If we simply defined the position of C relative to A it could be 
+found to the left of B).
+.para
+Motifs combined together using the OR operator are all given the same 
+range. For example suppose we had a pattern A AND (B OR C) AND (D OR E),
+ then B and C each have the same range, and D and E also have 
+the same range as one another. The range for D and E can be relative to 
+A or to B.
+.para
+Motifs cannot have their ranges defined relative to motifs that are 
+included using the NOT operator. For example if we had the pattern A NOT 
+B 
+AND C, then the range for C can only be defined relative to motif A.
+.para
+Speed can be gained by arranging the order 
+of the motifs so that those higher up the list are of types that can be 
+searched for rapidly and that are also unlikely to be found.
+.para
+Motifs combined by the OR operator are alternatives: if any one of a set 
+of motifs 
+combined by the OR operator is found, then a match is declared. All
+alternatives will be reported. For example if we had a pattern defined by 
+A 
+AND (B OR C), then all places where A occurs and B is found within range, 
+and all places where A is found and C is found within range will be 
+reported. A typical use would be where we might allow a motif to appear 
+on 
+either strand of the DNA sequence. For example a weight matrix 
+representing 
+the heatshock element could be used in a pattern which included 
+heatshock 
+as a motif class 4 combined using the OR operator 
+with heatshock as a motif class 5.
+.para
+The probability calculations are performed for each motif as it is 
+defined. 
+If an overall probability cut-off is given the calculation is repeated for 
+each match found. To achieve maximum searching speed do not give an 
+overall 
+probability cut-off. Overall cut-off scores should only be used if the 
+motif 
+classes used are compatible.
+.para
+There are currently 
+several ways to display the matches: 1 = each 
+motif and its position is listed; 2 = all the sequence between the two 
+outermost motifs is listed; 3 = graphical, with a spike marking the 
+position 
+of the leftmost motif. The library versions also give entry names, and a 
+one 
+line title; in addition they can be used to produce aligned families of 
+sequences. When this mode of output is selected the program will write a 
+separate file for each match. The files will be called ENTRYNAME.DAT 
+where 
+ENTRYNAME is the name of the entry in the library. The matching 
+sequence 
+will be written out so that the spacing between motifs is constant, and 
+set to the maximum allowed by the pattern definition. Any gaps will be 
+filled with dashes (-). If the individual sequences were subsequently 
+written one above the other
+they should line up so that all motifs are in register. There two types of 
+output of this sort: one, option 4, writes out whole sequences, the other, 
+option 5, writes out only the sequences between the two outermost 
+motifs.
+If the individual sequences were subsequently 
+written one above the other
+they should line up so that all motifs are in register. There two types of 
+output of this sort: one, option 4, writes out whole sequences, the other, 
+option 5, writes out only the sequences between the two outermost 
+motifs.
+Note that for option 4 users are asked to type the position of the 
+first motif, and the reason for
+this is explained below. 
+Consider a pattern found in several sequences. Consider only
+the first motif in 
+the pattern and suppose that it was found in different positions in these 
+sequences. 
+Say that of these positions the one furthest from the left end was 
+position 100. Then, in order to ensure that all the sequences would align, 
+we must specify that motif 1 must start at position 100. 
+Any sequences in which motif 1 started 
+nearer to the left end than position 100 would be padded accordingly.
+These modes of output 
+should only be used when the position of each motif is defined relative to 
+its 
+immediate neighbour.
+.para
+The pattern descriptions can be saved to files. These files 
+can be used instead of typing definitions again at the keyboard. As the 
+files are annotated,
+they can easily 
+be changed using system editors, and the modified versions used to 
+define the variant patterns for the programs.
+.para
+Use of lists of entry names 
+.para
+The two programs that operate on libraries have the ability to 
+restrict their searches to subsets of the libraries. This does not require 
+sublibraries to be created but instead is achieved by using files 
+containing a list of the entry names of sequences. The user may choose to 
+search only those entries on the list or, alternatively to search all but 
+those on the list (i.e. in the latter case
+the list contains the names of those to be excluded).
+ The programs can search libraries that have indexes and those that 
+do not.
+ If a list of names for inclusion is used,
+then the search will be faster if the index is present. In all other 
+circumstances the whole library will be read. 
+The list must be in library order except when it is used
+to include entries, and an index is available.
+The list must contain each entry name on a separate line, with the name 
+starting in column 1 of the line. ie there must be no spaces at the start 
+of the line.
+The list of entry names
+can be produced by the keyword searches of nip, pip, etc as long 
+as the listings produced have a space character separating the entry name 
+from the entry description. This will depend on how well the library 
+reformatting programs work. For example swissprot entry names tend to run 
+into the beginning of the descriptions, but other libraries are generally 
+OK.
+.para
+One use of the programs is to look for patterns that we already know 
+about, but in new sequences. However it is hoped that they will also be 
+useful for finding new motifs. For example
+several known control regions in 
+nucleic acid 
+sequences consist of particular direct or inverted repeats;
+the inclusion of
+direct and inverted repeats as motif classes
+makes it possible to 
+find previously unknown
+motifs of these types. 
+Using these new programs we can 
+ask questions like: "are there any inverted or direct repeats near to 
+sections of sequence that contain both a
+CCAAT box and a TATA box?"; and to search for such things throughout 
+the 
+libraries. In addition, the mode of output in which all the sequence 
+between 
+the two outermost motifs found is printed out, allows us to extract 
+sequences and examine them in more detail for further common 
+subsequences. 
+For example we might want to collect together all the sequences 
+between 
+putative CCAAT and TATA boxes.
+.para
+A further use of the inverted repeat motif class is the following. If a 
+regulatory sequence in DNA is poorly defined but also an inverted repeat, 
+then it might be an advantage to specify it both as a consensus sequence 
+and 
+a superimposed inverted repeat. In this way two weak definitions can be 
+combined to produce a stronger pattern.
+.para
+Given only a few examples of a motif it 
+should be possible to perform initial searches using a 
+class 3 motif, and then, using plausible matching sequences, create a 
+more 
+specific weight matrix for the same motif.
+.para
+If motifs are combined with the first motif using the OR operator
+they will be ignored until all 
+permutations that include the first motif have been looked for. 
+The whole search will then be repeated, in 
+turn, for each of 
+those motifs that are combined with the first motif using the OR 
+operator.
+An interesting consequence of this is that the program can be used, 
+without 
+change, to compare any newly determined sequence with all known 
+individual 
+motifs. We achieve this by having a pattern in which all known relevant 
+motifs are combined using the OR operator.
+If we ask to use this pattern with 
+a sequence, the program will automatically compare each individual 
+motif in 
+the pattern with the whole length of the 
+sequence. As the number of known 
+motifs grows this should become an increasingly useful standard 
+procedure.
+.para
+The NOT operator is obviously 
+useful for making sure particular motifs are not present, but it can also 
+be used to bracket the levels of matches found. We may want a degree of 
+match that lies between two limits - binding should occur, but not too 
+strongly; or base-pairs should form, but not too many. We can specify 
+this 
+by asking for a match with a low score, in combination with a match and 
+a 
+high score, both for the same motif, but with the high score included 
+using 
+the NOT operator.
+.para
+The algorithm is designed to find all sections of a sequence that satisfy 
+the pattern rather than only the best match. 
+Particularly if some of the motifs in a pattern are less well defined than 
+others, this can often result in the same region of a sequence being 
+reported as having several matches, but which only vary in the 
+positions of the weakest motifs.
+.para
+General remarks on motif searching
+.para
+Generally motifs are short subsequences that are thought to be 
+associated with 
+particular functions in some known sequences. Often 
+we search for them to try to 
+understand or interpret other sequences. Sometimes we search for 
+motifs and
+patterns to 
+test a hypothesis about their role: are they found in the expected 
+positions in the expected sequences. In doing so we should remember 
+that, in both proteins and nucleic acids,
+ what we are really looking for is a particular 
+three dimensional structure with certain affinities for other structures, 
+and that we are assuming that the sequence of the motif alone
+defines the 3D structure we searching for. 
+ The overall structure 
+may be completely different to those in which the motif is functional, 
+and 
+hence the motif may have a different shape or be inaccessible. 
+We should be aware of the 
+importance of the context in which a motif is found. Where does it lie 
+relative to the overall structure, is it accessible, is the three 
+dimensional spacing between 
+it and other motifs correct? For example, is it on the same side of the 
+double helix, and the correct distance from some other motif? How does 
+context affect our assessment of the significance of finding a motif? 
+Finding false mammalian mRNA splice junctions in non-coding sequences 
+is 
+far less important than finding false sites in pre-mRNA sequences, but 
+finding them in the correct places is most important! In other words, it 
+is 
+often the case that when we are searching for a motif that is known to 
+be  
+necessary for some function, then a positive result in the form of a 
+match 
+in the required position, is more important than a high background of 
+matches in the wrong positions. Being 
+ able to write 
+down the probability of finding a motif in a random sequence tells us how 
+well it is defined. 
+In nucleic 
+acids the DNA may contain many superimposed types of information such 
+as 
+those concerned with histone phasing, protein coding or mRNA secondary 
+structure. These overlapping "codes" may interfere with one another 
+causing 
+matches to motifs to be poorer than expected.
+In general we will only have a limited number of examples of the 
+motif and we do not know how representative they are.
+.para
+Sequences have superimposed functions: some parts may be of general 
+structural 
+importance and give rise to an overall framework, and other parts give 
+specificity and hence are not common; we may want to use a set of 
+aligned 
+sequences to define a motif, but want to use only the framework 
+positions.
+ Alternatively we may want to pick out 
+only those parts of a set of aligned sequences that give a particular 
+property, and to ignore other similarities that are due to some other 
+property
+and which could obscure the pattern 
+we are interested in.
+It is possible to apply a mask to a set of aligned sequences in 
+order to give weight to selected positions only.
+ The ability to define a mask allows certain positions 
+to be used in the motif and others to be ignored, and yet still permits the 
+use of a set of aligned sequences to calculate weights. The mask is 
+requested and applied 
+by the program and results in the masked positions being zero 
+in 
+the weight matrix. The mask is defined in the following way. 
+Suppose we had a motif of length 15, then the mask 
+x--x--xx-x will give zero weights to positions 2,3,5,6 and 9 (note it is 
+the dashes (-) that are significant and that positions 
+1,4,7,8,10,11,12,13,14 and 15 
+will be non-zero). Of course 
+the same set of sequences could be used with several alternative masks 
+in 
+order to extract different features and create corresponding weight 
+matrices.
+.para
+The programs are described in Staden,R. 
+CABIOS 4, 53-60, 1988; Staden,R.
+ CABIOS 5, 89-96, 1989, and Methods in Enzymology 183, 193-211 (1990).
+.left margin1
+@ end of help

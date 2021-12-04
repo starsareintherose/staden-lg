@@ -1,0 +1,59 @@
+#
+# Makefile for Miscellaneous routines - Iris version 
+
+#
+# Shell to perform make commands
+#
+SHELL=/bin/sh
+
+#
+#
+# Objects made by this makefile
+#
+LIBS = misc.a
+
+#
+# Where the wild things are
+#
+SRC = .
+INCLUDES = -I$(SRC)
+
+#
+# Iris Version
+#
+CC = cc
+# -xansi needed to define __EXTENSION__ (eg - popen())
+CFLAGS = -g -xansi -prototypes $(INCLUDES)
+ARFLAGS = rv
+
+#
+# Objects
+#
+OBJS = \
+	crash.o \
+	date.o \
+	filenames.o \
+	files.o \
+	find.o \
+	shell.o \
+	strings.o
+
+#
+# Main dependency
+#
+$(LIBS) : $(OBJS)
+	/bin/rm -f $(LIBS) ;\
+	$(AR) $(ARFLAGS) $(LIBS) $(OBJS) ;
+
+
+
+#
+# Special dependencies
+#
+%.o : $(SRC)/%.c
+	$(CC) $(CFLAGS) -c $<
+
+all : $(LIBS)
+
+clean :
+	/bin/rm -f $(OBJS) $(LIBS)

@@ -1,0 +1,1254 @@
+
+ @-1. TX  0 @General
+
+ @-2. T   0 @Screen control
+
+ @-2. X   0 @Screen
+
+ @-3. TX  0 @Set parameters
+
+ @-4. TX  0 @Comparison
+
+ @0.  TX -1 @SIP
+
+        This is program for comparing and  aligning  nucleic  acid  or
+ protein  sequences. It can produce optimal alignments using a dynamic
+ programming algorithm, and has several ways of producing "dot matrix"
+ diagrams.
+
+        The following analyses (preceded by their option numbers)  are
+ included:
+
+
+        The program is  used  on  a  simple  graphics  terminal  ie  a
+ keyboard   with  a screen on which points and lines can be drawn. The
+ user  works  at  the  terminal  and  produces  plots   for    various
+ combinations   of  values  for  the  span  length and minimum scores.
+ However large or small a region  the  user elects  to   compare   the
+ program  expands  or  contracts  the  diagram so that the plot always
+ fills  the  screen.   This  allows  the  user  to  gain  an   overall
+ impression   or  to  "home-in" on particular regions and examine them
+ in more detail.   Having  found  a  region  that   looks  interesting
+ the   user   can   determine   its   coordinates in terms of sequence
+ positions by use of a crosshair facility.
+
+        The program has two  statistical  options  to  help  the  user
+ choose   score  levels for plotting and to assess the significance of
+ any similarity found.  It can  produce  a  cumulative  histogram   of
+ observed   scores  for  the current span length and region and it can
+ calculate the "double matching probability" of McLachlan. The "double
+ matching   probability"  is  the  probability  of  finding particular
+ scores  given  two  infinitely  long  sequences  of  the  composition
+ of   those   being  compared,  with the current span length and score
+ matrix.  By using these options the  user  can  choose  to plot   all
+ the   matches  for  which  the  score  exceeds  a  given significance
+ level  (such  as  1%),  using  either    empirical    or  theoretical
+ probability  values.  Generally it is best to begin at a low level to
+ avoid an overcrowded diagram.
+
+        If  the  user  finds  that  the  two  sequences  do    contain
+ stretches  of  homology  he will often want to align the sequences by
+ inserting padding characters at deletion points.  The program  has  a
+ selection  of   options   for this purpose:  it contains an alignment
+ routine; it can display on the screen the two  sequences,  one  above
+ the  other,  with  asterisks   marking  identities,  it   has inbuilt
+ editing functions and can save the aligned sequences on disk files.
+
+        The basic principle of dot matrices was  first  described   by
+ Gibbs  and  McIntyre and involves producing a diagram that contains a
+ representation of all the matches between a pair of sequences.   This
+ diagram   is   then   scanned   by   eye  and  the  human  ability to
+ recognise patterns used to detect any  similarities   that  might  be
+ present.  The diagram consists of a two dimensional plot in which the
+ x axis represents one sequence (A)  and   the   y   axis   the  other
+ (B).    Every  point (i,j) on the plane x,y is assigned a score which
+ corresponds   to   the   level   of   similarity   between   sequence
+ characters  A(i) and B(j).  In the simplest use of the method a score
+ of 1 could be assigned to every point (i,j) where A(i) = B(j), and  a
+ score   of  0  to  every other point.  If a plot of the points in the
+ plane was made in which all scores of 1 were marked with a   dot  and
+ all   those  of 0 left blank then regions of identity would appear as
+ diagonal lines.  With the comparison  displayed  in  this  form   the
+ human  eye is very good at detecting regions of homology even if they
+ are imperfect.  The effects of mismatches, insertions   or  deletions
+ can   be  seen:   matches interrupted by insertions or deletions will
+ appear as parallel diagonals, and matches  interrupted  by  the   odd
+ mismatching   pair  of  characters  will  appear  as broken collinear
+ diagonal lines. This diagram is  a  very  useful  representation  but
+ simply   placing a dot for every identity is of limited value for the
+ following reasons.
+
+        For nucleic acid sequences around 25% of the plot will contain
+ points    and   it  will  often  be  very  difficult  to  distinguish
+ significant homologies  from  chance  matches.   For   proteins  many
+ significant  alignments of sequences contain almost no identities but
+ are formed from chemically and structurally similar amino   acids  so
+ that   simply  looking  for  identity would be insufficient.  What is
+ required is to first find those points  that  correspond  to   fairly
+ strong   local  similarities  and  then  to  use the diagram of these
+ points so that the human eye can be used to look  for  larger   scale
+ homologies.    The  program  uses a number of different algorithms to
+ calculate the score for each point and the  user  defines  a  minimum
+ score   so  that  only   those  points  in  the diagram for which the
+ score is at least this value will be marked with a dot.
+
+        The first scoring  method  finds  the   longest  uninterrupted
+ sections of perfect identity i.e.  those that contain no  mismatches,
+ insertions   or   deletions.  Generally  this  method,  termed   "the
+ identities algorithm" is of little value, but runs very quickly.
+
+        The  second    method   looks    for    sections    where    a
+ proportion   of   the  characters  in the sequence are similar, again
+ allowing no insertions or deletions. For  a  thorough  analysis  this
+ method, termed "the proportional algorithm", is the best.
+
+        The original method, of this type  was   first  described   by
+ McLachlan   and involves calculating a score for each position in the
+ matrix  by  summing   points   found   when  looking  forwards    and
+ backwards   along   a  diagonal line of a given length.  This length,
+ called the span, must be an  odd  number  so  that  the  dot  marking
+ matches  can  be  precisely placed at its centre.  The algorithm does
+ not simply look for  identity   but   uses   a  score   matrix   that
+ contains   scores   for   every   possible   pair of characters.  For
+ comparing amino acid sequences  we  usually use   the   score  matrix
+ shown   below  which  was calculated by adding 10 (to make every term
+ >0) to each term of the relatedness odds  matrix  MDM78  of  Dayhoff.
+ This  matrix  MDM78  was  calculated  by  looking  at  accepted point
+ mutations in 71 families of closely related proteins  and,  of  those
+ tested   by  Dayhoff,  was found to be the most powerful score matrix
+ for   finding   distant   relationships    between     amino     acid
+ sequences.
+
+                            AMINO ACID SCORE MATRIX
+                            -----------------------
+
+    C  S  T  P  A  G  N  D  E  Q  B  Z  H  R  K  M  I  L  V  F  Y  W  -  X  ?
+ C 22 10  8  7  8  7  6  5  5  5  5  5  7  6  5  5  8  4  8  6 10  2 10 10 10 10
+ S 10 12 11 11 11 11 11 10 10  9 10 10  9 10 10  8  9  7  9  7  7  8 10 10 10 10
+ T  8 11 13 10 11 10 10 10 10  9 10 10  9  9 10  9 10  8 10  7  7  5 10 10 10 10
+ P  7 11 10 16 11  9  9  9  9 10  9 10 10 10  9  8  8  7  9  5  5  4 10 10 10 10
+ A  8 11 11 11 12 11 10 10 10 10 10 10  9  8  9  9  9  8 10  6  7  4 10 10 10 10
+ G  7 11 10  9 11 15 10 11 10  9 10 10  8  7  8  7  7  6  9  5  5  3 10 10 10 10
+ N  6 11 10  9 10 10 12 12 11 11 12 11 12 10 11  8  8  7  8  6  8  6 10 10 10 10
+ D  5 10 10  9 10 11 12 14 13 12 13 12 11  9 10  7  8  6  8  4  6  3 10 10 10 10
+ E  5 10 10  9 10 10 11 13 14 12 12 13 11  9 10  8  8  7  8  5  6  3 10 10 10 10
+ Q  5  9  9 10 10  9 11 12 12 14 11 13 13 11 11  9  8  8  8  5  6  5 10 10 10 10
+ B  5 10 10  9 10 10 12 13 12 11 13 11 11 10 10  8  8  6  8  5  7  4 10 10 10 10
+ Z  5 10 10 10 10 10 11 12 13 13 11 14 12 10 10  8  8  8  8  5  6  4 10 10 10 10
+ H  7  9  9 10  9  8 12 11 11 13 11 12 16 12 10  8  8  8  8  8 10  7 10 10 10 10
+ R  6 10  9 10  8  7 10  9  9 11 10 10 12 16 13 10  8  7  8  6  6 12 10 10 10 10
+ K  5 10 10  9  9  8 11 10 10 11 10 10 10 13 15 10  8  7  8  5  6  7 10 10 10 10
+ M  5  8  9  8  9  7  8  7  8  9  8  8  8 10 10 16 12 14 12 10  8  6 10 10 10 10
+ I  8  9 10  8  9  7  8  8  8  8  8  8  8  8  8 12 15 12 14 11  9  5 10 10 10 10
+ L  4  7  8  7  8  6  7  6  7  8  6  8  8  7  7 14 12 16 12 12  9  8 10 10 10 10
+ V  8  9 10  9 10  9  8  8  8  8  8  8  8  8  8 12 14 12 14  9  8  4 10 10 10 10
+ F  6  7  7  5  6  5  6  4  5  5  5  5  8  6  5 10 11 12  9 19 17 10 10 10 10 10
+ Y 10  7  7  5  7  5  8  6  6  6  7  6 10  6  6  8  9  9  8 17 20 10 10 10 10 10
+ W  2  8  5  4  4  3  6  3  3  5  4  4  7 12  7  6  5  8  4 10 10 27 10 10 10 10
+ - 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10
+ X 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10
+ ? 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10
+   10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10
+
+        It is also  possible  to  use  other  matrices,  including  an
+ identity  matrix  for  proteins. For nucleic acids we usually use the
+ matrix shown below.
+
+          DNA SCORE MATRIX
+
+              A C G T X
+            A 1 0 0 0 0
+            C 0 1 0 0 0
+            G 0 0 1 0 0
+            T 0 0 0 1 0
+            X 0 0 0 0 0
+
+        Plotting dots at the centres of spans that  reach  the  cutoff
+  leads to a persistence effect that, to some extent, can be mitigated
+  by a  variation on the method. If, for example, all the high scoring
+  amino  acids  are clustered at the left end of a particular diagonal
+  segment, dots will continue to be plotted to their right  until  the
+  span  score  drops  below  the  cutoff. Instead of plotting a single
+  point for each span that  reaches  the  cutoff  score,  the  variant
+  method   plots  points for all the identities that lie in spans that
+  reach the cutoff. Obviously  the  persistence  effect  can  be  more
+  pronounced  for  long spans and low cutoff scores, but note that the
+  variant method will not plot anything if  there  are  no  identities
+  present, and so similar regions could be missed!
+
+        A further variant, useful for  comparing  a  sequence  against
+  itself, ignores the main diagonal.
+
+        The third comparison method called "quick scan"  is  really  a
+  combination of the first two, and is similar to the FASTP program of
+  Lipman and Pearson, but produces a dot matrix diagram. The algorithm
+  is  as  follows. The dot matrix positions are found for all words of
+  some minimum length (obviously length 1 is most sensitive) that  are
+  common  to  both  sequences.  Imagine  a  diagonal line running from
+  corner to corner of the diagram, at right angles to the diagonals in
+  the  dotmatrix,   The  scores for the common words (according to the
+  current  score  matrix,  e.g.  MDM78)  are   accummulated   at   the
+  appropriate  positions  on  that  imaginary line, hence  producing a
+  histogram. The histogram is analysed to find its mean  and  standard
+  deviation.  The  diagonals that lie above some cutoff score (defined
+  in standard deviation units), are rescanned using  the  proportional
+  algorithm,  and  a diagram produced. The method is very fast, and is
+  also employed  by the library comparison program.
+
+        The dynamic programming alignment algorithm contained  in  the
+  program  is  based  on that of Miller and Myers (). It guarantees to
+  produce alignments with the optimum score given a  score  matrix,  a
+  gap  start penalty, and a gap extension penalty. That is, starting a
+  gap costs a fixed penalty (IG) and each residue  added  to  the  gap
+  incurs  a  further  penalty  (IH)  so  that for each gap of length K
+  residues the penalty is IG + k*IH. Gaps at  the  ends  of  sequences
+  incur no penalty.
+
+        It is very useful to have  the  dot  matrix  methods  and  the
+  alignment  routine  together  in  the same program because it allows
+  users to produce a dot matrix diagram to help select  which  regions
+  of  the sequence they wish to align. Selection is made by use of the
+  crosshair. First the crosshair is positioned at the bottom left hand
+  end of the segment to be aligned. The crosshair function is quit and
+  immediately selected again, the  crosshair  positioned  at  the  top
+  right  of  the  segment,  and  the crosshair function quit. When the
+  alignment routine is selected the segment will be aligned.
+
+        The  alignment  can  replace  the  original  segment  of   the
+  sequence.   By  repeated  plotting  of  dot  matrices,  followed  by
+  alignment, very long sequences can easily be aligned.
+ @1. TX 0 @Help
+
+        This option gives online help. The user should  select  option
+  numbers and the current documentation will be given.
+
+        The following analyses (preceded by their option numbers)  are
+  included:
+   ? = Help
+   ! = Quit
+   3 = read a new sequence
+   4 = define active region
+   5 = list the sequence
+   6 = list a text file
+   7 = direct output to disk
+   8 = write active sequence to disk
+   9 = edit the sequences
+  10 = clear graphics screen
+  11 = clear text screen
+  12 = draw a ruler
+  13 = use cross hair
+  14 = reposition plots
+  15 = label diagram
+  16 = display a map
+  17 = apply identities algorithm
+  18 = apply proportional algorithm
+  19 = list matching spans
+  20 = set span length
+  21 = set proportional score
+  22 = set identities score
+  23 = calculate expected scores
+  24 = calculate observed scores
+  25 = show current parameter settings
+  26 = quick scan
+  27 = draw a /
+  28 = align the sequences
+  29 = complement the sequences
+  30 = switch main diagonal
+  31 = switch identities
+  32 = change score matrix
+ @2. TX 0 @Quit
+
+        This function stops the program.
+ @3. TX 1 @Read a new sequence
+
+        This option allows users to  read  in  new  sequences,  browse
+  through  annotations,  or  search  sequence  libraries for keywords.
+  Sequences can  be  read  from  "personal"  sequence  files  or  from
+  sequence  libraries. These are referred to as the sequence "source".
+  Personal files can be stored in several formats:  Staden, PIR, EMBL,
+  GENBANK  and  GCG.  At LMB we use "Staden" format for sequencing and
+  all the libraries  are  stored  in  their  original  formats.  Note,
+  however,  that  libraries  such  as EMBL or GenBank that are divided
+  into several files (eg GenBank has 13 separate files) are indexed as
+  a  whole.  This  means  that  users  do  not need to know which file
+  contains an entry, only which library.  When  the  user  selects  to
+  read in a sequence the program first asks for the sequence "source".
+
+        If the user selects "personal" the program will  ask  for  the
+  format (Staden, PIR, EMBL, GENBANK or GCG), and then for the name of
+  the file. For PIR format the user will also be required to know  the
+  entry  name of the sequence as the file can contain several. For the
+  other formats only a single entry is  expected.  The  file  will  be
+  read,  its  length  and composition will be displayed and the option
+  left.
+
+        If the user selects  "library"  as  the  sequence  source  the
+  program will display a list of available libraries. The programs are
+  capable of  handling  all  current  libraries  but  which  ones  are
+  available  will  vary  from  site  to  site.  At LMB we have several
+  libraries and also weekly updates of data gathered between releases.
+  The  program will ask users to select a library and then give a list
+  of options:
+
+   X  1 Get a sequence
+      2 Get annotations
+      3 Get entrynames from accession numbers
+      4 Search titles for keywords
+      5 Search text index for keywords
+
+  If get a sequence or get annotations is selected users will be asked
+  to  type  the entry name. The option will be left when a sequence is
+  selected  or  !  is  typed.  The  composition  and  length  will  be
+  displayed.
+
+        The  text  index  contains  all  words  from  feature  tables,
+  reference  titles, definition lines, keywords lists and comments, so
+  the text index search is most useful. It is also the fastest. Up  to
+  5  words  can  be  searched  for  at once. The words should be typed
+  separated by spaces, for example
+   ? Keywords=P53 mouse murine tumo
+
+  will search for all entries that contain words  starting  with  p53,
+  mouse,  murine  and  tumo.  Only the unique entries that contain ALL
+  words will be  listed.  Before  listing  the  matching  entries  the
+  program  will  show  the number of 'hits' for each word and ring the
+  bell.  Escape is possible at this point, or after each screenfull of
+  entries.   In  addition  to the entry names the text search displays
+  the primary accession number, the  sequence  length  and  up  to  80
+  characters of description.  (The search of 'titles' is now redundant
+  because the full text index contains all the  title  words  and  the
+  search  is  much  faster.  It  will  probably  be  removed  from the
+  program.)  All searches are independent of case. Where possible  the
+  program will offer default entry names.
+
+        Typical dialogue follows.
+  Select sequence source
+  X  1 Personal file
+     2 Sequence library
+  ? Selection  (1-2) (1) =
+  Select sequence file format
+  X  1 Staden
+     2 EMBL
+     3 GenBank
+     4 PIR
+     5 GCG
+  ? Selection  (1-5) (1) =
+  ? Sequence file name=M13MP7.SEQ
+   Contig title removed
+  Sequence length=  7238
+   Sequence composition
+            T          C          A          G          -
+        2405.      1539.      1765.      1527.         2.
+          33.2%      21.3%      24.4%      21.1%       0.0%
+    .
+    .
+    .
+
+
+   Select sequence source
+   X  1 Personal file
+      2 Sequence library
+   ? Selection  (1-2) (1) =2
+   Select a library
+   X  1 EMBL 29 nucleotide library Dec 91
+      2 SWISSPROT 20 protein library Nov 91
+      3 PIR 31 protein library Dec 91
+      4 NRL3D 58 From Brookhaven protein library Dec 91
+      5 GenBank
+   ? Selection  (1-5) (1) =
+  Library is in EMBL format with indexes
+   Select a task
+   X  1 Get a sequence
+      2 Get annotations
+      3 Get entry names from accession numbers
+      4 Search titles for keywords
+      5 Search text index for keywords
+   ? Selection  (1-5) (1) =5
+   Search for keywords
+   ? Keywords=P53 mouse
+  P53 hits  68
+  MOUSE hits  8180
+
+   MMANT01    X00875         536 Murine gene fragment for cellular tumour antigen
+   MMANT02    X00876          83 Murine gene fragment for cellular tumour antigen
+   MMANT03    X00877          21 Murine gene fragment for cellular tumour antigen
+   MMANT04    X00878         261 Murine gene fragment for cellular tumour antigen
+   MMANT05    X00879         184 Murine gene fragment for cellular tumour antigen
+   MMANT06    X00880         113 Murine gene fragment for cellular tumour antigen
+   MMANT07    X00881         110 Murine gene fragment for cellular tumour antigen
+   MMANT08    X00882         137 Murine gene fragment for cellular tumour antigen
+   MMANT09    X00883          74 Murine gene fragment for cellular tumour antigen
+   MMANT10    X00884         107 Murine gene for cellular tumour antigen p53 (exon
+   MMANT11    X00885         562 Murine p53 gene 3' region with exon 11
+   MMANTP53   M26862         536 Mouse tumor antigen p53 gene, 5' end.
+   MMLYN      M64608        2044 Mouse lyn protein mRNA, complete cds.
+   MMP53      X00741        1377 Mouse mRNA for transformation associated protein
+   MMP53A     M13872        1285 Mouse p53 mRNA, complete cds, clone pcD53.
+   MMP53B     M13873        1241 Mouse p53 mRNA, complete cds, clone p53-m11.
+   MMP53C     M13874        1322 Mouse p53 mRNA, complete cds, clone p53-m8.
+   MMP53G1    X01235         554 Mouse genomic DNA for 5' region of cellular tumou
+   MMP53IN4   X60470         729 M.musculus p53 gene for p53 protein, intron 4
+   MMP53P     X01236        2132 Mouse pseudogene for cellular tumour antigen p53
+   MMP53R     X01237        1773 Mouse mRNA for cellular tumour antigen p53
+   MMRSB2P5   M64597         196 Mouse B2 repeat in the 3' flank of protein 53 (p5
+        22 different entries found
+
+   Select a task
+   X  1 Get a sequence
+      2 Get annotations
+      3 Get entry names from accession numbers
+      4 Search titles for keywords
+      5 Search text index for keywords
+   ? Selection  (1-5) (1) =4
+   Search for keywords
+   ? Keywords=alpha
+   Searching for alpha
+   AAGHA          623 a.anguilla mrna for glycoprotein hormone alpha subunit precu
+   AAMALI        3338 a.aegypti mali gene encoding alpha 1-4 glucosidase, complete
+   AAMALIA       1659 a.aegypti maltase-like i (mali) gene encoding alpha-1,4-gluc
+   AAMALIB       1832 a.aegypti maltase-like i (mali) mrna encoding alpha-1,4-gluc
+   ACA13GT        371 alouatta caraya alpha-1,3gt gene, 3' flank.
+   ADHBADA1       102 duck alpha-d-globin gene, exon 1.
+   ADHBADA2      1145 duck alpha-a-globin gene and 5' flank
+   ADHBADWP       513 duck (white pekin) alpha ii (minor) globin mrna, complete co
+   AEACOXABC     5279 a.eutrophus protein x (acox), acetoin:dcpip oxidoreductase-a
+   AGA13GT        371 ateles geoffroyi alpha-1,3gt gene, 3' flank.
+   AGAAAGFP       282 c.tetragonoloba alpha-amylase/alpha-galactosidase fusion pro
+   AGAABL         138 b.subtilis alpha-amylase signal peptide gene e.coli beta-lac
+   AGAFAMYA        57 synthetic b.stearothermophilus alpha amylase/s.cerevisiae ma
+   AGAFAMYB        57 synthetic b.stearothermophilus alpha amylase/s.cerevisiae ma
+   AGAFAMYC        57 synthetic b.stearothermophilus alpha amylase/s.cerevisiae ma
+   AGAFCOXA        98 synthetic alpha-factor/cox iv fusion gene signal peptide.
+   AGAGABA       7876 synthetic gossypium hirsutum (cotton) alpha globulin a and b
+   AGAMYLS        120 synthetic alpha-amylase gene, 5' end.
+   AGANPS          95 synthetic gene (jcnf-1) encoding alpha-factor pro-region/han
+  !
+   Select a task
+   X  1 Get a sequence
+      2 Get annotations
+      3 Get entry names from accession numbers
+      4 Search titles for keywords
+      5 Search text index for keywords
+   ? Selection  (1-5) (1) =3
+   ? Accession number=v00636
+  Entry name LAMBDA
+   Select a task
+   X  1 Get a sequence
+      2 Get annotations
+      3 Get entry names from accession numbers
+      4 Search titles for keywords
+      5 Search text index for keywords
+   ? Selection  (1-5) (1) =2
+   Default Entry name=LAMBDA
+   ? Entry name=
+  ID   LAMBDA     standard; DNA; PHG; 48502 BP.
+  XX
+  AC   V00636; J02459; M17233; X00906;
+  XX
+  DT   03-JUL-1991 (Rel. 28, Last updated, Version 3)
+  DT   09-JUN-1982 (Rel. 1, Created)
+  XX
+  DE   Genome of the bacteriophage lambda (Styloviridae).
+  XX
+  KW   circular; coat protein; DNA binding protein; genome;
+  KW   origin of replication.
+  XX
+  OS   Bacteriophage lambda
+  OC   Viridae; ds-DNA nonenveloped viruses; Siphoviridae.
+  XX
+  RN   [1]
+  RP   1-48502
+  RA   Sanger F., Coulson A.R., Hong G.F., Hill D.F., Petersen G.B.;
+  RT   "Nucleotide sequence of bacteriophage lambda DNA";
+  RL   J. Mol. Biol. 162:729-773(1982).
+  XX
+  !
+   Select a task
+   X  1 Get a sequence
+      2 Get annotations
+      3 Get entry names from accession numbers
+      4 Search titles for keywords
+      5 Search text index for keywords
+   ? Selection  (1-5) (1) =
+   Default Entry name=LAMBDA
+   ? Entry name=
+  DE   Genome of the bacteriophage lambda (Styloviridae).
+   Sequence length  48502
+   Sequence composition
+             T          C          A          G          -
+        11988.     11360.     12336.     12818.         0.
+           24.7%      23.4%      25.4%      26.4%       0.0%
+
+ @4. TX 1 @Define active region
+
+        For its analytic functions  the  program  always  works  on  a
+  region of the sequence called the active region. When a new sequence
+  is read into the program the active region is automatically  set  to
+  start  at  the  beginning  of  the sequence and go up to the maximum
+  allowed size of active region the  program can handle. The positions
+  are  shown  on the screen.  On most machines this will be to the end
+  of the sequence.  This option allows the  user  define  a  different
+  region.
+ @5. TX 1 @List a sequence
+
+        The sequence can be listed with line lengths from 10 to 120 in
+  multiples of 10.  The output looks like:
+
+      87         97        107        117        127        137
+       KVKCTGRILE VPVGRGLLGR VVNTLGAPID GKGPLDHDGF SAVEAIAPGV IERQSVDQPV
+        **      * ****   ***   * ** * *  **         *    **    *
+       DVKDLEHPIE VPVGKATLGR IMNVLGEPVD MKGEIGEEER WAIHRAAPSY EELSNSQELL
+      68         78         88         98        108        118
+     147        157        167        177        187        197
+       QTGYKAVDSM IPIGRGQREL IIGDRQTGKT ALAIDAIINQ RDSGIKCIYV AIGQ
+        ** *  * *  *   *       *    ***       * *             *
+       ETGIKVIDLM CPFAKGGKVG LFGGAGVGKT VNMMELIRNI AIEHSGYSVF AGVG
+     128        138        148        158        168        178
+
+ @6. TX 1 @List a text file
+
+        Allows the user to have a text file displayed on  the  screen.
+  It will appear one page at a time.
+ @7. TX 1 @Direct output to disk
+
+        Used to direct output that would normally appear on the screen
+  to a file.
+
+        Select redirection of either text or graphics, and supply  the
+  name of the file that the output should be written to.
+
+        The results from the next options selected will not appear  on
+  the  screen  but  will  be  written  to  the  file. When option 7 is
+  selected again the file will be closed and output will again  appear
+  on the screen.
+ @8. TX 1 @Write active region to disk
+
+        This option allows users to write the current active  sequence
+  to a disk file in Staden format.
+ @9. TX 1 @Edit the sequences
+
+        This function allows the user to insert  or  delete  parts  of
+  either  sequence  to  help  align  them. The inserted characters are
+  dashes.
+ @10. TX 2 @Clear graphics
+
+        Clears the screen of both text and graphics.
+ @11. TX 2 @Clear text
+
+        Clears only text from the screen.
+ @12. TX 2 @Draw a ruler
+
+        This option allows the user to draw a ruler or scale along the
+  axes  of  the  screen  to help identify the coordinates of points of
+  interest. The user can define the position  of  the  first  sequence
+  element  to  be  marked (for example if the active region is 1501 to
+  8000, the user might wish to mark every 1000th element  starting  at
+  either  1501  or  2000  - it depends if the user wishes to treat the
+  active region as an independent unit with its own numbering starting
+  at  its  left  edge, or as part of the whole sequence). The user can
+  also define the separation of the  ticks  on  the  scale  and  their
+  height. If required the labelling routine can be used to add numbers
+  to the ticks.
+
+        To escape type !
+ @13. TX 2 @Use cross hair
+
+        This function puts a steerable cross on the screen that can be
+  used to find the coordinates of points in the sequence. The user can
+  move the cross around using the directional keys; when he  hits  the
+  space bar the program will write out the coordinates of the cross in
+  sequence units and the option will be exited.
+
+        If instead, the user hits a , the position will  be  displayed
+  but the cross will remain on the screen.
+
+        If a letter s is hit the sequences around the cross  hair  are
+  displayed  as  a  short  alignment  (as  shown  below) and the cross
+  remains on the screen.
+          97        107
+           VPVGRGLLGR VVNTLGAPID
+           ****   ***   * ** * *
+           VPVGKATLGR IMNVLGEPVD
+          78         88
+
+
+        If a letter m is hit the sequences around the cross  hair  are
+  displayed  in  the  form  of a matrix (as shown below) and the cross
+  remains on the screen.
+
+     VPVGKATLGRIMNVLGEPVD
+    D...................DD
+    I..........I.........I
+    P.P...............P..P
+    A.....A..............A
+    G...G....G......G....G
+    L.......L......L.....L
+    T......T.............T
+    N............N.......N
+    VV.V..........V....V.V
+    VV.V..........V....V.V
+    R.........R..........R
+    G...G....G......G....G
+    L.......L......L.....L
+    L.......L......L.....L
+    G...G....G......G....G
+    R.........R..........R
+    G...G....G......G....G
+    VV.V..........V....V.V
+    P.P...............P..P
+    VV.V..........V....V.V
+     VPVGKATLGRIMNVLGEPVD
+
+
+        The function is also used prior to "align sequences" in  order
+  to  delineate  the region to be aligned. The crosshair is positioned
+  at the bottom left of the region, the crosshair  option  quit.  Then
+  the  crosshair  option is selected again, and the crosshair moved to
+  the top right of the region to be aligned.
+ @14. TX 2 @Reposition plots
+
+        The position of the plots  is  defined  relative  to  a  users
+  drawing board which has size 1-10,000 in x and 1-10,000 in y.  Plots
+  are drawn in a window defined by x0,y0  and  xlength,ylength.  Where
+  x0,y0  is the position of the bottom left hand corner of the window,
+  and xlength is the width of the window and ylength the height of the
+  window.
+     --------------------------------------------------------- 10,000
+     1                                                       1
+     1       --------------------------------------   ^      1
+     1       1                                    1   1      1
+     1       1                                    1   1      1
+     1       1                                    1 ylength  1
+     1       1                                    1   1      1
+     1       1                                    1   1      1
+     1       --------------------------------------   v      1
+     1  x0,y0^                                               1
+     1       <---------------xlength-------------->          1
+     ---------------------------------------------------------      1
+     1                                                   10,000
+
+  All values are in drawing board  units  (i.e.  1-10,000,  1-10,000).
+  The  default  window  positions are read from a file "DIAGMARG" when
+  the program is started. Users can have their own file  if  required.
+  This  option  allows users to change window positions whilst running
+  the program.  If the user types only carriage return for  any  value
+  it  will  remain  unchanged.  The  cross-hair  can be used to choose
+  suitable heights.
+ @15. TX 2 @Label a diagram
+
+        This routine allows users to  label  any  diagrams  they  have
+  produced.  They  are  asked  to type in a label. When the user types
+  carriage return to finish typing the label the cross-hair appears on
+  the  screen. The user can position it anywhere on the screen. If the
+  user types R (for right justify) the label will be  written  on  the
+  diagram  with  its right end at the cross-hair position. If the user
+  types L (for left justify) the label will be written with  its  left
+  end   at   the  cross  hair  position.   The  cross-hair  will  then
+  immediately reappear. The user may put the  same  label  on  another
+  part of the diagram as before or if he hits the space bar he will be
+  asked if he wishes to type in another label.
+ @16. TX 2 @Display a map
+
+        NOT AVAILABLE.  This draws a  map  of  any  sequence  features
+  selected  by the user.  These features may be protein coding regions
+  (CDS), tRNA genes (TRNA), promoter positions (PRM), etc.  Users  may
+  define  their  own  feature table key names. The coordinates must be
+  stored in a file in the format of an EMBL feature table.
+ @17. TX 4 @Apply identities algorithm
+
+        The identities algorithm finds runs of identical characters in
+  the  sequence.  Its main value is speed, being 100's of times faster
+  than the proportional algorithm. It is of course not very sensitive,
+  and  should  only  be used for a quick scan. The cutoff score is the
+  minimum number of consecutive  matching  characters.   All  runs  of
+  identical  characters  that are at least as long as the cutoff score
+  will produce a dot on the screen.
+
+        See also quick scan.
+
+        Typical dialogue follows.
+  ? Menu or option number=d17
+  ? Identity score (1-20) (2) =3
+  Working
+
+   missing graphics
+
+ @18. TX 4 @Apply proportional algorithm
+
+        This  method,  generally   the   most   useful,   was    first
+ described   by   McLachlan  and involves calculating a score for each
+ position in the  matrix  by  summing   points   found   when  looking
+ forwards   and  backwards  along  a  diagonal line of a given length.
+ This length, called the span, must be an odd number.   The  algorithm
+ does  not  simply look for identity  but  uses  a score  matrix  that
+ contains  scores  for  every  possible  pair of characters.  At  each
+ point that a threshold score is achieved the program marks the screen
+ in one of two ways. It will either place a single dot at the position
+ corresponding  to  the centre of the matching span, or it will plot a
+ dot  for  each  identical  residue   within   each   matching   span.
+ Alternatively,  the  "list  matching  spans"  option  will  list  the
+ segments that match.
+
+        For comparing amino  acid  sequences   we   usually  use   the
+ score matrix  shown  below which was calculated by adding 10 (to make
+ every term >0) to each term of the relatedness odds matrix  MDM78  of
+ Dayhoff.   This  matrix  MDM78  was calculated by looking at accepted
+ point mutations in 71 families of closely related proteins  and,   of
+ those   tested  by  Dayhoff,  was found to be the most powerful score
+ matrix  for  finding  distant  relationships  between   amino    acid
+ sequences.
+
+                            AMINO ACID SCORE MATRIX
+                            -----------------------
+
+    C  S  T  P  A  G  N  D  E  Q  B  Z  H  R  K  M  I  L  V  F  Y  W  -  X  ?
+ C 22 10  8  7  8  7  6  5  5  5  5  5  7  6  5  5  8  4  8  6 10  2 10 10 10 10
+ S 10 12 11 11 11 11 11 10 10  9 10 10  9 10 10  8  9  7  9  7  7  8 10 10 10 10
+ T  8 11 13 10 11 10 10 10 10  9 10 10  9  9 10  9 10  8 10  7  7  5 10 10 10 10
+ P  7 11 10 16 11  9  9  9  9 10  9 10 10 10  9  8  8  7  9  5  5  4 10 10 10 10
+ A  8 11 11 11 12 11 10 10 10 10 10 10  9  8  9  9  9  8 10  6  7  4 10 10 10 10
+ G  7 11 10  9 11 15 10 11 10  9 10 10  8  7  8  7  7  6  9  5  5  3 10 10 10 10
+ N  6 11 10  9 10 10 12 12 11 11 12 11 12 10 11  8  8  7  8  6  8  6 10 10 10 10
+ D  5 10 10  9 10 11 12 14 13 12 13 12 11  9 10  7  8  6  8  4  6  3 10 10 10 10
+ E  5 10 10  9 10 10 11 13 14 12 12 13 11  9 10  8  8  7  8  5  6  3 10 10 10 10
+ Q  5  9  9 10 10  9 11 12 12 14 11 13 13 11 11  9  8  8  8  5  6  5 10 10 10 10
+ B  5 10 10  9 10 10 12 13 12 11 13 11 11 10 10  8  8  6  8  5  7  4 10 10 10 10
+ Z  5 10 10 10 10 10 11 12 13 13 11 14 12 10 10  8  8  8  8  5  6  4 10 10 10 10
+ H  7  9  9 10  9  8 12 11 11 13 11 12 16 12 10  8  8  8  8  8 10  7 10 10 10 10
+ R  6 10  9 10  8  7 10  9  9 11 10 10 12 16 13 10  8  7  8  6  6 12 10 10 10 10
+ K  5 10 10  9  9  8 11 10 10 11 10 10 10 13 15 10  8  7  8  5  6  7 10 10 10 10
+ M  5  8  9  8  9  7  8  7  8  9  8  8  8 10 10 16 12 14 12 10  8  6 10 10 10 10
+ I  8  9 10  8  9  7  8  8  8  8  8  8  8  8  8 12 15 12 14 11  9  5 10 10 10 10
+ L  4  7  8  7  8  6  7  6  7  8  6  8  8  7  7 14 12 16 12 12  9  8 10 10 10 10
+ V  8  9 10  9 10  9  8  8  8  8  8  8  8  8  8 12 14 12 14  9  8  4 10 10 10 10
+ F  6  7  7  5  6  5  6  4  5  5  5  5  8  6  5 10 11 12  9 19 17 10 10 10 10 10
+ Y 10  7  7  5  7  5  8  6  6  6  7  6 10  6  6  8  9  9  8 17 20 10 10 10 10 10
+ W  2  8  5  4  4  3  6  3  3  5  4  4  7 12  7  6  5  8  4 10 10 27 10 10 10 10
+ - 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10
+ X 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10
+ ? 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10
+   10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10
+ One alternative for proteins is  to  use  an  identity  matrix.   For
+ comparing nucleic acids we usually use the matrix shown below.
+
+          DNA SCORE MATRIX
+
+              A C G T X
+            A 1 0 0 0 0
+            C 0 1 0 0 0
+            G 0 0 1 0 0
+            T 0 0 0 1 0
+            X 0 0 0 0 0
+ See option 32 for how to change the score matrices.
+
+        When a sequence is compared against itselt to look for repeats
+ it  is possible to use the proportional algorithm in a mode such that
+ the main diagonal is not shown. See option 30.
+
+        Typical dialogue follows.
+
+ ? Menu or option number=d18
+ ? Odd span length (1-401) (11) =
+ ? Proportional score (1-297) (132) =
+ Working
+
+  missing graphics
+
+ @19. TX 4 @List matching spans
+  This option applies the proportional  algorithm  using  the  current
+  span and cut-off score, but instead of drawing a dot matrix it lists
+  all the matching spans. When a sequence is compared  against  itselt
+  to  look  for repeats it is possible to use this algorithm in a mode
+  such that the main diagonal is not listed. See option 30.
+
+        Typical dialogue follows.
+  ? Menu or option number=d19
+  ? Odd span length (1-401) (11) =
+  ? Proportional score (1-297) (132) =148
+  List matching spans
+  Working
+       76
+  IEVPVGKATLG
+  LEVPVGRGLLG
+       95
+       77
+  EVPVGKATLGR
+  EVPVGRGLLGR
+       96
+       78
+  VPVGKATLGRI
+  VPVGRGLLGRV
+       97
+       79
+  PVGKATLGRIM
+  PVGRGLLGRVV
+       98
+       85
+  LGRIMNVLGEP
+  LGRVVNTLGAP
+      104
+       86
+  GRIMNVLGEPV
+  GRVVNTLGAPI
+      105
+       87
+  RIMNVLGEPVD
+  RVVNTLGAPID
+      106
+
+ @20. TX 3 @Set span length
+
+        The  proportional  algorithm  calculates  a  score  for   each
+ position  in  the matrix by summing  the points  found  when  looking
+ forwards  and  backwards  along  a  diagonal line of a given  length.
+ This  length, called the span, should be an odd number  so  that  the
+ score  for  any  point  is correctly positioned at the centre of  the
+ span.   This  option  allows  the  user to define the span length. It
+ should be noted that short spans can produce noisy diagrams, but  are
+ less  affected  by  insertions  and  deletions  than  are long spans.
+ However long spans can detect more  distant relationships. Long spans
+ can  suffer  from a persistence problem by plotting dots when all the
+ "signal" is to one side of the spans central position. To help  avoid
+ this,  the  option  that  plots the position of all matching residues
+ within a matching span, can be tried.  This  is  most  useful  if  an
+ identity matrix is being used.
+ @21. TX 3 @Set proportional score
+
+        The  proportional  algorithm  calculates  a  score  for   each
+  position  in  the  matrix  by summing  the scores for the individual
+  amino acids found  when  looking forwards  and  backwards  along   a
+  diagonal   line  of  a  given  length.   All  points  at  which  the
+  proportional score is achieved will produce a dot  on  the  diagram.
+  (The same score is used for the 'LIST MATCHING SPANS' option.)
+
+        Before chosing a score the user can  apply  the  routine  that
+  will  calculate  the expected score, or can calculate a histogram of
+  observed scores. It is best to start with a high score to  avoid  an
+  overcrowded diagram.
+ @22. TX 3 @Set identities score
+
+        The identities algorithm is of limited value as it only  finds
+  runs of matching characters, however it has the virtue of being very
+  fast.  This option allows the user to set the minimum length of  run
+  that will produce a dot on the screen.
+ @23. TX 3 @Calculate expected scores
+
+        This function calculates the "double matching probability"  of
+  McLachlan.    The   "double     matching     probability"   is   the
+  probability  of  finding particular  scores  given  two   infinitely
+  long   sequences   of   the  composition  of  those  being compared,
+  with the current span length and score matrix.  By using this option
+  the   user   can   choose   to plot   all   the  matches  for  which
+  the  score  exceeds  a  given significance  level  (such   as   1%).
+  Generally it is best to begin at a low level to avoid an overcrowded
+  diagram.
+
+        When the calculation of the expected scores is  finished   the
+  program offers the user 3 ways of examining the results:
+  "Show probability for a score" allows the  user   to   type   in   a
+  score   and   the program responds with the probability of achieving
+  that level of score.
+  "Show score for  a  probability"  allows  the  user  to  type  in  a
+  probability  value  and the program types the score that corresponds
+  to that level of probability.
+  "List scores and probabilities" is  the  command  to  list  out  the
+  scores  and  their corresponding  probabilities.   The user is asked
+  to supply a further parameter, the "number of steps between scores",
+  and  the program only lists every stepsize point.  e.g a stepsize of
+  5 will get every 5th score listed.
+
+        Typical dialogue follows.
+  ? Menu or option number=d23
+  ? Odd span length (1-401) (11) =
+  ? Proportional score (1-297) (132) =
+
+  Working
+  Average score=   103.18557
+  RMS deviation=     7.85276
+  X 1 Show probability for a score
+    2 Show score for a probability
+    3 List scores and probabilities
+  ? 0,1,2,3 =
+
+  ? Show probability for score (1-165) (134) =160
+  Probability of score    160 is 0.0000000008
+  X 1 Show probability for a score
+    2 Show score for a probability
+    3 List scores and probabilities
+  ? 0,1,2,3 =2
+  ? Show score for probability (0.0000000001-1.) (0.00001) =0.0000001
+  Score for probability 0.0000001000 is   153
+    1 Show probability for a score
+  X 2 Show score for a probability
+    3 List scores and probabilities
+  ? 0,1,2,3 =3
+  ? Number of steps between scores (1-10) (5) =
+
+       0  0.10000E+01    100  0.67232E+00    200  0.18977E-20
+       5  0.10000E+01    105  0.42119E+00    205  0.42561E-22
+      10  0.10000E+01    110  0.20671E+00    210  0.87767E-24
+      15  0.10000E+01    115  0.78860E-01    215  0.16651E-25
+      20  0.10000E+01    120  0.23515E-01    220  0.27300E-27
+      25  0.10000E+01    125  0.55406E-02    225  0.00000E+00
+      30  0.10000E+01    130  0.10443E-02    230  0.00000E+00
+      35  0.10000E+01    135  0.15935E-03    235  0.00000E+00
+      40  0.10000E+01    140  0.19906E-04    240  0.00000E+00
+      45  0.10000E+01    145  0.20569E-05    245  0.00000E+00
+      50  0.10000E+01    150  0.17758E-06    250  0.00000E+00
+      55  0.10000E+01    155  0.12938E-07    255  0.00000E+00
+      60  0.10000E+01    160  0.80360E-09    260  0.00000E+00
+      65  0.10000E+01    165  0.43009E-10    265  0.00000E+00
+      70  0.10000E+01    170  0.20049E-11    270  0.00000E+00
+      75  0.99997E+00    175  0.82263E-13    275  0.00000E+00
+      80  0.99949E+00    180  0.29998E-14    280  0.00000E+00
+      85  0.99448E+00    185  0.98050E-16    285  0.00000E+00
+      90  0.96543E+00    190  0.28934E-17    290  0.00000E+00
+      95  0.86836E+00    195  0.77556E-19    295  0.00000E+00
+    1 Show probability for a score
+    2 Show score for a probability
+  X 3 List scores and probabilities
+  ? 0,1,2,3 =!
+
+
+ @24. TX 3 @Calculate observed scores
+
+        This  option  applies  the  proportional  algorithm   to   the
+  currently  active  sequence but instead of producing a dot matrix it
+  calculates a histogram  of  observed  scores.   The  speed  of  this
+  calculation of course depends on the size of the active regions, but
+  when  it is  completed  the  program  offers  the  user  3  ways  of
+  examining the results:
+
+        "Show percentage for score" allows the user to type in a score
+  and  the  program  responds   with  the  percentage  of  points that
+  achieve this value.
+
+        "Show percentage for score" allows  the  user  to  type  in  a
+  percentage  and  the  program   responds   with   the  corresponding
+  score.  Values of this  score  and  above  are  only   achieved   by
+  the   given percentage of points.
+
+        "List scores and percentages" is the  command  to   list   out
+  the   scores  and  the percentage of points achieving them.  Typical
+  dialogue follows.
+  ? Menu or option number=24
+  Working
+  Maximum observed score is    152
+  X 1 Show percentage reaching a score
+    2 Show score for a percentage
+    3 List scores and percentages
+  ? 0,1,2,3 =
+
+  ? Show percentage for score (1-152) (114) =144
+  Percentage of points with score    144 is   0.005486297
+  X 1 Show percentage reaching a score
+    2 Show score for a percentage
+    3 List scores and percentages
+  ? 0,1,2,3 =2
+
+  ? Show score for percentage (0.00001-1.) (0.001) =0.01
+  Score for percentage   0.010000000 is   143
+    1 Show percentage reaching a score
+  X 2 Show score for a percentage
+    3 List scores and percentages
+  ? 0,1,2,3 =
+
+  ? Show score for percentage (0.00001-1.) (0.001) =1.
+  Score for percentage   1.000000000 is   124
+    1 Show percentage reaching a score
+  X 2 Show score for a percentage
+    3 List scores and percentages
+  ? 0,1,2,3 =3
+  ? Number of steps between scores (1-10) (5) =1
+
+     73   236953  0.10000E+03
+     74   236951  0.99999E+02
+     75   236951  0.99999E+02
+     76   236950  0.99998E+02
+     77   236945  0.99996E+02
+     78   236942  0.99995E+02
+     79   236929  0.99989E+02
+     80   236900  0.99977E+02
+
+    missing data here
+
+    130      384  0.16206E+00
+    131      307  0.12956E+00
+    132      239  0.10086E+00
+    133      180  0.75964E-01
+    134      134  0.56551E-01
+    135      103  0.43468E-01
+    136       78  0.32918E-01
+    137       67  0.28276E-01
+    138       46  0.19413E-01
+    139       40  0.16881E-01
+    140       33  0.13927E-01
+    141       29  0.12239E-01
+    142       24  0.10129E-01
+    143       19  0.80184E-02
+    144       13  0.54863E-02
+    145       10  0.42202E-02
+    146        8  0.33762E-02
+    147        7  0.29542E-02
+    148        7  0.29542E-02
+    149        6  0.25321E-02
+    150        5  0.21101E-02
+    151        3  0.12661E-02
+    152        3  0.12661E-02
+    1 Show percentage reaching a score
+    2 Show score for a percentage
+  X 3 List scores and percentages
+  ? 0,1,2,3 =!
+
+ @25. TX 3 @Show current parameter settings
+
+        This function lists the names of the current sequences,  their
+  total  lengths,  the start and end points of the active sequence and
+  the current values of span and cut-off scores. It also shows if  the
+  main  diagonal  will be shown, or if the proportional algorithm will
+  mark all identities in matching spans.
+
+        Typical dialogue follows.
+  ? Menu or option number=25
+  Horizontal sequence
+  ALPHA.PRT
+  Positions
+       1 TO    514
+  Vertical sequence
+  BETA.PRT
+  Positions
+       1 TO    461
+  Span length=    11
+  Scores
+  Proportional=   132
+  Identities=     3
+  Identites off
+  Main diagonal shown
+
+
+ @27. TX 2 @Draw a /
+
+        This option simply draws a diagonal line from the bottom  left
+  of  the  diagram  to  the top right. it can be an aid when trying to
+  align the sequences.
+ @26. TX 4 @Quick scan
+
+        The algorithm is as follows.  The  dot  matrix  positions  are
+  found  for  all  words of some minimum length (obviously length 1 is
+  most sensitive)  that  are  common  to  both  sequences.  Imagine  a
+  diagonal line running from corner to corner of the diagram, at right
+  angles to the diagonals in the dotmatrix,  The scores for the common
+  words  (according  to  the  current  score  matrix,  e.g. MDM78) are
+  accummulated at the appropriate positions on  that  imaginary  line,
+  hence  producing  a histogram. The histogram is analysed to find its
+  mean and standard deviation.  The  diagonals  that  lie  above  some
+  cutoff  score  (defined  in standard deviation units), are rescanned
+  using the proportional algorithm, and a diagram produced. The method
+  is  very  fast,  and  is  also  employed   by the library comparison
+  program.
+
+        Typical dialogue follows.
+
+  ? Menu or option number=d26
+  ? Identity score (1-20) (3) =
+  ? Odd span length (1-401) (11) =
+  ? Proportional score (1-297) (132) =
+  ? Number of sd above mean (0.00-10.00) (5.00) =
+
+   missing graphics
+
+
+
+        SIPL the library searching version of SIP
+
+        This program compares a probe sequence against  a  library  of
+  sequences  using  the  quick  scan algorithm, sorts the matches into
+  descending order of score, and produces optimal  alignments  of  the
+  best scores using the Myers and Miller method. It is very rapid.
+
+        Use of lists of entry names
+
+        SIPL has the ability to restrict searches to  subsets  of  the
+  libraries.  This  does  not  require  sublibraries to be created but
+  instead is achieved by using files containing a list  of  the  entry
+  names of sequences. The user may choose to search only those entries
+  on the list or, alternatively to search all but those  on  the  list
+  (i.e.  in the latter case the list contains the names of those to be
+  excluded).  The programs can search libraries that have indexes  and
+  those  that  do not.  If a list of names for inclusion is used, then
+  the search will be faster if the index  is  present.  In  all  other
+  circumstances  the  whole  library will be read. The list must be in
+  library order except when it is used  to  include  entries,  and  an
+  index  is  available.   The  list  must contain each entry name on a
+  separate line, with the name starting in column 1 of  the  line.  ie
+  there must be no spaces at the start of the line.  The list of entry
+  names can be produced by the keyword searches of nip, pip, sip,  etc
+  as  long  as the listings produced have a space character separating
+  the entry name from the entry description. This will depend  on  how
+  well  the  library reformatting programs work. For example swissprot
+  entry names tend to run into the beginning of the descriptions,  but
+  other libraries are generally OK.
+ @28. TX 4 @Align sequences
+
+        This  function  will  produce  an  optimal  alignment  of  two
+  segments   of   the  sequence.  The  dynamic  programming  alignment
+  algorithm is based on that of Miller and Myers (). It guarantees  to
+  produce  alignments  with  the optimum score given a score matrix, a
+  gap start penalty, and a gap extension penalty. That is, starting  a
+  gap  costs  a  fixed  penalty  (F) and each residue added to the gap
+  incurs a further penalty (E) so  that  for  each  gap  of  length  K
+  residues the penalty is F + K*E. Gaps at the ends of sequences incur
+  no penalty.
+
+        The routine can only handle segments of  sequence  of  maximum
+  length  5000  residues. When the sequences are read in the alignment
+  segment will be set to the first 5000 residues. A different  segment
+  can  be  selected by prefixing the option number by the letter D, in
+  which case the cross hair can be used to identify the two ends.  The
+  cross  hair will appear.  First position the crosshair at the bottom
+  left of the segment and type a character other than s or m  or  ",".
+  When  the  crosshair  reappears,  position it a the top right of the
+  segment, and type a keyboard character.  The aligned sequences  will
+  replace  the  active sequence if the user confirms "keep alignment".
+  By alternate use of  the  plotting  and  alignment  routines  it  is
+  possible to rapidly produce an alignment of quite long sequences.
+
+        Typical dialogue follows.
+
+  28 = Align sequences
+  ? Menu or option number=d28
+  Define the region to align using the cross-hair.
+  First identify the bottom left position and exit
+  the cross-hair routine. Then the top right.
+
+  (Bell rings, type return, cross hair appears)
+
+  ? Penalty for starting a gap (1-100) (10) =
+  ? Penalty for each residue in gap (1-100) (10) =
+
+  Aligning region           1 to         461
+      with region           1 to         514
+           1         11         21         31         41         51
+           MA--TGKIVQ VIGA------ VVDVEFPQDA VPRVYDALEV QNG------N ERLVL-----
+           *      *    *         **            * *       *        *   *
+           MQLNSTEISE LIKQRIAQFN VVSEAHNEGT IVSVSDGVIR IHGLADCMQG EMISLPGNRY
+           1         11         21         31         41         51
+          61         71         81         91        101        111
+           EVQQQLGGGI VRTIAMGSSD GLRRGLDVKD LEHPIEVPVG KATLGRIMNV LGEPVDMKGE
+                *     *    **     *  *  **       *****    ***  *  ** * * **
+           AIALNLERDS VGAVVMGPYA DLAEGMKVKC TGRILEVPVG RGLLGRVVNT LGAPIDGKGP
+          61         71         81         91        101        111
+         121        131        141        151        161        171
+           IGEEERWAIH RAAPSYEELS NSQELLETGI KVIDLMCPFA KGGKVGLFGG AGVGKTVNMM
+                  *     **   *          **  *  * * *    *      *     ***
+           LDHDGFSAVE AIAPGVIERQ SVDQPVQTGY KAVDSMIPIG RGQRELIIGD RQTGKTALAI
+         121        131        141        151        161        171
+         181        191        201        211        221        231
+           ELIRNIAIEH SGYS-VFAGV GERTREGNDF YHEMTDSNVI DKVSLVYGQM NEPPGNRLRV
+             *  *     **         *                          *      *
+           DAI--INQRD SGIKCIYVAI GQKASTISNV VRKLEEHGAL ANTIVVVATA SESAALQYLA
+         181        191        201        211        221        231
+         241        251        261        271        281        291
+           ALTGLTMAEK FRDEGRDVLL FVDNIYRYTL AGTEVSALLG RMPSAVGYQP TLAEEMGVLQ
+                 * *  *** * * *    *        *    * **  * *                *
+           RMPVALMGEY FRDRGEDALI IYDDLSKQAV AYRQISLLLR RPPGREAFPG DVFYLHSRLL
+         241        251        261        271        281        291
+         301        311        321        331        341        351
+           ERITST---- ---------- -KTGSITSVQ AVYVPADDLT DPSPATTFAH LDATVVLSRQ
+           **                     **** *         * *      *        *    *
+           ERAARVNAEY VEAFTKGEVK GKTGSLTALP IIETQAGDVS AFVPTNVISI TDGQIFLETN
+         301        311        321        331        341        351
+         361        371        381        391        401        411
+           IASLGIYPAV DPLDSTSRQL DPLVVGQEHY DTAR----GV QSILQRYQEL KDIIAILGMD
+               ** ***  *  * **      * *             *     *  * **
+           LFNAGIRPAV NPGISVSR-- ---VGGAAQT KIMKKLSGGI RTALAQYREL AAFSQFAS--
+         361        371        381        391        401        411
+         421        431        441        451        461        471
+           ELSEEDKLVV ARARKIQRFL SQ----PFFV AE----VFTG SPGKYVSLKD --TIRGFKGI
+            *             *    *  *    *  * *      *     * *         *  *
+           DLDDATRKQL DHGQKVTELL KQKQYAPMSV AQQSLVLFAA ERG-YLADVE LSKIGSFEAA
+         421        431        441        451        461        471
+         481        491        501        511        521
+           MEG--EYDHL P-EQAFYMVG SIEEAVE--- --------KA KKL*
+                  **  *  *     *       *                  *
+           LLAYVDRDHA PLMQEINQTG GYNDEIEGKL KGILDSFKAT QSW*
+         481        491        501        511        521
+  Conservation  22.5%
+  Number of padding characters inserted    63 and    10
+  ? (y/n) (y) Keep alignment n
+
+
+ @29. TX 1 @Complement the sequences
+
+        This function allows users to reverse and  complement  nucleic
+  acid sequences.
+ @30. TX 3 @Switch main diagonal
+
+        If a sequence is being compared against  itself  to  look  for
+  repeats  it  is  sometimes  convenient  if  the main diagonal is not
+  included in the comparison. This function  allows  users  to  set  a
+  switch  that  determines whether or not to include the main diagonal
+  for all the comparison methods.  If  the  switch  is  set,  and  the
+  active regions for both sequences have the same start position, then
+  the main diagonal will not be compared.
+ @31. TX 3 @Switch identities
+
+        This function allows a switch to be set or unset.  The  switch
+  determines  which  of  two  forms  of  plot  will be produced by the
+  proportional algorithm. One form of  output  (the  original  method)
+  plots  a  dot  at the centre of each span that reaches the threshold
+  score; whereas the other  form  will  plot  dots  for  all  matching
+  residues that lie within spans that reach the threshold.
+ @32. TX 3 @change score matrix
+
+        This option allows users to select their own score matrix  for
+  use with the proportional algorithm. The choices are:
+
+   1 = MDM78
+   2 = identity
+   3 = your own matrix
+
+
+        MDM78 is the standard matrix that is used for proteins and  an
+  identity  matrix is the default matrix for nucleic acids. However an
+  identity matrix is also useful for protein  comparisons.  "Your  own
+  matrix"  allows  users  to  apply  any  other matrix, as long as the
+  matrix file is in the same format as MDM78.  For comparisons of  DNA
+  it  might be useful to try one that gave say 3 for exact matches and
+  1 for R-R or Y-Y, else=0.
+ @33. TX 3 @Set number of sd's for Quickscan
+
+        The  quickscan  algorithm  is  as  follows.  The  dot   matrix
+  positions  are found for all words of some minimum length (obviously
+  length 1 is most sensitive)  that  are  common  to  both  sequences.
+  Imagine  a  diagonal  line  running  from  corner  to  corner of the
+  diagram, at right angles to the diagonals  in  the  dotmatrix,   The
+  scores  for the common words (according to the current score matrix,
+  e.g. MDM78) are accummulated at the appropriate  positions  on  that
+  imaginary  line,  hence  producing  a  histogram.  The  histogram is
+  analysed to find its mean and standard deviation. The diagonals that
+  lie  above  some cutoff score (defined in standard deviation units),
+  are rescanned  using  the  proportional  algorithm,  and  a  diagram
+  produced.
+
+        This option allows the number of sd's to be set.
+ @34. TX 3 @Set gap penalities
+
+        The alignment function will produce an  optimal  alignment  of
+  two  segments  of  the  sequence.  The dynamic programming alignment
+  algorithm is based on that of Miller and Myers (). It guarantees  to
+  produce  alignments  with  the optimum score given a score matrix, a
+  gap start penalty, and a gap extension penalty. That is, starting  a
+  gap  costs  a  fixed  penalty  (F) and each residue added to the gap
+  incurs a further penalty (E) so  that  for  each  gap  of  length  K
+  residues the penalty is F + K*E. Gaps at the ends of sequences incur
+  no penalty.
+
+        This option allows the gap penalties to be set.
+ @ end of help
+
+
+
+
+
+

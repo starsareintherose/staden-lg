@@ -1,0 +1,117 @@
+#
+# Makefile for ted (trace editor) - Alpha fork
+#
+
+#
+# Turning on the AUTO_CLIP switch allows ted to automatically
+# select a left (using the -enzyme option or the .enzyme in the
+# Xted file) and right cutoff on your sequence (using 2 out of
+# 5 N's)
+#
+# Turning on the SAVE_EDITS switch allows the user to maintain
+# copies of their edits, i.e. when you open up ted on a file
+# that you have already edited, the old edits show up in the
+# ted edit window.  The user may also call up any of their
+# past editing sessions.  
+#
+# Turning on the DEF_OUT  switch makes
+# trace_name.seq the default output file name
+#
+# Turning on the QUAL_CODE switch enables LaDeana's trace quality
+# clipping code.
+#
+# Turning on the QUAL_CHECK switch (at the same time as QUAL_CODE)
+# enables the overall trace quality check.
+#
+#SWITCHES = -DAUTO_CLIP  -DDEF_OUT  -DSAVE_EDITS  -DQUAL_CODE -DQUAL_CHECK
+SWITCHES = -DAUTO_CLIP -DQUAL_CODE -DQUAL_CHECK
+
+
+#
+# Programs made by this makefile
+#
+PROGS = ted autoted
+
+#
+# Where the wild things are
+#
+SRC = .
+
+#
+# Compiler - debug on
+#
+CC= cc
+INCLUDES = -I$(SRC)
+CFLAGS= -g -std1 -ieee_with_inexact $(SWITCHES) $(INCLUDES)
+LIBS= -lXaw -lXt -lXmu -lXext -lX11 -ldnet_stub
+#
+LD= cc
+LDFLAGS= -g -non_shared
+
+#
+# Object files
+#
+TEDOBJS=\
+	ted.o\
+	dialogues.o\
+	seq.o\
+	seqIOPlain.o\
+	seqIOABI.o\
+	help.o\
+	display.o\
+	traceDisplay.o\
+	basesDisplay.o\
+	Graph.o\
+	seqIOEdit.o\
+	seqIOALF.o\
+	seqIOSCF.o\
+	seqOutput.o\
+	opp.o\
+	info.o\
+	fpoint.o\
+	mach-io.o\
+	seqRead.o\
+	traceType.o\
+	match.o
+
+AUTOTEDOBJS=\
+	autoted.o\
+	seq.o\
+	seqIOPlain.o\
+	seqIOABI.o\
+	seqIOEdit.o\
+	seqIOALF.o\
+	seqIOSCF.o\
+	seqOutput.o\
+	opp.o\
+	traceType.o\
+	fpoint.o\
+	mach-io.o\
+	match.o\
+	seqRead.o
+
+
+
+#
+# Linking
+#
+ted: $(TEDOBJS)
+	$(LD) $(LDFLAGS) -o $@ $(TEDOBJS) $(LIBS)
+autoted: $(AUTOTEDOBJS)
+	$(LD) $(LDFLAGS) -o $@ $(AUTOTEDOBJS) $(LIBS)
+
+#
+# Files requiring simple C compilation (thing.c -> thing.o)
+# 
+%.o : $(SRC)/%.c
+	$(CC) $(CFLAGS) -c $<
+
+
+#
+# Special dependencies
+#
+clean:
+	rm -f ted $(TEDOBJS) *~ *.aux *.log *.bbl *.blg *.dvi *.ps
+
+all: $(PROGS)
+

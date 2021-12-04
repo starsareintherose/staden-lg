@@ -1,0 +1,617 @@
+# Makefile for staden X programs (Solaris 2.1 version)
+# ----------------------------------------------------
+
+# This makefile generates the following staden programs which
+# run under xterm (normal, `N') and those which run directly under X.
+NPROGS=      mep  nip   pip   dap  sap  sip   splitp1 splitp2 splitp3 gip sethelp convert_project rep lip sapf nipf vep
+LPROGS=           nipl  pipl            sipl
+XPROGS=     xmep xnip  xpip  xdap xsap xsip
+PROGS= $(NPROGS) $(LPROGS) $(XPROGS)
+
+
+
+
+
+
+
+#
+# ``Interesting'' suffices that make needs to know about
+#
+.SUFFIXES: .a $(SUFFIXES)
+
+
+#
+# Where the wild things are
+#
+SRC=.
+TEDSRC=$(SRC)/../ted
+MISCSRC=$(SRC)/../Misc
+MISCBIN=$(MISCSRC)
+OPENWININC=/usr/openwin/include
+INCLUDES= -I$(SRC) -I$(TEDSRC) -I$(MISCSRC) -I$(OPENWININC)
+
+
+#
+# Compilers and flags
+#
+CC= gcc
+GCCWARNINGS = -Wreturn-type -Wunused -Wswitch -Wcomment -Wformat
+CFLAGS= -g -ansi -pedantic $(GCCWARNINGS) $(INCLUDES)
+F77= f77
+FFLAGS= -ansi -g -C -Nx500
+
+#
+# Linking flags
+#
+#
+#LD=	ld
+#LDFLAGS=-t $(LIBPATH) -Bstatic \
+#	$(SPRO)/crti.o $(SPRO)/crt1.o $(SPRO)/cg89/__fstd.o \
+#	$(SPRO)/values-xi.o -Y P,$(SPRO)/../lib:$(SPRO)/:/usr/ccs/lib:/usr/lib
+#
+#SPRO=	/opt/SUNWspro/SC2.0.1
+#LIBPATH=-L$(SPRO) -L/usr/ccs/lib -L/usr/ucblib
+#XLIBS=	-lXaw -lXt -lXmu -lXext -lX11
+#FLIBS=	-lV77 -lF77 -lM77 -lm
+#LDOBJ=	$(SPRO)/crtn.o
+#LIBS=	-lm -lc -lsocket -lnsl -lintl -Bdynamic -ldl -Bstatic -lucb -lelf \
+#	$(LDOBJ)
+#LFLAGS=	$(FLIBS) $(LIBS)
+#XLFLAGS=$(FLIBS) $(XLIBS) $(LIBS)
+
+LD	= f77
+SPRO	= /opt/SUNWspro/SC2.0.1
+LDFLAGS	= -Bstatic -g -L$(SPRO) -L/usr/ccs/lib -L/usr/ucblib -L/usr/openwin/lib
+LIBS	= -lm -lucb -lelf -Bdynamic -ldl -Bstatic -lsocket -lnsl -lintl
+FLIBS	= -lV77 -lF77 -lM77
+XLIBS	= -lXaw -lXt -lXmu -lXext -lX11
+LFLAGS	= $(FLIBS) $(LIBS)
+XLFLAGS	= $(FLIBS) $(XLIBS) $(LIBS)
+
+#
+# Sequence library handling routines
+#
+SEQLIB=\
+	seqlibsubs.o
+
+#
+# The C objects, needed by every X program
+#
+CCORE=\
+	postscript.o\
+	Graph.o\
+	plotLog.o\
+	help.o\
+	dialogues.o\
+	userfacecom.o\
+	helpnmenu.o\
+	xmenu.o\
+	FtoC.o\
+	mcspec.o\
+	locks.o
+
+COBJS=\
+	main.o\
+	$(CCORE)
+
+XDAPCOBJS=\
+	xdapmain.o\
+	$(CCORE)
+
+
+#
+# Common objects, needed by every program
+#
+COMMONOBJSB=\
+	fmain.o\
+	seeme.o\
+	nxspec.o\
+	userface.o\
+	userfacecom.o\
+	nxhelpmenu.o\
+	helpnmenu.o\
+	FtoC.o\
+	subs89.a
+
+COMMONOBJS=\
+	$(COMMONOBJSB)\
+	postscript.o
+
+SCOMMONOBJS=\
+	$(COMMONOBJSB)
+
+XCOMMONOBJS=\
+	seeme.o\
+	xspec.o\
+	subs89.a\
+	$(COBJS)
+
+XDAPCOMMONOBJS=\
+	seeme.o\
+	xspec.o\
+	subs89.a\
+	$(XDAPCOBJS)
+
+
+#
+# Building the programs
+# This should be just a linking phase because all of the object
+# files and library files are generated using implicit rules.
+# We use the fortran compiler to do linking.
+#
+GIP=\
+	gip.o
+
+GIPOBJS=\
+	$(GIP)\
+	$(SCOMMONOBJS)
+
+gip: $(GIPOBJS)
+	$(LD) $(LDFLAGS) -o $@ $(GIPOBJS) $(LFLAGS)
+
+
+LIP=\
+	lip.o
+ 
+LIPOBJS=\
+	$(LIP)\
+	$(SEQLIB)\
+	$(COMMONOBJS)
+ 
+lip: $(LIPOBJS)
+	$(LD) $(LDFLAGS) -o $@ $(LIPOBJS) $(LFLAGS)
+ 
+ 
+
+
+MEP=\
+	mep.o\
+	mepsub.o\
+	asubs89.a\
+	plot92.a
+
+MEPOBJS=\
+	$(MEP)\
+	$(COMMONOBJS)\
+	pl4010.o
+
+XMEPOBJS=\
+	$(MEP)\
+	$(XCOMMONOBJS)\
+	plX.o\
+	textOutput.o 
+
+mep: $(MEPOBJS)
+	$(LD) $(LDFLAGS) -o $@ $(MEPOBJS)  $(LFLAGS)
+
+xmep: $(XMEPOBJS)
+	$(LD) $(LDFLAGS) -o $@ $(XMEPOBJS) $(XLFLAGS)
+
+
+
+
+NIP=\
+	nip.o\
+	patternn.a\
+	patternnc.a\
+	anals89.a\
+	asubs89.a\
+	plot92.a $(SEQLIB)
+
+NIPOBJS=\
+	$(NIP)\
+	$(COMMONOBJS)\
+	pl4010.o
+
+XNIPOBJS=\
+	$(NIP)\
+	$(XCOMMONOBJS)\
+	plX.o\
+	textOutput.o 
+
+nip: $(NIPOBJS)
+	$(LD) $(LDFLAGS) -o $@ $(NIPOBJS) $(LFLAGS)
+
+xnip: $(XNIPOBJS)
+	$(LD) $(LDFLAGS) -o $@ $(XNIPOBJS) $(XLFLAGS)
+
+
+
+
+NIPL=\
+	nipl.o\
+	patternnc.a\
+	anals89.a\
+	asubs89.a\
+	$(SEQLIB)
+
+NIPLOBJS=\
+	$(NIPL)\
+	$(SCOMMONOBJS)
+
+nipl: $(NIPLOBJS)
+	$(LD) $(LDFLAGS) -o $@ $(NIPLOBJS) $(LFLAGS)
+
+
+
+NIPF=\
+	nipf.o\
+	asubs89.a\
+	plot92.a
+
+NIPFOBJS=\
+	$(NIPF)\
+	$(COMMONOBJS)\
+	pl4010.o
+
+
+nipf: $(NIPFOBJS)
+	$(LD) $(LDFLAGS) -o $@ $(NIPFOBJS) $(LFLAGS)
+
+
+
+
+
+PIP=\
+	pip.o\
+	analps89.a\
+	patternp.a\
+	patternpc.a\
+	asubs89.a\
+	plot92.a\
+	$(SEQLIB)
+
+PIPOBJS=\
+	$(PIP)\
+	$(COMMONOBJS)\
+	pl4010.o
+
+XPIPOBJS=\
+	$(PIP)\
+	$(XCOMMONOBJS)\
+	plX.o\
+	textOutput.o 
+
+pip: $(PIPOBJS)
+	$(LD) $(LDFLAGS) -o $@ $(PIPOBJS)  $(LFLAGS)
+
+xpip:$(XPIPOBJS)
+	$(LD) $(LDFLAGS) -o $@ $(XPIPOBJS) $(XLFLAGS)
+
+
+
+
+PIPL=\
+	pipl.o\
+	patternpc.a\
+	analps89.a\
+	asubs89.a\
+	$(SEQLIB)
+
+PIPLOBJS=\
+	$(PIPL)\
+	$(SCOMMONOBJS)
+
+pipl: $(PIPLOBJS)
+	$(LD) $(LDFLAGS) -o $@ $(PIPLOBJS)  $(LFLAGS)
+
+
+
+#
+# Trace manager objects
+#
+STDTEDFILES=\
+	seq.o\
+	seqIOABI.o\
+	seqIOALF.o\
+	seqIOSCF.o\
+	seqIOPlain.o\
+	opp.o\
+	fpoint.o\
+	mach-io.o
+
+TMANOBJS=\
+	tman_main.o\
+	tman_display.o\
+	tman_traceDisplay.o\
+	tman_basesDisplay.o\
+	tman_context.o\
+	tman_gadgets.o\
+	$(STDTEDFILES)
+
+# Some versions of X11R4 may have a bug in SmeLine.c
+XHACK=\
+	SmeLine.o
+
+EDITOR=\
+	$(XHACK)\
+	xsapConEdit.o\
+	contigEditor.o\
+	edUtils.o\
+	undo.o\
+	Sheet.o\
+	select.o\
+	extend.o\
+	searchUtils.o\
+	edMenu.o\
+	trans.o\
+	$(MISCBIN)/misc.a
+
+TAGEDITOR=\
+	tagEditor.o\
+	tagdbparse.o\
+	tagU2.o\
+	tagU1.o
+
+DAP=\
+	dap.o\
+	dbsysnew.o\
+	dbsyscommon.o\
+	asubs89.a\
+	plot92.a
+
+DAPOBJS=\
+	$(DAP)\
+	$(COMMONOBJS)\
+	pl4010.o\
+	conEdit.o\
+	tagU2.o
+
+XDAPOBJS=\
+	$(DAP)\
+	$(XDAPCOMMONOBJS)\
+	plX.o\
+	textOutput.o\
+	$(EDITOR)\
+	$(TMANOBJS)\
+	$(TAGEDITOR)
+
+dap: $(DAPOBJS)
+	$(LD) $(LDFLAGS) -o $@ $(DAPOBJS) $(LFLAGS)
+
+xdap: $(XDAPOBJS)
+	$(LD) $(LDFLAGS) -o $@ $(XDAPOBJS) $(XLFLAGS)
+
+convert_project: cvt.o
+	$(CC) $(CFLAGS) -o $@ cvt.o
+
+SAP=\
+	sap.o\
+	dbsyscommon.o\
+	dbsysold.o\
+	asubs89.a\
+	plot92.a
+
+SAPOBJS=\
+	$(SAP)\
+	$(COMMONOBJS)\
+	pl4010.o
+
+XSAPOBJS=\
+	$(SAP)\
+	$(XCOMMONOBJS)\
+	plX.o\
+	textOutput.o 
+
+sap: $(SAPOBJS)
+	$(LD) $(LDFLAGS) -o $@ $(SAPOBJS) $(LFLAGS)
+
+xsap: $(XSAPOBJS)
+	$(LD) $(LDFLAGS) -o $@ $(XSAPOBJS) $(XLFLAGS)
+
+
+
+
+SAPF=\
+	sapf.o\
+	dbsyscommon.o\
+	dbsysold.o\
+	asubs89.a\
+	plot92.a
+
+SAPFOBJS=\
+	$(SAPF)\
+	sapmen.o\
+	$(COMMONOBJS)\
+	pl4010.o
+
+sapf: $(SAPFOBJS)
+	$(LD) $(LDFLAGS) -o $@ $(SAPFOBJS) $(LFLAGS)
+
+
+
+
+
+
+SIP=\
+	sip.o\
+	dias89.a\
+	plot92.a\
+	$(SEQLIB)
+
+SIPOBJS=\
+	$(SIP)\
+	$(COMMONOBJS)\
+	pl4010.o
+
+XSIPOBJS=\
+	$(SIP)\
+	$(XCOMMONOBJS)\
+	plX.o\
+	textOutput.o 
+
+sip: $(SIPOBJS)
+	$(LD) $(LDFLAGS) -o $@ $(SIPOBJS) $(LFLAGS)
+
+xsip: $(XSIPOBJS)
+	$(LD) $(LDFLAGS) -o $@ $(XSIPOBJS) $(XLFLAGS)
+
+
+
+
+SIPL=\
+	sipl.o\
+	dias89.a\
+	$(SEQLIB)
+
+SIPLOBJS=\
+	$(SIPL)\
+	$(SCOMMONOBJS)
+
+sipl: $(SIPLOBJS)
+	$(LD) $(LDFLAGS) -o $@ $(SIPLOBJS) $(LFLAGS)
+
+
+
+
+SETHELP=\
+	sethelp.o
+
+SETHELPOBJS=\
+	$(SETHELP)
+
+sethelp: $(SETHELPOBJS)
+	$(LD) $(LDFLAGS) -o $@ $(SETHELPOBJS) $(LFLAGS)
+
+
+
+
+SPLITP1=\
+	splitp1.o
+SPLITP1OBJS=\
+	$(SPLITP1)\
+	$(SCOMMONOBJS)
+
+splitp1: $(SPLITP1OBJS)
+	$(LD) $(LDFLAGS) -o $@ $(SPLITP1OBJS) $(LFLAGS)
+
+
+
+
+SPLITP2=\
+	splitp2.o
+SPLITP2OBJS=\
+	$(SPLITP2)\
+	$(SCOMMONOBJS)
+
+splitp2: $(SPLITP2OBJS)
+	$(LD) $(LDFLAGS) -o $@ $(SPLITP2OBJS) $(LFLAGS)
+
+
+
+
+
+SPLITP3=\
+	splitp3.o
+SPLITP3OBJS=\
+	$(SPLITP3)\
+	$(SCOMMONOBJS)
+
+splitp3: $(SPLITP3OBJS)
+	$(LD) $(LDFLAGS) -o $@ $(SPLITP3OBJS) $(LFLAGS)
+
+
+
+REP=\
+	rep.o\
+	dias89.a\
+	subs89.a
+
+REPOBJS=\
+	$(REP)\
+	$(COMMONOBJS)
+ 
+rep:	$(REPOBJS)
+	$(F77) $(LDFLAGS) -o $@ $(REPOBJS) $(LFLAGS)
+
+
+
+
+
+VEP=\
+	vep.o\
+	dias89.a\
+	subs89.a
+
+
+VEPOBJS=\
+	$(VEP)\
+	$(SCOMMONOBJS)
+
+
+vep: $(VEPOBJS)
+	$(LD) $(LDFLAGS) -o $@ $(VEPOBJS)  $(LFLAGS)
+
+
+
+
+#
+# Special dependencies
+#
+#
+
+
+#
+# Files requiring simple C compilation (thing.c -> thing.o)
+# 
+%.o: %.c
+	$(CC) $(CFLAGS) -c $<
+%.o: $(SRC)/%.c
+	$(CC) $(CFLAGS) -c $<
+%.o: $(TEDSRC)/%.c
+	$(CC) $(CFLAGS) -c $<
+
+# Files requiring simple FORTRAN compilation (thing.f -> thing.o)
+# 
+%.o: $(SRC)/%.f
+	$(F77) $(FFLAGS) -c $<
+
+
+
+#
+# The UNIX library (archive) mechanism is fairly weak so the following
+# procedure is used to generate libraries.
+#   * split the source file up into files which each contain
+#     a single function or subroutine
+#   * compile each of those files
+#   * insert the object files individually into the library
+# Each library is built by using a temporary directory.
+# The fortran compilations must be done sequentially in order to
+# avoid filling up the (small on this machine) /tmp directory
+# with compiler debugging information.
+#
+%.a: $(SRC)/%.f
+	BINDIR=`pwd`; \
+	cd $(SRC); \
+	SRCDIR=`pwd`; \
+	TMPDIR=/tmp/staden$$$$; \
+	if test ! -d $$TMPDIR; \
+	then mkdir $$TMPDIR; \
+	fi; \
+	cd $$TMPDIR; \
+	rm -f *.f *.o; \
+	fsplit $$SRCDIR/`expr $< : '.*/\(.*\)' \| $<`; \
+	$(F77) $(FFLAGS) -c *.f; \
+	rm *.f; \
+	rm -f $$BINDIR/$@; \
+	ar rcv $$BINDIR/$@ *.o; \
+	rm *.o; \
+	cd $$BINDIR; \
+	rm -r $$TMPDIR
+
+
+
+
+
+
+all: $(PROGS)
+
+nprogs: $(NPROGS)
+
+xprogs: $(XPROGS)
+
+lprogs: $(LPROGS)
+
+clean:
+	rm -f $(PROGS) *.a *.o *~
+

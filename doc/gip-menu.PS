@@ -1,0 +1,131 @@
+%!
+/cm {28.2 mul} def
+/BOXSIZE 2 cm def
+
+/boxcen
+{
+% move to centre of box
+BOXSIZE mul 2 div BOXSIZE 2 div rmoveto
+exch
+% move back by correct amount to ensure letter is in centre of box
+dup stringwidth
+pop 2 div neg % halve & neg x offset
+% y offset appears to be zero! - so use constant 'square' char (eg X)
+(X) stringwidth pop 2 div neg
+} def
+
+/letter
+{
+dup BOXSIZE mul 0 rlineto
+0 BOXSIZE rlineto
+dup BOXSIZE mul neg 0 rlineto
+0 BOXSIZE neg rlineto
+closepath
+gsave
+dup boxcen rmoveto
+show
+stroke
+grestore
+BOXSIZE mul 0 rmoveto
+} def
+
+/nextline {0 BOXSIZE neg rmoveto} def
+
+/line
+{
+gsave
+1 letter
+1 letter
+1 letter
+1 letter
+grestore
+nextline
+} def
+
+/Times-Roman findfont 50 scalefont setfont
+newpath
+5 setlinewidth
+200 650 translate
+0 0 moveto
+%2 setlinecap
+
+gsave
+(A) (G) (C) (T) line
+(3) (4) (1) (2) line
+(B) (H) (D) (V) line
+(M) (N) (K) (L) line
+(-) (X) (Y) (R) line
+(8) (7) (6) (5) line
+/Times-Roman findfont 25 scalefont setfont
+gsave
+(DELETE) 2 letter
+(RESET) 2 letter
+grestore
+nextline
+/Times-Roman findfont 35 scalefont setfont
+gsave
+(STOP) 4 letter
+grestore
+nextline
+gsave
+(START) 4 letter
+grestore
+nextline
+gsave
+(CONFIRM) 4 letter
+grestore
+nextline
+% yukky from here on
+gsave
+0 BOXSIZE rmoveto
+1 cm 0 rlineto stroke
+grestore
+(ORIGIN) dup 4 boxcen rmoveto show pop
+(ORIGIN) stringwidth neg exch neg exch rmoveto
+(X) stringwidth exch 2 div rmoveto
+-5 0 rmoveto
+2 setlinewidth
+-45 21 rlineto
+6 0 rlineto
+-6 0 rmoveto
+0 -6 rlineto
+stroke
+grestore
+2 setlinewidth
+0 BOXSIZE 1.4 mul rmoveto
+6 6 rlineto
+-6 -6 rmoveto
+6 -6 rlineto
+-6 6 rmoveto
+80 0 rlineto
+5 -6 rmoveto
+/Times-Roman findfont 30 scalefont setfont
+(8 cm) show
+5 6 rmoveto
+76 0 rlineto
+-6 6 rlineto
+6 -6 rmoveto
+-6 -6 rlineto
+stroke
+0 0 moveto
+BOXSIZE .4 mul neg BOXSIZE rmoveto
+currentpoint translate
+newpath
+0 0 moveto
+90 rotate
+-6 6 rlineto
+6 -6 rmoveto
+-6 -6 rlineto
+6 6 rmoveto
+-244 0 rlineto
+-84 0 rmoveto
+0 -6 rmoveto
+(20 cm) show
+0 6 rmoveto
+-84 0 rmoveto
+-227 0 rlineto
+6 6 rlineto
+-6 -6 rmoveto
+6 -6 rlineto
+stroke
+showpage

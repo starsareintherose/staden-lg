@@ -1,0 +1,46 @@
+#
+# Makefile for alf - Sun version
+#
+
+#
+# Programs made by this makefile
+#
+PROGS = alfsplit
+
+#
+# Where the wild things are
+#
+SRC = .
+TEDSRC = $(SRC)/../ted
+# not needed for gcc2.1
+#LIBS = /usr/local/lib/gcc-gnulib
+
+#
+# Sun
+#
+CC = gcc
+GCCWARNINGS = -Wreturn-type -Wunused -Wswitch -Wcomment -W -Wformat \
+	      -Wuninitialized
+CFLAGS = -g -ansi -pedantic $(GCCWARNINGS) -I$(TEDSRC)
+
+
+#
+# Make the programs
+#
+alfsplit: alfsplit.o
+	$(CC) -o alfsplit alfsplit.o -static $(LIBS)
+
+2rs: 2rs.o
+	$(CC) -o 2rs 2rs.o $(LIBS)
+
+
+#
+# Special dependencies
+#
+all: $(PROGS)
+
+clean:
+	/bin/rm -f $(PROGS) *.o *~
+
+%.o : $(SRC)/%.c
+	$(CC) $(CFLAGS) -c $<

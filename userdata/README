@@ -1,0 +1,8 @@
+   This directory contains sample user data for the staden programs
+   ----------------------------------------------------------------
+
+   m13mp7.seq, lambda.seq are sequences in staden format
+   atpase.dat is a sequence in EMBL format
+   HINW.* are gel readings taht can be assembled by sap
+   DEMO.NAM is a file of file names for the HINW gel readings
+   DEMO.RL0, DEMO.SQ0, DEMO.AR0 is a sap database.

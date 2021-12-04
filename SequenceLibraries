@@ -1,0 +1,420 @@
+	Notes on library handling
+	-------------------------
+
+Contents of this document:
+
+I)   Introduction
+II)  Details of file organisation and use
+III) Options currently available
+IV)  Installation guide
+V)   New feature table handling routines
+VI)  Indexing the sequence libraries
+
+
+		Section I Introduction
+		----------------------
+
+Available sequence libraries
+
+There are a number of different sequence libraries for nucleotide and protein:
+PIR, GenBank, EMBL, Swissprot, and the Japanese Databank. Even after all the
+years of their existence they still use different formats for their data. This
+provides tedious and unrewarding work for software developers. Recently EMBL
+and GenBank agreed a new and common way of writing their feature tables, which
+is great help, although the rest of their format is different. Swissprot still
+uses the old embl style feature table format and PIR yet another.
+
+All the libraries distribute their data on magnetic tapes and EMBL and GenBank
+have started to distribute on cdrom. The EMBL cdrom also contains Swissprot.
+The GenBank and EMBL cdroms use different formats and have different contents.
+The EMBL cdrom has useful indexes sorted alphabetically: those for entry name
+and accession number, brief descriptions, keywords and freetext indexes are
+already available and others are expected. These indexes point to the data for
+each entry, and can be used to extract the data for any entry quickly.
+
+Moving to unix
+
+The VAX version of our package used PIR format which meant reformatting all
+libraries other than PIR into that format.  This required, at least
+temporarily, having space for two copies of the libraries, and quite a lot of
+cpu time. The software for doing this was provided by PIR, and is very VAX
+specific and hence will not run under unix. For the unix version of our package
+I have decided to use the EMBL cdrom format and its indexes as the primary
+format.  The current programs also support the use of PIR format libraries
+without indexes - ie just the sequence and annotation files.
+
+Indexing GenBank, EMBL updates, PIR and NRL3D
+
+We include programs to create indexes for the above libraries. See below and
+the README file in indexseqlibs. The programs can read all the above libraries
+once the indexes are created. The indexing programs index the data in its
+distributed form: WE DO NOT REFORMAT OR COPY THE LIBRARIES but simply create
+indexes to the original files. Obviously this saves a lot of disk space, and
+for those content to use only embl and swissprot from the cdrom, almost no disk
+space is required. We havent tried it yet, but for genbank on cdrom, the only
+extra disk space required would be for the indexes.
+
+ ---------------------------------------------------------------------------
+
+		Section II Details of file organisation and use
+		-----------------------------------------------
+
+The following strategy has been used to try to deal with alternate
+and changing sequence library formats.
+
+1) libraries are described at several levels:
+
+	a) the top level file is a list of available libraries which contains:
+ 		the library type, the name of the file containing the name of
+		each libraries individual files, and the prompt to appear on
+		the users screen: LTYPE LOGNAM PROMPT
+
+	b) the file containing the names of the libraries individual files
+		contains flags to define the file types: FTYPE LOGNAM
+
+	c) the individual library files
+
+
+
+2) libary types handled: 
+
+	a) EMBL/SWISSPROT in distributed format with cdrom index format
+	   LTYPE = 'A'
+	b) GenBank in distributed format with cdrom index format LTYPE = 'C'
+	c) PIR/NRL3D in CODATA format with cdrom index format LTYPE = 'B'
+	d) PIR/NBRF .seq files can be read sequentially as "personal files
+	   in PIR format" and do not appear in the list of available libraries.
+	e) FASTA format files can be read sequentially as "personal files
+	   in FASTA format" and do not appear in the list of available
+	   libraries.
+
+3) EMBL, SWISSPROT and other libraries for which EMBL-style indexes have been
+created
+
+		current file types: 
+
+		A division.lookup
+		B entryname.index
+		C accession.target
+		D accession.hits
+                E brief description
+                F freetext.target
+                G freetext.hits
+                H author.target
+                I author.hits
+
+
+                   Library list
+level 1
+			|
+			|
+	        -----------------------------------------------------------
+		|			|			|
+	  lib 1 file list		lib 2 file list		lib 3 file list
+level 2
+		|			|
+ 	  --------		---------
+level 3
+	  file 1			file 1
+	  file 2			file 2
+	  .			.
+	  file n			file n
+
+ ---------------------------------------------------------------------------
+
+
+Example
+-------
+
+Level 1
+
+	File name: sequence.libs 
+	Environment variable: SEQUENCELIBRARIES
+	Contents:
+
+A EMBLFILES EMBL nucleotide library ! in cdrom format
+C GENBFILES GenBank nucleotide library!
+A SWISSFILES SWISSPROT protein library! in cdrom format
+B PIRFILES PIR protein library!
+B NRL3DFILES NRL3D protein library!
+
+	Notes: 
+
+The libraries have types A,B,C.  The logical names are EMBLLIBDESCRP and
+SWISSLIBDESCRP, etc and the prompts are 'EMBL nucleotide library' and
+'SWISSPROT protein library', etc.  Anything to the right of a ! is a comment.
+
+Level 2: the list of library files (using embl as an example)
+
+	File name: embl.files
+	Environment variable: EMBLFILES
+	Contents:
+
+A EMBLDIVPATH/embl_div.lkp
+B EMBLINDPATH/entrynam.idx
+C EMBLINDPATH/acnum.trg
+D EMBLINDPATH/acnum.hit
+E EMBLINDPATH/brief.idx
+F EMBLINDPATH/freetext.trg
+G EMBLINDPATH/freetext.hit
+H EMBLINDPATH/author.trg
+I EMBLINDPATH/author.hit
+
+
+Level 3: the sequence and annotation files (eg 15 for embl, 1 for swissprot).
+
+	Paths and file names:
+
+   EMBLPATH/bb.dat
+   EMBLPATH/fun.dat
+   EMBLPATH/inv.dat
+   EMBLPATH/mam.dat
+   EMBLPATH/org.dat
+   EMBLPATH/patent.dat
+   EMBLPATH/phg.dat
+   EMBLPATH/pln.dat
+   EMBLPATH/pri.dat
+   EMBLPATH/pro.dat
+   EMBLPATH/rod.dat
+   EMBLPATH/syn.dat
+   EMBLPATH/una.dat
+   EMBLPATH/vrl.dat
+   EMBLPATH/vrt.dat
+
+All files from the division lookup file down are exactly as they appear on the
+cdrom.  The division lookup file relates numbers stored in the indexes to
+actual division (or data) files stored on the disk. We rewrite it so the
+directory structure and file names can be chosen locally. Its format is
+I6,1x,A. An example is given below.
+
+	Division lookup file 
+
+	File name: STADTABL/embl_div.lkp
+	Environment variable path EMBLDIVPATH
+	Contents:
+
+     1 EMBLPATH/bb.dat
+     2 EMBLPATH/fun.dat
+     3 EMBLPATH/inv.dat
+     4 EMBLPATH/mam.dat
+     5 EMBLPATH/org.dat
+     6 EMBLPATH/patent.dat
+     7 EMBLPATH/phg.dat
+     8 EMBLPATH/pln.dat
+     9 EMBLPATH/pri.dat
+    10 EMBLPATH/pro.dat
+    11 EMBLPATH/rod.dat
+    12 EMBLPATH/syn.dat
+    13 EMBLPATH/una.dat
+    14 EMBLPATH/vrl.dat
+    15 EMBLPATH/vrt.dat
+ ---------------------------------------------------------------------------
+
+
+		Section III Options currently available
+		---------------------------------------
+
+Facilities currently offered in nip,pip,sip,nipl,pipl,sipl:
+
+	Get a sequence by knowing its entry name
+	Get a sequences' annotation by knowing its entry name
+	Get an entry name by knowing its accession number
+        Search the freetext index
+        Search the author index
+
+Facilities currently offered in nipl,pipl,sipl:
+
+	Search whole library
+	Search only a list of entry names
+	Search all but a list of entry names
+
+Outline of each type of operation
+
+Looking for an entry by name: the programs will open the library description
+file and read the names of its files and their file types. Then they will open
+the entrynam.idx file, and find the sequence offset, annotation offset and
+division number. Then open the division lookup file, find the file name for the
+division required, open that file, seek to the required byte and get the data.
+
+Looking for an entry by accession number: the programs will open the library
+description file and read the names of its files and their file types. Then
+they open the acnum.trg and acnum.hit files. The acnum.trg file is read to find
+the accession number and a pointer to the acnum.hit file and the number of
+hits.  That file is read and the corresponding entry names displayed. At
+present no further action is performed, although I expect to list out the
+titles for the entries found.
+
+Searching the whole of a library: the programs will open the library
+description file and read the names of its files and their file types. Then
+they open the division lookup file, read the names and numbers of the sequence
+files, open all of them, then open the entryname file. Then the library is
+processed sequentially by reading the entry names, their sequence offsets and
+division numbers from the entry names file, and then the sequence from the
+appropriate data file.
+
+Searching the whole of a library using a list of entry names to include: the
+programs will open the library description file and read the names of its files
+and their file types. Then they open the division lookup file, read the names
+and numbers of the sequence files, open all of them, then open the entryname
+file. Then the library is processed by reading the list of entry names and
+finding the names in the entry names file to get their sequence offsets and
+division numbers, and then the sequence from the appropriate data file. It will
+stop when it reaches the end of the list of entry names. The list of entry
+names can be in any order.
+
+Searching the whole of a library using a list of entry names to exclude: the
+programs will open the library description file and read the names of its files
+and their file types. Then they open the division lookup file, read the names
+and numbers of the sequence files, open all of them, then open the entryname
+file. Then the library is processed sequentially by reading the list of entry
+names, reading the next entry in the entry names file to make sure it does not
+match, then getting the sequence offsets and division numbers, and then the
+sequence from the appropriate data file. If a the next name matches the name on
+the list of entry names, it will be skipped, and the next name to exclude read.
+If the list of excluded names is finished the rest of the library is searched
+sequentially. The list of entry names must be in the same order as those in the
+library (ie sorted alphabetically).
+
+Searching a whole library using a PIR format file is performed by reading it
+sequentially. If as list of entry names is used it must be in the same order as
+the entries in the library file.
+ ---------------------------------------------------------------------------
+
+
+
+
+		Section IV Installation guide
+		-----------------------------
+
+EMBL CDROM
+
+ The data can be left on the cdrom or copied to hard disk. The files
+staden.login and staden.profile source the file $STADTABL/libraries.config.csh
+and $STADTABL/libraries.config.sh respectively. Refer to this file to see what
+is required to install, add or move a sequence library that you want to be used
+by the programs.
+
+Other libraries (PIR, Genbank, EMBL updates)
+
+Create the indexes then edit the files that tell the programs where the data is
+stored.  The files staden.login and staden.profile source the file
+$STADTABL/libraries.config Refer to this file to see what is required to
+install, add or move a sequence library that you want to be used by the
+programs.
+
+
+------------------------------------------------------------------------------
+
+
+		Section V New feature table handling facilities
+		-----------------------------------------------
+
+As mentioned above EMBL and GenBank have recently introduced new feature tables
+for annotating the sequences. They are a great improvement on the previous ones
+and, among other things, now permit correct translation of spliced genes.
+Various options within nip have been added or modified to take advantage of
+these changes.  The routine to translate DNA to protein and write the protein
+to disk now gives correct results for spliced genes. The routine to translate
+DNA to protein and display the two together now gives correct translations
+except for the amino acids spanning intron/exon junctions. The routine to plot
+maps from feature tables can use the new style. The open reading frame finding
+routine writes out its results in the new style. The routine that finds open
+reading frames and writes their translations to disk also writes a title in the
+form of a new style feature table entry. The feature table format output from
+the pattern searches in nip also uses the new style.
+
+ 
+
+----------------------------------------------------------------------------
+
+                Section VI Indexing the sequence libraries
+                --------------------------------------------
+
+We handle EMBL, SwissProt, and GenBank in their distributed format, plus
+PIR and NRL3D in codata format. All programs and scripts are in directory 
+indexseqlibs.
+
+Currently we produce entryname index, accession number index freetext index,
+and brief index (brief index contains the entry name the primary accession 
+number the sequence length and an 80 character description).
+
+To produce any of the indexes requires the creation of several intermediate
+files and the indexing programs are written so that the intermediate files
+are the same for all libraries. This means that only the programs that read
+the distributed form of each library need to be unique to that library, and
+all the other processing programs can be used for all libraries.
+
+
+However even the though the indexes have the same format, programs (like nip)
+that read the libraries need to treat each library separately because their
+actual contents are written differently.
+
+Making the entry name index
+---------------------------
+
+Common program entryname2
+
+EMBL		emblentryname1
+SwissProt	emblentryname1
+
+GenBank		genbentryname1
+
+PIR		pirentryname1
+NRL3D		pirentryname1
+
+
+Making the accession number index
+---------------------------------
+
+Common programs access2 access3 access4
+
+EMBL		emblaccess1
+SwissProt	emblaccess1
+
+GenBank		genbaccess1
+
+PIR		piraccess1 piraccess2 
+NRL3D		No accession numbers
+
+Making the brief index
+----------------------
+
+Common program title2
+
+EMBL		embltitle1
+SwissProt	embltitle1
+
+GenBank		genbtitle1
+
+PIR		pirtitle1 pirtitle2 (pir3 has no accession numbers)
+NRL3D		pirtitle2
+
+Scripts
+-------
+
+emblentryname.script
+emblaccession.script
+embltitle.script
+
+swissentryname.script
+swissaccession.script
+swisstitle.script
+
+genbentrynamescript
+genbaccession.script
+genbtitle.script
+
+pirentryname.script
+piraccession.script
+pirtitle.script
+
+nrl3dentryname.script
+nrl3dtitle.script
+
+
+ 
+
+
+
+
+

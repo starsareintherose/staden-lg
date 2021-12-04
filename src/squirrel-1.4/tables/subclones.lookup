@@ -1,0 +1,15 @@
+/^#/ {print "#";}
+/^#/ {print "# Database of subclone libraries:";}
+/^#/ {print "#";}
+/^#/ {print "# Format:";}
+/^#/ {print "#";}
+/^#/ {print "#   <microtitre-dish> <clone> <size-range> <frag method vector>";}
+/^#/ {print "#";}
+/^#/ {print "# Example:";}
+/^#/ {print "#";}
+/^#/ {print "# Microtitre dish a01 contains a subclone library for clone CLONE.";}
+/^#/ {print "# It was created by shearing then cloning into M13mp18. Fragment";}
+/^#/ {print "# size if selected on range 1000 to 2000 bases.";}
+/^#/ {print "#";}
+/^#/ {print "# a01 CLONE 1000..2000 shear M13mp18";}
+/^#/ {print "#";}

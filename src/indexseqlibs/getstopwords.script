@@ -1,0 +1,22 @@
+#! /bin/csh -f
+#
+# Create a file stopwords which is a reformatted version of
+# the file indices/embl/stopwords.lst on the EMBL CDROM
+#
+# NOTES:
+#     The first 300 characters for stopwords.lst are a header
+#     The words are in blocked format. The block size is specified in
+#     the header but here we assume it is 12.
+#
+set header = 300
+@ start = $header + 1
+set block_size = 12
+set lst_file = /nfs/gans/cdrom/indices/stopwords.lst
+set out_file = stopwords
+
+# Save old copy of converted file
+if (-e ${outfile}) then
+	/bin/mv ${outfile} ${outfile}~
+endif
+
+tail +${start}c ${lst_file} | dd cbs=${block_size} conv=unblock >! ${out_file}

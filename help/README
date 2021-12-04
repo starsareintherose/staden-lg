@@ -1,0 +1,38 @@
+    README file for help directory of staden package
+    -----------------------------------------------
+
+Should contain (at least) ProgramName_help where ProgramName is each of
+bap, dap, gip, mem, mep, nip, nipf, pip, sap, sip and also staden_help
+and stadenp_help.
+
+There are 3 main formats of file in this directory:
+
+PROGRAM.RNO:
+	This is the unformatted (runoff/nroff style) help for PROGRAM.
+	Any changes to the help should be performed on this file.
+
+program_help:
+	This is the online formatted help used by PROGRAM. It can also
+	be printed to produce hardcopy documentation.
+
+program_menu:
+	This is a file that describes the menus used in PROGRAM,
+	together with an index into the program_help file for the
+	online help. The format for each line is:
+	
+	<option number> <menu number> <program_help offset> <no. of
+	lines of help> <program type T(ext) or (X)windows> <option name>
+
+
+Exceptions to these are for the staden_help, stadenp_help, and
+splitp_help which do not have the relevant .RNO or _menu files. The
+file staden_help gives an introduction to the xterm user interface
+(written for vax and vms and so is out of date with the Unix
+versions).
+
+See the file splitp_help for information about the reformatting of the
+PROSITE motif library.
+
+Rebuild help files with the Unix command "make all". Ensure that the utility
+program sethelp is compiled and in the executables search path. The sources
+for the program sethelp are found in $STADENROOT/staden.

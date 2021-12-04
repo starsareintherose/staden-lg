@@ -1,0 +1,2469 @@
+.NPA
+.SP 1
+.left margin1
+@-1. TX 0 @General
+.sp
+@-2. T   0 @Screen control
+.sp
+@-2. X   0 @Screen
+.sp
+@-3. T   0 @Statistical analysis of content
+.sp
+@-3. X   0 @Statistics
+.sp
+@-4. T   0 @Structures and repeats
+.sp
+@-4. X   0 @Structures
+.sp
+@-5. TX  0 @Search
+.sp
+@0.  TX -1 @PIP
+.para
+This is a program  for analysing individual protein sequences. It can read 
+sequences stored in many of the most commonly used formats, and 
+performs all of the usual simple analyses. In addition it has very flexible 
+search procedures  and   presents many of its  results graphically. 
+.PARA
+The following analyses (preceded by their option numbers) are included:
+.lit
+ ? = Help
+ ! = Quit
+ 3 = read a new sequence
+ 4 = define active region
+ 5 = list the sequence
+ 6 = list a text file
+ 7 = direct output to disk
+ 8 = write active sequence to disk
+ 9 = edit the sequence
+10 = clear graphics screen
+11 = clear text screen
+12 = draw a ruler
+13 = use cross hair
+14 = reposition plots
+15 = label diagram
+16 = display a map
+17 = search for short sequences
+18 = compare a sequence
+19 = compare a sequence using a score matrix
+20 = search for a sequence using a weight matrix
+21 = calculate amino acid composition
+22 = plot hydrophobicity
+23 = plot charge
+24 = plot Robson prediction
+25 = plot hydrophobic moment
+26 = draw helix wheel
+27 = back translate
+28 = search for patterns of motifs
+.end lit
+.para
+Some of these methods produce graphical 
+ results 
+and so the 
+program is generally used from a graphics terminal (a vdu on which lines 
+and points can be drawn as well as characters). 
+.para
+For users of VT640's or their equivalents the 
+terminal must be set nowrap (type NOWRAP) prior to running the program. 
+.LEFT MARGIN2
+The positions of each of the plots is defined relative to a users drawing 
+board which has size 1-10,000 in x and 1-10,000 in y.
+Plots for
+each option are drawn in a window defined by x0,y0 and xlength,ylength. 
+Where x0,y0 is the position of the bottom left hand corner of the window,
+  and xlength is the width of the window and ylength the 
+height of the window.
+.lit
+   --------------------------------------------------------- 10,000
+   1                                                       1
+   1       --------------------------------------   ^      1
+   1       1                                    1   1      1
+   1       1                                    1   1      1
+   1       1                                    1 ylength  1
+   1       1                                    1   1      1
+   1       1                                    1   1      1
+   1       --------------------------------------   v      1
+   1  x0,y0^                                               1
+   1       <---------------xlength-------------->          1
+   ---------------------------------------------------------      1
+   1                                                   10,000
+
+.end lit
+All values are in drawing board units (i.e. 1-10,000, 1-10,000).
+The default window positions are read from a file "ANALPMRG" when the 
+program is started. Users can have their own file if required.
+.para
+The program can handle sequences stored in several formats: 
+Staden, EMBL, GENBANK, PIR (also known as NBRF) and GCG and they are described 
+in 
+the help for 'READ NEW SEQUENCE'.
+.para
+The options for the program are accessed from 5 main menus: general,
+screen control, statistical analysis of content, structure, search.
+Both menus and options are selected by number.
+.LEFT MARGIN1
+@1. TX 0 @Help
+.LEFT MARGIN2
+.para
+This option gives online help. The user should select option numbers and
+the current documentation will be given. Note that option 0 gives an
+introduction to the program, and that ? will get help from anywhere in 
+the 
+program.
+The following analyses (preceded by their option numbers) are included:
+.sp
+.left margin1
+@2. TX 0 @Quit
+.left margin2
+.para
+This function stops the program.
+.left margin1
+@3. TX 1 @Read a new sequence
+.LEFT MARGIN2
+.para
+This option allows users to read in new sequences, browse through annotations,
+ or search sequence 
+libraries for keywords. Sequences can be read from "personal" 
+sequence files or from sequence libraries. These are referred to as the 
+sequence "source". Personal files can be stored in several formats:
+Staden, PIR, EMBL, GENBANK and GCG.
+At LMB we use "Staden" format for sequencing and all 
+the 
+libraries are stored in their original formats. Note, however, that libraries
+such as EMBL or GenBank that are divided into several files (eg GenBank has
+13 separate files) are indexed as a whole. This means that users do not need
+to know which file contains an entry, only which library.
+When the user selects to read in a sequence the program first asks for the 
+sequence "source". 
+.para
+If the user selects "personal" the program will ask for 
+the format (Staden, PIR, EMBL, GENBANK or GCG), and then for the name of 
+the file. For PIR format the user will also be required to know the entry 
+name of the sequence as the file can contain several. For the other formats
+only a single entry is expected. The file will be read, its length and
+composition will be displayed and the option left.
+.para
+If the user selects "library" as the sequence source the program will display a
+list of available libraries. The programs are capable of handling all current
+libraries but which ones are available will vary from site to site. At LMB we
+have several libraries and also weekly updates of data gathered between releases.
+The program will ask users to select a library and then give a list of options:
+.lit
+
+ X  1 Get a sequence
+    2 Get annotations
+    3 Get entrynames from accession numbers
+    4 Search titles for keywords
+    5 Search text index for keywords
+
+.end lit
+If get a sequence or get annotations is selected users will be asked to 
+type the entry name. The option will be left when a sequence is selected or 
+! is typed. The composition and length will be displayed.
+.para
+The text index contains all words from feature tables, reference titles,
+definition lines, keywords lists and comments, so the text index search
+is most useful. It is also the fastest. Up to 5 words can be searched for
+at once. The words should be typed separated by spaces, for example
+.lit
+ ? Keywords=P53 mouse murine tumo
+
+.end lit
+will search for all entries that contain words starting with p53, mouse,
+murine and tumo. Only the unique entries that contain ALL words will be 
+listed. Before listing the matching entries
+the program will show the number of 'hits' for each word and ring the bell.
+Escape is possible at this point, or after each screenfull of entries.
+In addition to the entry names the text search displays the primary accession 
+number, the sequence length and up to 80 characters of description.
+(The search of 'titles' is now redundant because the full text index
+contains all the title words and the search is much faster. It will probably
+be removed from the program.)
+All searches are independent of case. Where
+possible the program will offer default entry names.
+.para
+Typical dialogue follows.
+.lit
+Select sequence source
+X  1 Personal file
+   2 Sequence library
+? Selection  (1-2) (1) =
+Select sequence file format
+X  1 Staden
+   2 EMBL
+   3 GenBank
+   4 PIR
+   5 GCG
+? Selection  (1-5) (1) =
+? Sequence file name=M13MP7.SEQ
+ Contig title removed
+Sequence length=  7238
+ Sequence composition
+          T          C          A          G          -
+      2405.      1539.      1765.      1527.         2.
+        33.2%      21.3%      24.4%      21.1%       0.0%
+  .
+  .
+  .
+
+
+ Select sequence source
+ X  1 Personal file
+    2 Sequence library
+ ? Selection  (1-2) (1) =2
+ Select a library
+ X  1 EMBL 29 nucleotide library Dec 91
+    2 SWISSPROT 20 protein library Nov 91
+    3 PIR 31 protein library Dec 91
+    4 NRL3D 58 From Brookhaven protein library Dec 91
+    5 GenBank
+ ? Selection  (1-5) (1) =
+Library is in EMBL format with indexes
+ Select a task
+ X  1 Get a sequence
+    2 Get annotations
+    3 Get entry names from accession numbers
+    4 Search titles for keywords
+    5 Search text index for keywords
+ ? Selection  (1-5) (1) =5
+ Search for keywords
+ ? Keywords=P53 mouse
+P53 hits  68
+MOUSE hits  8180
+
+ MMANT01    X00875         536 Murine gene fragment for cellular tumour antigen
+ MMANT02    X00876          83 Murine gene fragment for cellular tumour antigen
+ MMANT03    X00877          21 Murine gene fragment for cellular tumour antigen
+ MMANT04    X00878         261 Murine gene fragment for cellular tumour antigen
+ MMANT05    X00879         184 Murine gene fragment for cellular tumour antigen
+ MMANT06    X00880         113 Murine gene fragment for cellular tumour antigen
+ MMANT07    X00881         110 Murine gene fragment for cellular tumour antigen
+ MMANT08    X00882         137 Murine gene fragment for cellular tumour antigen
+ MMANT09    X00883          74 Murine gene fragment for cellular tumour antigen
+ MMANT10    X00884         107 Murine gene for cellular tumour antigen p53 (exon
+ MMANT11    X00885         562 Murine p53 gene 3' region with exon 11
+ MMANTP53   M26862         536 Mouse tumor antigen p53 gene, 5' end.
+ MMLYN      M64608        2044 Mouse lyn protein mRNA, complete cds.
+ MMP53      X00741        1377 Mouse mRNA for transformation associated protein
+ MMP53A     M13872        1285 Mouse p53 mRNA, complete cds, clone pcD53.
+ MMP53B     M13873        1241 Mouse p53 mRNA, complete cds, clone p53-m11.
+ MMP53C     M13874        1322 Mouse p53 mRNA, complete cds, clone p53-m8.
+ MMP53G1    X01235         554 Mouse genomic DNA for 5' region of cellular tumou
+ MMP53IN4   X60470         729 M.musculus p53 gene for p53 protein, intron 4
+ MMP53P     X01236        2132 Mouse pseudogene for cellular tumour antigen p53
+ MMP53R     X01237        1773 Mouse mRNA for cellular tumour antigen p53
+ MMRSB2P5   M64597         196 Mouse B2 repeat in the 3' flank of protein 53 (p5
+      22 different entries found
+
+ Select a task
+ X  1 Get a sequence
+    2 Get annotations
+    3 Get entry names from accession numbers
+    4 Search titles for keywords
+    5 Search text index for keywords
+ ? Selection  (1-5) (1) =4
+ Search for keywords
+ ? Keywords=alpha
+ Searching for alpha
+ AAGHA          623 a.anguilla mrna for glycoprotein hormone alpha subunit precu
+ AAMALI        3338 a.aegypti mali gene encoding alpha 1-4 glucosidase, complete
+ AAMALIA       1659 a.aegypti maltase-like i (mali) gene encoding alpha-1,4-gluc
+ AAMALIB       1832 a.aegypti maltase-like i (mali) mrna encoding alpha-1,4-gluc
+ ACA13GT        371 alouatta caraya alpha-1,3gt gene, 3' flank.
+ ADHBADA1       102 duck alpha-d-globin gene, exon 1.
+ ADHBADA2      1145 duck alpha-a-globin gene and 5' flank
+ ADHBADWP       513 duck (white pekin) alpha ii (minor) globin mrna, complete co
+ AEACOXABC     5279 a.eutrophus protein x (acox), acetoin:dcpip oxidoreductase-a
+ AGA13GT        371 ateles geoffroyi alpha-1,3gt gene, 3' flank.
+ AGAAAGFP       282 c.tetragonoloba alpha-amylase/alpha-galactosidase fusion pro
+ AGAABL         138 b.subtilis alpha-amylase signal peptide gene e.coli beta-lac
+ AGAFAMYA        57 synthetic b.stearothermophilus alpha amylase/s.cerevisiae ma
+ AGAFAMYB        57 synthetic b.stearothermophilus alpha amylase/s.cerevisiae ma
+ AGAFAMYC        57 synthetic b.stearothermophilus alpha amylase/s.cerevisiae ma
+ AGAFCOXA        98 synthetic alpha-factor/cox iv fusion gene signal peptide.
+ AGAGABA       7876 synthetic gossypium hirsutum (cotton) alpha globulin a and b
+ AGAMYLS        120 synthetic alpha-amylase gene, 5' end.
+ AGANPS          95 synthetic gene (jcnf-1) encoding alpha-factor pro-region/han
+!
+ Select a task
+ X  1 Get a sequence
+    2 Get annotations
+    3 Get entry names from accession numbers
+    4 Search titles for keywords
+    5 Search text index for keywords
+ ? Selection  (1-5) (1) =3
+ ? Accession number=v00636
+Entry name LAMBDA
+ Select a task
+ X  1 Get a sequence
+    2 Get annotations
+    3 Get entry names from accession numbers
+    4 Search titles for keywords
+    5 Search text index for keywords
+ ? Selection  (1-5) (1) =2
+ Default Entry name=LAMBDA
+ ? Entry name=
+ID   LAMBDA     standard; DNA; PHG; 48502 BP.
+XX
+AC   V00636; J02459; M17233; X00906;
+XX
+DT   03-JUL-1991 (Rel. 28, Last updated, Version 3)
+DT   09-JUN-1982 (Rel. 1, Created)
+XX
+DE   Genome of the bacteriophage lambda (Styloviridae).
+XX
+KW   circular; coat protein; DNA binding protein; genome;
+KW   origin of replication.
+XX
+OS   Bacteriophage lambda
+OC   Viridae; ds-DNA nonenveloped viruses; Siphoviridae.
+XX
+RN   [1]
+RP   1-48502
+RA   Sanger F., Coulson A.R., Hong G.F., Hill D.F., Petersen G.B.;
+RT   "Nucleotide sequence of bacteriophage lambda DNA";
+RL   J. Mol. Biol. 162:729-773(1982).
+XX
+!
+ Select a task
+ X  1 Get a sequence
+    2 Get annotations
+    3 Get entry names from accession numbers
+    4 Search titles for keywords
+    5 Search text index for keywords
+ ? Selection  (1-5) (1) =
+ Default Entry name=LAMBDA
+ ? Entry name=
+DE   Genome of the bacteriophage lambda (Styloviridae).
+ Sequence length  48502
+ Sequence composition
+           T          C          A          G          -
+      11988.     11360.     12336.     12818.         0.
+         24.7%      23.4%      25.4%      26.4%       0.0%
+
+.end lit
+.left margin1
+@4. TX 1 @Redefine active region
+.LEFT MARGIN2
+.para
+For its analytic functions 
+the program always works on a region of the sequence called the active 
+region. When a new sequence is read into the program the active region is 
+automatically set to start at the beginning of the sequence and go
+up to the 
+maximum allowed size of active region the version of the program can 
+handle. The positions are shown on the screen.
+On most machines this will be to the end of the sequence.
+This option allows the user define a different region. Note that for 
+convenience in the 
+listing and translation functions the user is given access to regions 
+outside the active region.
+.left margin1
+@5. TX 1 @List a sequence
+.LEFT MARGIN2
+.para
+The sequence can be listed with line lengths from 
+10 to 120 in multiples of 10. Output can be directed to a disk file by 
+first selecting disk output. The output looks like:
+.lit
+
+          10         20         30         40         50         60
+  MQLNSTEISE LIKQRIAQFN VVSEAHNEGT IVSVSDGVIR IHGLADCMQG EMISLPGNRY
+
+          70         80         90        100        110        120
+  AIALNLERDS VGAVVMGPYA DLAEGMKVKC TGRILEVPVG RGLLGRVVNT LGAPIDGKGP
+
+         130        140        150        160        170        180
+  LDHDGFSAVE AIAPGVIERQ SVDQPVQTGY KAVDSMIPIG RGQRELIIGD RQTGKTALAI
+
+         190        200        210        220        230        240
+  DAIINQRDSG IKCIYVAIGQ KASTISNVVR KLEEHGALAN TIVVVATASE SAALQYLARM
+
+         250        260        270        280        290        300
+  PVALMGEYFR DRGEDALIIY DDLSKQAVAY RQISLLLRRP PGREAFPGDV FYLHSRLLER
+
+         310        320        330        340        350        360
+  AARVNAEYVE AFTKGEVKGK TGSLTALPII ETQAGDVSAF VPTNVISITD GQIFLETNLF
+
+         370        380        390        400        410        420
+  NAGIRPAVNP GISVSRVGGA AQTKIMKKLS GGIRTALAQY RELAAFSQFA SDLDDATRKQ
+
+         430        440        450        460        470        480
+  LDHGQKVTEL LKQKQYAPMS VAQQSLVLFA AERGYLADVE LSKIGSFEAA LLAYVDRDHA
+
+         490        500        510        520        530        540
+  PLMQEINQTG GYNDEIEGKL KGILDSFKAT QSW*
+
+.end lit
+.left margin1
+@6. TX 1 @List a text file
+.LEFT MARGIN2
+.para
+Allows the user to have a text file displayed on the screen. It will appear 
+one page at a time.
+.left margin1
+@7. TX 1 @Direct output to disk
+.LEFT MARGIN2
+.para
+Used to direct output that would normally appear on the screen to a file. 
+.para
+Select redirection of either text or graphics, and 
+supply the name of the file that the output should be written to.
+.para
+ The results from the next options selected will not appear on the screen 
+but will be written to the file. When option 7 is selected again
+the file will be 
+closed and output will again appear on the screen.
+.left margin1
+@8. TX 1 @Write active region to disk
+.LEFT MARGIN2
+.para
+The program has the capability of reading in EMBL, GENBANK, NBRF, GCG 
+and Staden formats 
+and of reversing and complementing sequences. This option allows users 
+to 
+write the current active sequence to a disk file in Staden format. Hence 
+it 
+allows format conversion and crude sequence cutting.
+.left margin1
+@9. TX 1 @Edit the sequence
+.LEFT MARGIN2
+.para
+Used to edit sequences or any other files by giving access to the 
+computers system editor. For editing sequences the input file should  
+have already been created using the listing function "list 
+sequence".
+.para
+Supply the name of the file to edit. Wait while the system editor is made 
+ready (can take awhile on a vax). Use the editor. Exit from the editor. If a 
+sequence has been edited, and you want to process it, affirm that the 
+sequence should be "made active". The edited sequence will replace the 
+original sequence. 
+.para
+This editing method is designed to give users access to an editor with 
+which they are familiar - i.e. the one on their machine, and yet to allow 
+them to edit a sequence which contains the landmarks they need in 
+order to know where they are. Users can create files containing simple 
+listings with numbering, using "list the sequence", and 
+then edit them with their system editor, using the numbering to know 
+where they are within the sequence. When the edits are complete they 
+exit from the editor and the program "analyses" the edited file to extract 
+only the sequence characters. Define the permitted set of characters to be:
+ACDEFGHIKLMNPQRSTVWXYZ-acdefghiklmnpqrstvwxyz. All permitted characters 
+found in the file will become part of the sequence, all others removed.
+.left margin1
+@10. TX 2 @Clear graphics
+.LEFT MARGIN2
+.para
+ Clears the screen of both text and graphics.
+.left margin1
+@11. TX 2 @Clear text
+.LEFT MARGIN2
+.para
+ Clears only text from the screen.
+.left margin1
+@12. TX 2 @Draw a ruler
+.LEFT MARGIN2
+.para
+This option
+allows the user to draw a ruler or scale along the x axis of the screen to 
+help identify the coordinates of points of interest. The user can define 
+the position of the first amino acid to be marked (for example if the 
+active 
+region is 1501 to 8000, the user might wish to mark every 1000th amino 
+acid
+starting at either 1501 or 2000 - it depends if the user wishes to treat 
+the active region as an independent unit with its own numbering starting 
+at 
+its left edge, or as part of the whole sequence). The user can also define 
+the separation of the ticks on the scale and their height. If required the 
+labelling routine can be used to add numbers to the ticks.
+.left margin1
+@13. TX 2 @Use cross hair
+.LEFT MARGIN2
+.para
+This function puts
+a steerable cross on the screen that can be used to find the 
+coordinates of points in the sequence. The user can move the cross 
+around using the directional keys; when he hits the space bar the 
+program will print out the coordinates of the cross in sequence units and 
+the option will be exited.
+.para
+If instead, 
+you hit a , the position will be displayed but the cross will remain on 
+the screen.
+.para
+If a letter s is hit the sequence around the cross hair is displayed and 
+the cross remains on the screen.
+.left margin1
+@14. TX 2 @Reset margins
+.LEFT MARGIN2
+.para
+The positions of each of the plots is defined relative to a users drawing 
+board which has size 1-10,000 in x and 1-10,000 in y.
+Plots for
+each option are drawn in a window defined by x0,y0 and xlength,ylength. 
+Where x0,y0 is the position of the bottom left hand corner of the window,
+  and xlength is the width of the window and ylength the 
+height of the window.
+.lit
+   --------------------------------------------------------- 10,000
+   1                                                       1
+   1       --------------------------------------   ^      1
+   1       1                                    1   1      1
+   1       1                                    1   1      1
+   1       1                                    1 ylength  1
+   1       1                                    1   1      1
+   1       1                                    1   1      1
+   1       --------------------------------------   v      1
+   1  x0,y0^                                               1
+   1       <---------------xlength-------------->          1
+   ---------------------------------------------------------      1
+   1                                                   10,000
+
+.end lit
+All values are in drawing board units (i.e. 1-10,000, 1-10,000).
+The default window positions are read from a file "ANALMARG" when the 
+program is started. Users can have their own file if required.
+As all the plots start 
+at the same position in x and have the same width, x0 and xlength are the 
+same for all options. Generally users will only want to change the start 
+level of the window y0 and its height ylength. 
+ This option 
+allows users to change window positions whilst running the program.
+The routine prompts first for the number of the option that the users 
+wishes 
+to reposition; then for the y start and height; then for the x start and 
+length. Note that changes to the x values affect all options. If the user 
+types only carriage return for any value it will remain unchanged. 
+The cross-hair can be used to choose suitable heights.
+.LEFT MARGIN1
+@15. TX 2 @Label a diagram
+.LEFT MARGIN2
+.para
+This routine allows users to label any diagrams they have produced. They 
+are asked to type in a label. When the user types carriage return to finish 
+typing the label the cross-hair appears on the screen. The user can 
+position it anywhere on the screen. If the user types R (for right justify)
+ the label will be 
+written on the diagram with its right end at the cross-hair position. 
+If the user types L (for left justify) the label will be written on the 
+diagram with its left end at the cross hair position.
+The 
+cross-hair will then immediately reappear. The user may put the same 
+label 
+on another part of the diagram as before or if he hits the space bar he 
+will be asked if he wishes to type in another label.
+.left margin1
+@16. TX 2 @Display a map
+.LEFT MARGIN2
+.para
+It is often convenient to plot a map alongside graphed analysis in order 
+to 
+indicate features within the sequence. This function allows users to 
+draw 
+maps using files arranged in the form of EMBL feature tables. Of course 
+the 
+EMBL table are usually only used for nucleic acid sequence annotation 
+but, 
+as long as the features are written in the correct format, they can be 
+employed by this routine. The map is composed of a line representing the 
+sequence and then further lines denoting the endpoints of each feature 
+the 
+user identifies. The user is asked to define height at which the line 
+representing the sequence should be drawn; then for the feature height; 
+then for the features to plot.
+.left margin1
+@17. TX 1 5 @Short sequence search
+.LEFT MARGIN2
+.para
+This routine is used to search for exact matches to short sequences. It is 
+equivalent to the restriction enzyme search in program NIP. It and can 
+either list matches 
+or present the results graphically. 
+.PARA
+Select from searching, screen clearing or file listing. Choose a file of 
+strings and the mode of output required.
+.para
+The files of short 
+sequences (strings) and their names
+need to be arranged in a particular way. For example
+.lit
+ACID/D/E//
+BASIC/R/K/H//
+HYDRO/F/L/I/V/Y//
+GLYCO/N-S/N-T//
++/R/K/H//
+-/D/E//
+.end lit
+defines various groups of amino acids.
+Each string or set of strings must be 
+preceded by a name, each string must be preceded and 
+terminated with a slash (/), and 
+each set of strings by 2 slashes. These collections of strings and their 
+names can be read from disk or entered from the keyboard. Two files
+containing sequences are currently 
+available. One contains named groups of amino acids. The other simply 
+contains the names of all amino acids and gives a convenient way of 
+producing a plot of the positions of all the different
+amino acids in the sequence.
+The user can select strings 
+by name from these collections. Results can be displayed  name by name 
+or all 
+together. 
+Strings entered from the keyboard need to be separated by slash 
+characters(/).
+For the name by name search the output looks like:
+.lit
+  MATCHES=    12
+ NAME                  SEQUENCE            POSITION  FRAGMENT LENGTHS
+ ACID                  E                          7       7       1
+ ACID                  E                         10       3       1
+ ACID                  E                         24      14       1
+ ACID                  E                         28       4       1
+ ACID                  D                         36       8       1
+ ACID                  D                         46      10       2
+ ACID                  E                         51       5       2
+ ACID                  E                         67      16       2
+ ACID                  D                         69       2       2
+ ACID                  D                         81      12       2
+ ACID                  E                         84       3       2
+ ACID                  E                         96      12       3
+  MATCHES=    10
+ NAME                  SEQUENCE            POSITION  FRAGMENT LENGTHS
+ BASIC                 K                         13      13       1
+ BASIC                 R                         15       2       1
+ BASIC                 H                         26      11       1
+ BASIC                 R                         40      14       1
+ BASIC                 H                         42       2       2
+ BASIC                 R                         59      17       2
+ BASIC                 R                         68       9       2
+ BASIC                 K                         87      19       2
+ BASIC                 K                         89       2       2
+ BASIC                 R                         93       4       2
+  MATCHES=     1
+ NAME                  SEQUENCE            POSITION  FRAGMENT LENGTHS
+ GLYCO                 NST                        4       4       3
+
+ or when the results are ordered only on position the output looks like:
+
+ NAME                  SEQUENCE            POSITION  FRAGMENT LENGTHS
+ GLYCO                 NST                        4       3
+ ACID                  E                          7       3
+ ACID                  E                         10       3
+ BASIC                 K                         13       3
+ BASIC                 R                         15       2
+ ACID                  E                         24       9
+ BASIC                 H                         26       2
+ ACID                  E                         28       2
+ ACID                  D                         36       8
+ BASIC                 R                         40       4
+ BASIC                 H                         42       2
+ ACID                  D                         46       4
+ ACID                  E                         51       5
+ BASIC                 R                         59       8
+.end lit
+.LEFT MARGIN2
+Graphical output marks the position of each string by a 
+short vertical line and gives its name at the left end of the 
+line. If the top of the screen is reached the program gives the user the 
+oportunity to take a hard copy and then will clear the screen and restart
+plotting results at the original start position.
+Note that any character in the string
+that is not a recognisable protein symbol will be treated as a 
+wild card character will match with all 
+characters in the searched sequence.
+.para
+.lit
+Typical dialogue follows.
+
+Menus and their numbers are
+m0 = This menu
+m1 = General
+m2 = Screen control
+m3 = Statistical analysis of content
+m4 = Structure
+m5 = Search
+ ? = Help
+ ! = Quit
+? Menu or option number=17
+ Search for short sequences
+X 1 Search
+  2 List enzyme file
+  3 Clear text
+  4 Clear graphics
+? 0,1,2,3,4 =2
+  1 All acids
+X 2 Named groups
+  3 Personal file
+  4 Keyboard
+? 0,1,2,3,4 =
+ 
+ACID/D/E//
+BASIC/R/K/H//
+HYDRO/F/L/I/V/Y//
+GLYCO/N-S/N-T//
++/R/K/H//
+-/D/E//
+DIBASIC/RR/KK/RK/KR//
+TURN/N/D/G/P/S//
+BLOCK/A/Q/E/I/L/M/F/W/V//
+INDIF/R/C/H/K/T/Y//
+End of file
+ 
+ 
+X 1 Search
+  2 List enzyme file
+  3 Clear text
+  4 Clear graphics
+? 0,1,2,3,4 =
+ 
+  1 All acids
+X 2 Named groups
+  3 Personal file
+  4 Keyboard
+? 0,1,2,3,4 =
+ 
+? (y/n) (y) All names n
+? Name=acid
+? Name=basic
+? Name=glyco
+? Name=
+ 
+? (y/n) (y) Show results name by name
+? (y/n) (y) List matches
+ 
+ searching
+ matches=    59
+NAME                  SEQUENCE            POSITION  FRAGMENT LENGTHS
+ACID                  E                          7       7       1
+ACID                  E                         10       3       1
+ACID                  E                         24      14       1
+ACID                  E                         28       4       1
+ACID                  D                         36       8       1
+ACID                  D                         46      10       2
+ACID                  E                         51       5       2
+ACID                  E                         67      16       2
+ACID                  D                         69       2       2
+ACID                  D                         81      12       2
+ACID                  E                         84       3       2
+ACID                  E                         96      12       3
+ACID                  D                        116      20       3
+... etc
+ matches=    61
+NAME                  SEQUENCE            POSITION  FRAGMENT LENGTHS
+BASIC                 K                         13      13       1
+BASIC                 R                         15       2       1
+BASIC                 H                         26      11       1
+BASIC                 R                         40      14       1
+BASIC                 H                         42       2       2
+BASIC                 R                         59      17       2
+ ...etc
+ matches=     2
+NAME                  SEQUENCE            POSITION  FRAGMENT LENGTHS
+GLYCO                 NST                        4       4       3
+GLYCO                 NQT                      487     483      28
+                                                        28     483
+ 
+ 
+X 1 Search
+  2 List enzyme file
+  3 Clear text
+  4 Clear graphics
+? 0,1,2,3,4 =
+ 
+  1 All acids
+X 2 Named groups
+  3 Personal file
+  4 Keyboard
+? 0,1,2,3,4 =
+ 
+? (y/n) (y) Selected names
+ 
+? Name=basic
+? Name=glyco
+? Name=
+ 
+? (y/n) (y) Show results name by name n
+? (y/n) (y) List matches
+
+ searching
+NAME                  SEQUENCE            POSITION  FRAGMENT LENGTHS
+GLYCO                 NST                        4       3
+BASIC                 K                         13       9
+BASIC                 R                         15       2
+BASIC                 H                         26      11
+BASIC                 R                         40      14
+BASIC                 H                         42       2
+BASIC                 R                         59      17
+BASIC                 R                         68       9
+BASIC                 K                         87      19
+ ...etc
+BASIC                 R                        477      14
+BASIC                 H                        479       2
+GLYCO                 NQT                      487       8
+BASIC                 K                        499      12
+BASIC                 K                        501       2
+BASIC                 K                        508       7
+                                                         7
+ 
+X 1 Search
+  2 List enzyme file
+  3 Clear text
+  4 Clear graphics
+? 0,1,2,3,4 =
+  1 All acids
+X 2 Named groups
+  3 Personal file
+  4 Keyboard
+? 0,1,2,3,4 =4
+Define search strings by typing a string name
+followed by the string(s)
+? Name=MARY
+? String(s)=AL/VI
+? Name=
+? (y/n) (y) All names 
+? (y/n) (y) Show results name by name 
+? (y/n) (y) List matches 
+
+ searching
+ matches=    12
+NAME                  SEQUENCE            POSITION  FRAGMENT LENGTHS
+MARY                  VI                        38      38      10
+MARY                  AL                        63      25      13
+MARY                  VI                       136      73      16
+MARY                  AL                       177      41      19
+MARY                  AL                       217      40      25
+MARY                  AL                       233      16      37
+MARY                  AL                       243      10      40
+MARY                  AL                       256      13      41
+MARY                  AL                       326      70      45
+MARY                  VI                       345      19      51
+MARY                  AL                       396      51      70
+MARY                  AL                       470      74      73
+
+
+.END LIT
+
+.left margin1
+@18. TX 1 5 @Compare a sequence
+.LEFT MARGIN2
+.para
+This routine slides a short sequence along the current sequence and finds 
+all positions at which a given percentage of the amino acids match.
+Output is in both graphical and listed forms. 
+.para
+If  users call for dialogue when the routine is selected they will be given 
+the choice of keyboard or file input. Define the string, and the percentage 
+match. Matches will be plotted out and then the user can select to have 
+them listed. Then the routine cycles around.
+.para
+ The routine slides the search string 
+along the  sequence and marks the positions at which a minimum 
+percentage score is reached. The graphical output draws a vertical line at 
+the match position; the height of the line represents the percentage 
+score, 
+so that if the line reaches the top of the box the score is 100%.
+.para
+Typical dialogue follows.
+.lit
+
+? Menu or option number=18
+ Find percentage matches
+? (y/n) (y) Keep picture
+ 
+? String=aaa
+? Percent match (1.00-100.00) (70.00) =
+ 
+ missing graphics 
+ 
+Total scoring positions above 70.000 percent =  19
+Scores          2      2      2      2      2      2      2      2      2      2
+Positions      61    131    177    217    226    231    232    267    300    301
+ 
+? Number to list (0-19) (0) =3
+ 
+        61
+         AIA
+         * *
+         aaa
+         1
+ 
+       131
+         AIA
+         * *
+         aaa
+         1
+ 
+       177
+         ALA
+         * *
+         aaa
+         1
+? (y/n) (y) Keep picture n
+ 
+Default String=aaa
+? String=!
+
+.end lit
+ 
+.left margin1
+@19. TX 1 5 @Compare a sequence using a score matrix
+.LEFT MARGIN2
+.para
+This routine slides a short sequence along the current sequence and finds 
+all positions at which a given level of similarity (a cutoff score) is 
+reached. The score is defined by use of a score matrix (MDM78). Output is 
+in both graphical and listed forms. 
+.para
+If  users call for dialogue when the routine is selected they will be given 
+the choice of keyboard or file input. Define the string and the cutoff 
+score. Matches will be plotted out and then the user can select to have 
+them listed. Then the routine cycles around.
+.para
+ The routine slides the search string 
+along the  sequence and marks the positions at which a the cutoff score 
+is achieved. The graphical output draws a vertical line at 
+the match position; the height of the line represents the  score, 
+so that if the line reaches the top of the box the score is the maximum 
+possible.
+.para
+Typical dialogue follows.
+.lit
+ 
+Menus and their numbers are
+m0 = This menu
+m1 = General
+m2 = Screen control
+m3 = Statistical analysis of content
+m4 = Structure
+m5 = Search
+ ? = Help
+ ! = Quit
+? Menu or option number=19
+ Find matches using a score matrix
+? (y/n) (y) Keep picture
+ 
+? String=aaa
+Minimum score=    12 Maximum score=    36
+? Score (12-36) (36) =
+
+ missing graphics
+ 
+For score    24 the number of matches=   507
+scores         35     35     35     34     34     34     34     34     34     34
+positions     226    231    379    112    133    202    227    267    378    
+380
+ 
+? Number to list (0-507) (0) =3
+ 
+       226
+         ATA
+         * *
+         aaa
+         1
+ 
+       231
+         SAA
+           **
+         aaa
+         1
+ 
+       379
+         GAA
+          **
+         aaa
+         1
+? (y/n) (y) Keep picture n
+ 
+Default String=aaa
+? String=!
+.end lit
+.left margin1
+@20. TX 5 @Search for a motif using a weight matrix
+.LEFT MARGIN2
+.para
+This function performs searches for short sequence
+motifs using an appropriate  weight matrix. In addition it can be used to 
+create or modify weight matrices. In order to perform a search the only 
+input 
+required is the name of the file containing the weight matrix.
+The results can be presented graphically or listed. The graphical 
+presentation will draw line at the position of any matches found; the 
+height of the line is proportional to the score.
+.para
+For a search, select "use weight matrix", supply the name of the file 
+containing the weight matrix, and choose between having results plotted 
+or listed. If dialogue is requested when the function is selected users can 
+alter the cutoff score employed.
+.para
+To create a weight matrix several steps are involved. A file containing an 
+alignment of known motifs is required. (This file must be created before 
+the current option is selected. The format is a follows: each sequence is 
+written on a separate line with at least one space at the beginning; each 
+sequence is terminated by a space character, and can be followed by a 
+name. The sequences must be aligned.) Supply the name of the file of 
+aligned sequences. The program reads and displays the sequences. Choose 
+between "summing logs of weights" or summing weights (i.e. whether to 
+multiply or add weights). If logs are used all scores will be negative. 
+Choose if all positions in the set of aligned sequences should be used or 
+if a mask should be applied. If so selected, define a mask as a string of 
+symbols, in which symbol - means ignore and any other symbol means 
+use. E.g. xx-x--abc means use all positions except 3,5 and 6.
+.para
+The program will calculate weights as the frequencies of each amino 
+acid at each unmasked position in the set of aligned sequences. These 
+weights are then applied to the set of aligned sequences to give a range  
+of "observed" scores. The mean and standard deviation of these scores is 
+displayed. The user is asked to supply several values to be used when the 
+weight matrix is applied to other sequences: a cutoff score (by default, 
+the mean minus 3 standard deviations), a top score for scaling graphical 
+results (by default, the mean plus 3 standard deviations), and a position 
+to identify (this means that if a particular amino acid within the motif 
+is used as a "landmark", such as the G of the helix-turn-helix motif, then 
+its position will be marked in plots). All these values are stored along 
+with the weight matrix. Finally supply the name of a file to contain the 
+weight matrix.
+.para
+Weight matrices can be "rescaled" using a set of aligned sequences in 
+much the same ways as a matrix is created. The purpose is to redefine 
+the cutoff scores, and rescaling does not alter any other values in the 
+weight matrix file.
+.para
+The methods have changed considerably but were first outlined in
+Staden, R. Nucl. Acid Res. 12 505-519 1984, and
+Staden, R. Genetic 
+engineering: principles and methods vol 7, Edited by J.K. Setlow and A. 
+Hollaender, Plenum publishing corp., 1985.
+.para
+ The methods have always had to deal with the problem of zeroes in the 
+matrices. The current versions 
+employ "Laplaces Law of Succession" in which 1 is 
+added to each term.
+.para
+It is now possible to apply a mask to a set of aligned sequences in 
+order to give weight to selected positions only.
+Sequences have superimposed functions: some parts may be of general 
+structural 
+importance and give rise to an overall framework, and other parts give 
+specificity and hence are not common; we may want to use a set of 
+aligned 
+sequences to define a motif, but want to use only the framework 
+positions.
+ Alternatively we may want to pick out 
+only those parts of a set of aligned sequences that give a particular 
+property, and to ignore other similarities that are due to some other 
+property
+and which could obscure the pattern 
+we are interested in. The ability to define a mask allows certain 
+positions 
+to be used in the motif and others to be ignored, and yet still permits the 
+use of a set of aligned sequences to calculate weights. 
+.para
+Typical dialogue is shown below.
+.lit
+? Menu or option number=20
+X 1 Use weight matrix
+  2 Make weight matrix
+  3 Rescale weight matrix
+? 0,1,2,3 =2
+? Name of aligned sequences file=[rs.motifs]hth.seq
+     1 QESVADKMGMGQSGVGALFN LAMBDA.REP
+     2 QTKTAKDLGVYQSAINKAIH LAMBDA.CRO
+     3 QAALGKMVGVSNVAISQWQR P22.REP
+     4 QRAVAKALGISDAAVSQWKE P22.CRO
+     5 QAELAQKVGTTQQSIEQLEN 434.REP
+     6 QTELATKAGVKQQSIQLIEA 434.CRO
+     7 RQEIGQIVGCSRETVGRILK CAP
+     8 RGDIGNYLGLTVETISRLLG Fnr
+     9 LYDVAEYAGVSYQTVSRVVN LAC.R
+    10 IKDVARLAGVSVATVSRVIN GAL.R
+    11 TEKTAEAVGVDKSQISRWKR LAMBDA.CII
+    12 QRKVADALGINESQISRWKG P22.CI
+    13 KEEVAKKCGITPLQVRVWCN MAT.ALPHA
+    14 TRKLAQKLGVEQPTLYWHVK TETR.TN10
+    15 TRRLAERLGVQQPALYWHFK TETR.pSC1
+    16 QRELKNELGAGIATITRGSN TRP.REP
+    17 RQQLAIIFGIGVSTLYRYFP H-INVERSN
+    18 ATEIAHQLSIARSTVYKILE TN3.RESOL
+    19 ASHISKTMNIARSTVYKVIN GD.RESOLV
+    20 IASVAQHVCLSPSRLSHLFR ARA.C
+    21 RAEIAQRLGFRSPNAAEEHL LEX.R
+Length of motif    20
+? (y/n) (y) Sum logs of weights
+? (y/n) (y) Use all motif positions n
+x means use, - means ignore
+e.g. xx-x---x-x means use positions 1,2,4,8,10
+? Mask=--xxxxxxxxxxxx------
+ Applying weights to input sequences
+   1      -57.143 QESVADKMGMGQSGVGALFN
+   2      -55.087 QTKTAKDLGVYQSAINKAIH
+   3      -58.079 QAALGKMVGVSNVAISQWQR
+   4      -54.986 QRAVAKALGISDAAVSQWKE
+   5      -55.181 QAELAQKVGTTQQSIEQLEN
+   6      -55.874 QTELATKAGVKQQSIQLIEA
+   7      -56.692 RQEIGQIVGCSRETVGRILK
+   8      -57.722 RGDIGNYLGLTVETISRLLG
+   9      -55.363 LYDVAEYAGVSYQTVSRVVN
+  10      -55.769 IKDVARLAGVSVATVSRVIN
+  11      -56.786 TEKTAEAVGVDKSQISRWKR
+  12      -55.833 QRKVADALGINESQISRWKG
+  13      -56.279 KEEVAKKCGITPLQVRVWCN
+  14      -53.125 TRKLAQKLGVEQPTLYWHVK
+  15      -55.833 TRRLAERLGVQQPALYWHFK
+  16      -58.651 QRELKNELGAGIATITRGSN
+  17      -56.749 RQQLAIIFGIGVSTLYRYFP
+  18      -56.986 ATEIAHQLSIARSTVYKILE
+  19      -60.618 ASHISKTMNIARSTVYKVIN
+  20      -58.988 IASVAQHVCLSPSRLSHLFR
+  21      -58.002 RAEIAQRLGFRSPNAAEEHL
+Top score     -53.125  Bottom score     -60.618
+Mean     -56.655  Standard deviation       1.617
+Mean minus 3.sd     -61.505  Mean plus 3.sd     -51.804
+? Cutoff score (-999.00-9999.00) (-61.51) =
+? Top score for scaling plots (-61.51-999.00) (-51.80) =
+? Position to identify (0-20) (1) =9
+? Title=hth
+? Name for new weight matrix file=1.wts
+ 
+Menus and their numbers are
+m0 = This menu
+m1 = General
+m2 = Screen control
+m3 = Statistical analysis of content
+m4 = Structure
+m5 = Search
+ ? = Help
+ ! = Quit
+? Menu or option number=20
+X 1 Use weight matrix
+  2 Make weight matrix
+  3 Rescale weight matrix
+? 0,1,2,3 =
+ 
+? Motif weight matrix file=1.wts
+ hth
+? (y/n) (y) Use frequencies as weights
+? (y/n) (y) Plot results n
+      5    -61.46 STEISELIKQRIAQFNVVSE
+     13    -58.93 KQRIAQFNVVSEAHNEGTIV
+     21    -60.42 VVSEAHNEGTIVSVSDGVIR
+     57    -59.39 GNRYAIALNLERDSVGAVVM
+     59    -61.47 RYAIALNLERDSVGAVVMGP
+     79    -59.90 YADLAEGMKVKCTGRILEVP
+     88    -61.41 VKCTGRILEVPVGRGLLGRV
+    104    -60.38 LGRVVNTLGAPIDGKGPLDH
+    127    -60.13 SAVEAIAPGVIERQSVDQPV
+    129    -59.91 VEAIAPGVIERQSVDQPVQT
+    133    -60.79 APGVIERQSVDQPVQTGYKA
+    139    -61.12 RQSVDQPVQTGYKAVDSMIP
+    175    -58.90 KTALAIDAIINQRDSGIKCI
+    191    -60.95 IKCIYVAIGQKASTISNVVR
+    195    -60.94 YVAIGQKASTISNVVRKLEE
+    215    -60.66 HGALANTIVVVATASESAAL
+    254    -60.56 EDALIIYDDLSKQAVAYRQI
+    260    -60.08 YDDLSKQAVAYRQISLLLRR
+    297    -61.00 LLERAARVNAEYVEAFTKGE
+    314    -61.29 KGEVKGKTGSLTALPIIETQ
+    330    -60.49 IETQAGDVSAFVPTNVISIT
+    363    -57.63 GIRPAVNPGISVSRVGGAAQ
+    365    -61.48 RPAVNPGISVSRVGGAAQTK
+    371    -61.02 GISVSRVGGAAQTKIMKKLS
+    382    -57.90 QTKIMKKLSGGIRTALAQYR
+    394    -60.07 RTALAQYRELAAFSQFASDL
+    424    -59.95 GQKVTELLKQKQYAPMSVAQ
+    430    -58.89 LLKQKQYAPMSVAQQSLVLF
+    432    -61.14 KQKQYAPMSVAQQSLVLFAA
+    438    -58.58 PMSVAQQSLVLFAAERGYLA
+    458    -61.06 DVELSKIGSFEAALLAYVDR
+    466    -61.00 SFEAALLAYVDRDHAPLMQE
+    483    -60.48 MQEINQTGGYNDEIEGKLKG
+    494    -60.61 DEIEGKLKGILDSFKATQSW
+ 
+Menus and their numbers are
+m0 = This menu
+m1 = General
+m2 = Screen control
+m3 = Statistical analysis of content
+m4 = Structure
+m5 = Search
+ ? = Help
+ ! = Quit
+? Menu or option number=d20
+X 1 Use weight matrix
+  2 Make weight matrix
+  3 Rescale weight matrix
+? 0,1,2,3 =
+ 
+? Motif weight matrix file=1.wts
+ hth
+? (y/n) (y) Use frequencies as weights
+? Cutoff score (-9999.00-9999.00) (-61.51) =-56.
+? (y/n) (y) Plot results n
+ 
+
+.end lit
+.left margin1
+@21. TX 3 @Calculate amino acid composition
+.LEFT MARGIN2
+.para
+This function calculates the amino acid composition and molecular 
+weight 
+for the active region.
+.lit
+? Menu or option number=21
+ Sequence composition
+ 
+A   C     S     T     P     A     G     N     D     E     Q     B     Z     H
+N   3.   32.   23.   18.   57.   47.   16.   28.   31.   28.    0.    0.    7.
+%   0.6   6.2   4.5   3.5  11.1   9.1   3.1   5.4   6.0   5.4   0.0   0.0   1.4
+W  309. 2786. 2325. 1748. 4051. 2682. 1826. 3222. 4003. 3588.    0.    0.  
+960.
+ 
+A   R     K     M     I     L     V     F     Y     W     -     X     ?
+N  30.   24.   11.   40.   47.   41.   14.   15.    1.    0.    0.    0.    1.
+%   5.8   4.7   2.1   7.8   9.1   8.0   2.7   2.9   0.2   0.0   0.0   0.0   0.2
+W 4686. 3076. 1443. 4527. 5319. 4065. 2060. 2448.  186.    0.    0.    0.    
+0.
+Total molecular weight=    55328.
+ 
+.end lit
+.left margin1
+@22. TX 3 4 @Plot hydrophobicity
+.LEFT MARGIN2
+.para
+This routine plots the hydrophobicity of each section of the sequence 
+using 
+the hydrophobicity 
+values of Kyte and Doolittle (J. Mol. Biol. 157, 105-132 (1982)).
+A window of size span is slid along the sequence and a sum calculated 
+for 
+each position.
+.para
+If dialogue is requested select a span length and a plot interval.
+.para
+The diagrams are  on the same scale as Fig. 6 of the Kyte and Doolittle 
+paper and values of + and - 50 could be assigned to the top and bottom of 
+the diagram with corresponding values in between (-40,-20,0,20,40 are 
+shown 
+in the paper).
+.lit
+? Menu or option number=d22
+ Plot hydrophobicity
+? odd span length (1-101) (11) =
+? plot interval (1-101) (3) =
+
+ missing graphics
+.end lit
+.LEFT MARGIN1
+@23. TX 3 4 @Plot charge
+.LEFT MARGIN2
+.para
+This routine plots the charge of each section of the sequence.
+A window of size span is slid along the sequence and a sum calculated 
+for 
+each position. Amino acids are assigned charges of 1, -1 or 0.
+.para
+If dialogue is requested select a span length and a plot interval.
+.para
+Typical dialogue follows.
+.lit
+
+? Menu or option number=d23
+ Plot charge
+? odd span length (1-101) (11) =
+? plot interval (1-101) (3) =
+
+ missing graphics
+
+.end lit
+.LEFT MARGIN1
+@24. TX 4 @Plot robson prediction
+.LEFT MARGIN2
+.para
+This routine uses the method of Garnier J, Osguthorpe D J, and Robson B. 
+(1978) J. Mol. Biol. 120, 97-120 to predict secondary structures. The 
+method divides protein secondary structures into 4 classes: helix, 
+extended 
+(usually referred to as sheet), turn and coil. The routine calculates the 
+likelihood that each segment of the sequence lies in each of these 
+classes. Results are presented graphically or listed.
+.para
+If dialogue is requested choose between plotted or listed output.
+.para
+ Each residue
+has a 
+certain probability of being found in each of the 4 classes. This 
+probability
+depends both on its own amino acid type and also the 8 
+amino acids found to either side along the protein chain. Four tables of 
+weights, each 20 by 17 elements are used to calculate the likelihood that 
+each residue along the chain falls into one of the four classes of 
+structure. The most likely structure at each point 
+is the one with the highest score.
+The four values are plotted in strips labelled H, E, T and C.
+Below, a strip labelled D for decision is divided into four levels, each 
+corresponding to one of the four structure types. Their top to bottom 
+order 
+is the same as that for the strips above, i.e C, T, E, and H. For each 
+residue the program measures which of the four likelhoods is highest. It
+places a single dot at the 
+ mid-point of the corresponding strip, and 
+also at the
+appropriate level in the strip labelled D.
+.PARA
+It should be noted that the method, when tested by Kabsch W and Sander 
+C, 
+(1983) Febs. Lett. 155 (179-182), although one of the better ones, was 
+correct for only about 56% of residues.
+.para
+Typical dialogue follows.
+.lit
+? Menu or option number=d24
+ Plot Robson secondary structure predictions
+? (y/n) (y) Plot results n
+
+     9 S   217   -7  -39   15
+    10 E   226    5  -27  -39
+    11 L   233   -7  -26  -15
+    12 I   229  -23    9    4
+    13 K   214   -8   10   -8
+    14 Q   178   42   19    5
+    15 R   131   54   16    3
+    16 I    86   42  -31  -23
+    17 A    55   52  -30  -15
+    18 Q    15   67    4   25
+    19 F   -34   86   47   74
+    20 N   -41   74   17  106
+    21 V   -16  118   -5  100
+    22 V    64   88    5  115
+    23 S    96   38   26  155
+    24 E   133  -25   13   96
+    25 A   118  -98   25  100
+    26 H   110 -150   37   86
+    27 N    57 -201   37   66
+    28 E    51 -140   11   -4
+    29 G     2  -77   37    9
+    30 T     2   28   28    7
+    31 I   -11  117  -21   22
+    32 V   -23  178  -55    5
+    33 S   -54  193  -14   35
+    34 V   -46  123    5   30
+    35 S   -54   53   51   80
+    36 D   -60    1   86   55
+    37 G   -66    8   57   49
+    38 V    -1  128  -30   -5
+    39 I    11  212  -56  -33
+    40 R    16  204  -44  -57
+ ...etc
+
+.end lit
+.LEFT MARGIN1
+@26. TX 4 @Draw a helix wheel
+.LEFT MARGIN2
+.para
+A helical representation of segments of the sequence is shown. The 
+display 
+includes a schematic of the helix showing the links between residues, 
+with 
+each vertex numbered according to position; the sequence element at 
+each 
+vertex; a symbol denoting a classification as hydrophobic(.), positively 
+charged(+), negatively charged(-), or otherwise( ). The 
+residue number of the first sequence element in 
+the current window is displayed at the top-left-hand 
+corner of the diagram. Also at the top-left corner the sequence in the 
+current window is listed. Below this is the total hydrophobicity and 
+hydrophobic moment for the window calculated according to Eisenberg et 
+al 
+J. Mol. Biol. 179, 125-142 (1984).
+.para
+If dialogue is requested the user is asked for the angle to define the turn 
+between residues as seen 
+looking along the helix, and a window length. The window length can be up 
+to 60, with default 18, and the angle has a default of 100 degrees. Note 
+that 18 x 100 is 5 turns. When the option is selected the first segment in 
+the current active region is displayed then the bell rings. If the user 
+types only return, the display will click on by one residue; if another 
+number is typed, say N, then the display will click forwards (or 
+backwards 
+if N is negative) by N residues. If the wheel runs off either end of the 
+sequence the option will be exited.
+.para
+Typical dialogue follows.
+.lit
+? Menu or option number=d26
+? Angle (1-130) (100) =
+? Window (1-60) (18) =
+
+ missing graphics
+
+.end lit
+.left margin1
+@25. TX 3 4 @Plot hydrophobic moment
+.LEFT MARGIN2
+.para
+This routine plots hydrophobic moment and hydrophobicity according to 
+Eisenberg et al
+J. Mol. Biol. 179, 125-142 (1984). The mean hydrophobicity per residue in 
+the window is plotted on a scale -1.0 to 1.5, and the mean hydrophobic 
+moment per residue on a scale 0.0 to 1.5. 
+The hydrophobicity is shown in the top frame with the 
+hydrophobic moment below.
+The plot is arranged so that the 
+value shown at position x represents the mean value for residues x-
+window+1 
+to x, where window is the window length. 
+.para
+If dialogue is requested the user can select a window 
+length, and the  angle used for the hydrophobic moment 
+calculation.
+.para
+Note that according to Eisenberg et al, in transmembrane proteins an 
+"initiator" is required. This is either a very hydrophobic single helix 
+with <H> >=0.68, or a moderately hydrophobic pair of helices whose <H> 
+sum 
+to >= 1.1. Other helices are then accepted as transmembrane if their <H> 
+>= 
+0.42
+.para
+The following rules are claimed: if <H> < 0.51 and points lie below the 
+line <M> = -0.392 + 0.603x <H> they are "globular", if they lie above this 
+line they are "surface". If <H> > 0.51 and they lie above the line <M> = 
+0.6 - 0.342x<H> they are "monomeric", if above "multimeric".
+.para
+Typical dialogue follows.
+.lit
+
+? Menu or option number=d25
+? Angle (1-130) (100) =
+? Window (1-60) (18) =
+? Plot interval (1-101) (3) =
+
+ missing graphics
+
+
+.end lit
+.left margin1
+@27. TX 1 @Back translate to dna
+.LEFT MARGIN2
+.para
+This routine back translates protein sequences into DNA using the 
+standard 
+genetic code. The level of redundancy can be plotted and the 
+backtranslation saved to a file.
+.para
+The translation can use either the IUB symbols shown below, or a set of 
+codon 
+preferences. If a set of codon preferences are used they must conform to 
+the format of codon tables produced by the nucleotide analysis 
+program, and the back 
+translation 
+will contain the favoured codons. If there is no favoured codon
+the IUB symbols will be employed. The window length for 
+plotting the redundancy is in codons.
+.para
+The program will plot the redundancy along the sequence and hence can 
+be 
+used to find the best sequences to use as primers. Note that the program 
+plots the inverse, and so the higher the 
+plot the LESS redundant the sequence. For primers look for peaks rather 
+than 
+troughs.
+.para
+The DNA sequence can be saved to a file and analysed using the nucleotide 
+analysis program.
+Depending on the application it is often useful to produce a back 
+translation using both a table of codon preferences and one using the IUB 
+symbols. This is because the restriction enzyme search program can 
+distinguish between definite and possible cuts in the sequence.
+These matches are what the program terms "definite matches" and are 
+ones in 
+which the specification of the recognition sequence corresponds 
+exactly to that of the back translation. The program will also find what 
+it 
+terms "possible matches" which are ones that depend on the particular 
+codons
+chosen for each amino acid.
+These are sites at which recognition 
+sequences could be engineered to produce a cut in the DNA 
+without changing the amino 
+acid, but which are not 
+necessarily found in the original sequence.
+.LIT
+
+
+            NC-IUB SYMBOLS
+
+      A,C,G,T
+      R        (A,R)        'puRine'
+      Y        (T,C)        'pYrimidine'
+      W        (A,T)        'Weak'
+      S        (C,G)        'Strong'
+      M        (A,C)        'aMino'
+      K        (G,T)        'Keto'
+      H        (A,T,C)      'not G'
+      B        (G,C,T)      'not A'
+      V        (G,A,C)      'not T'
+      D        (G,A,T)      'not C'
+      N        (G,A,C,T)    'aNy'
+
+ Typical dialogue follows.
+
+? Menu or option number=d27
+ Back translate
+? (y/n) (y) No codon preference
+? (y/n) (y) Plot redundancy n
+? (y/n) (y) Save DNA to disk
+? File name for DNA sequence=tt:
+ATGCARYTNAAYWSNACNGARATHWSNGARYTNATHAARCARMGNATHGCNCARTTYAAY
+GTNGTNWSNGARGCNCAYAAYGARGGNACNATHGTNWSNGTNWSNGAYGGNGTNATHMGN
+ATHCAYGGNYTNGCNGAYTGYATGCARGGNGARATGATHWSNYTNCCNGGNAAYMGNTAY
+GCNATHGCNYTNAAYYTNGARMGNGAYWSNGTNGGNGCNGTNGTNATGGGNCCNTAYGCN
+GAYYTNGCNGARGGNATGAARGTNAARTGYACNGGNMGNATHYTNGARGTNCCNGTNGGN
+MGNGGNYTNYTNGGNMGNGTNGTNAAYACNYTNGGNGCNCCNATHGAYGGNAARGGNCCN
+YTNGAYCAYGAYGGNTTYWSNGCNGTNGARGCNATHGCNCCNGGNGTNATHGARMGNCAR
+WSNGTNGAYCARCCNGTNCARACNGGNTAYAARGCNGTNGAYWSNATGATHCCNATHGGN
+MGNGGNCARMGNGARYTNATHATHGGNGAYMGNCARACNGGNAARACNGCNYTNGCNATH
+GAYGCNATHATHAAYCARMGNGAYWSNGGNATHAARTGYATHTAYGTNGCNATHGGNCAR
+AARGCNWSNACNATHWSNAAYGTNGTNMGNAARYTNGARGARCAYGGNGCNYTNGCNAAY
+ACNATHGTNGTNGTNGCNACNGCNWSNGARWSNGCNGCNYTNCARTAYYTNGCNMGNATG
+CCNGTNGCNYTNATGGGNGARTAYTTYMGNGAYMGNGGNGARGAYGCNYTNATHATHTAY
+GAYGAYYTNWSNAARCARGCNGTNGCNTAYMGNCARATHWSNYTNYTNYTNMGNMGNCCN
+CCNGGNMGNGARGCNTTYCCNGGNGAYGTNTTYTAYYTNCAYWSNMGNYTNYTNGARMGN
+GCNGCNMGNGTNAAYGCNGARTAYGTNGARGCNTTYACNAARGGNGARGTNAARGGNAAR
+ACNGGNWSNYTNACNGCNYTNCCNATHATHGARACNCARGCNGGNGAYGTNWSNGCNTTY
+GTNCCNACNAAYGTNATHWSNATHACNGAYGGNCARATHTTYYTNGARACNAAYYTNTTY
+AAYGCNGGNATHMGNCCNGCNGTNAAYCCNGGNATHWSNGTNWSNMGNGTNGGNGGNGCN
+GCNCARACNAARATHATGAARAARYTNWSNGGNGGNATHMGNACNGCNYTNGCNCARTAY
+MGNGARYTNGCNGCNTTYWSNCARTTYGCNWSNGAYYTNGAYGAYGCNACNMGNAARCAR
+YTNGAYCAYGGNCARAARGTNACNGARYTNYTNAARCARAARCARTAYGCNCCNATGWSN
+GTNGCNCARCARWSNYTNGTNYTNTTYGCNGCNGARMGNGGNTAYYTNGCNGAYGTNGAR
+YTNWSNAARATHGGNWSNTTYGARGCNGCNYTNYTNGCNTAYGTNGAYMGNGAYCAYGCN
+CCNYTNATGCARGARATHAAYCARACNGGNGGNTAYAAYGAYGARATHGARGGNAARYTN
+AARGGNATHYTNGAYWSNTTYAARGCNACNCARWSNTGG---
+ 
+
+.end lit
+
+.LEFT MARGIN1
+@28. TX 5 @Search for patterns of motifs
+.left margin2
+.para
+This option searches for patterns of motifs. Patterns can be defined 
+interactively or read from files. Results can be displayed in several ways 
+in both graphical and textual form. Used to create pattern files for 
+searching libraries. The option is extremely flexible and consequently the 
+following documentation is quite lengthy. However the routine is capable 
+of searching for almost any known pattern. In addition the flexibility 
+does not necessitate difficulty of use, and the userinterface has been 
+simplified considerably since the methods were first published.
+.para
+Users should refer to the "typical dialogue" shown below for the most 
+helpful information on using the program.
+.para
+There are currently 
+four ways to display the matching patterns: 1=each individual
+motif and its position is listed; 2=all the sequence between, and 
+including the two 
+outermost motifs is listed; 3=graphical, with a vertical line marking the 
+position 
+of the leftmost motif; 4 = EMBL feature table format, where the KEYNAM 
+field is the motif name, the FROM and TO fields denote the ends of the 
+match, and the DESCRIPTION field is "Program".
+.para
+When it is defined for the first time a pattern must be entered 
+interactively at the keyboard, but the pattern description 
+can be saved to a file. 
+This file can be used for all subsequent searches.
+.para
+When defining a pattern interactively
+select a motif class and the program will request the required inputs. 
+.para
+The program gives each motif an identifying name and number.
+For motifs other than the first, a range of allowed positions must be 
+defined (Note that sets of motifs included using the OR operator will all 
+be given the same range, and so the program will only request range 
+values 
+for the first motif in any such set).
+To specify the allowed range for a motif the user must supply the 
+following: the 
+identifying number of the motif, relative to which the current motifs 
+positions are to be defined (termed the "reference motif"); a "relative start 
+position" and a range. The relative start position can be negative or positive. 
+A negative start position means that although the reference motif 
+is searched for first, the current motif can be found to its left.
+A zero relative start position means their left ends are superimposed. The 
+default start position is to butt-joint the motif to righthand end of the 
+"reference motif". The range is "the number of extra positions" that the 
+motif can take.
+.para
+The program will display the probability of finding each motif. These 
+values are presented in the following form: .1234E-5 means 0.1234 times 
+10 
+to the power -5.
+.para
+After the pattern has been defined, the program will type a description 
+of 
+it on the screen. It will then allow the user to give an overall cutoff 
+score and overall probability cutoff.
+.para
+Typical dialogue for all the different motif classes is displayed below.
+.lit
+
+? Menu or option number=28
+  Pattern searcher
+? (y/n) (y) Read pattern from keyboard 
+X 1 Exact match
+  2 Percentage match
+  3 Cut-off score and score matrix
+  4 Cut-off score and weight matrix
+  5 Direct repeat
+  6 Membership of set
+  7 Pattern complete
+? 0,1,2,3,4,5,6,7 =
+? Motif name=aa
+? String=aa
+Probability of score     2.0000 = 0.123E-01
+X 1 Exact match
+  2 Percentage match
+  3 Cut-off score and score matrix
+  4 Cut-off score and weight matrix
+  5 Direct repeat
+  6 Membership of set
+  7 Pattern complete
+? 0,1,2,3,4,5,6,7 =2
+? Motif name=pmatch
+X 1 And
+  2 Or
+  3 Not
+? 0,1,2,3 =
+? Number of reference motif (1-1) (1) =
+? Relative start position (-1000-1000) (3) =
+? Number of extra positions (0-1000) (0) =
+? String=qqq
+? Minimum matches (1.00-3.00) (3.00) =2
+Probability of score     2.0000 = 0.858E-02
+  1 Exact match
+X 2 Percentage match
+  3 Cut-off score and score matrix
+  4 Cut-off score and weight matrix
+  5 Direct repeat
+  6 Membership of set
+  7 Pattern complete
+? 0,1,2,3,4,5,6,7 =3
+? Motif name=sm
+X 1 And
+  2 Or
+  3 Not
+? 0,1,2,3 =
+? Number of reference motif (1-2) (2) =
+? Relative start position (-1000-1000) (4) =
+? Number of extra positions (0-1000) (0) =
+? String=wqa
+? Minimum score (11.00-53.00) (53.00) =36
+Probability of score    36.0000 = 0.531E-02
+  1 Exact match
+  2 Percentage match
+X 3 Cut-off score and score matrix
+  4 Cut-off score and weight matrix
+  5 Direct repeat
+  6 Membership of set
+  7 Pattern complete
+? 0,1,2,3,4,5,6,7 =4
+? Motif name=hth
+X 1 And
+  2 Or
+  3 Not
+? 0,1,2,3 =
+? Number of reference motif (1-3) (3) =
+? Relative start position (-1000-1000) (4) =
+? Number of extra positions (0-1000) (0) =
+? Weight matrix file name=hth
+ HELIX TURN HELIX PABO SAUER WEIGHTS 17-11-87                                  
+Probability of score   -51.5860 = 0.230E-04
+  1 Exact match
+  2 Percentage match
+  3 Cut-off score and score matrix
+X 4 Cut-off score and weight matrix
+  5 Direct repeat
+  6 Membership of set
+  7 Pattern complete
+? 0,1,2,3,4,5,6,7 =5
+? Motif name=repeat
+X 1 And
+  2 Or
+  3 Not
+? 0,1,2,3 =
+? Number of reference motif (1-4) (4) =
+? Relative start position (-1000-1000) (21) =
+? Number of extra positions (0-1000) (0) =3
+? Repeat length (1-60) (6) =3
+? Minimum gap (0-60) (0) =
+? Maximum gap (0-60) (0) =2
+? Minimum score (11.00-60.00) (36.00) =
+Probability of score    36.0000 = 0.445E-01
+  1 Exact match
+  2 Percentage match
+  3 Cut-off score and score matrix
+  4 Cut-off score and weight matrix
+X 5 Direct repeat
+  6 Membership of set
+  7 Pattern complete
+? 0,1,2,3,4,5,6,7 =6
+? Motif name=mset
+X 1 And
+  2 Or
+  3 Not
+? 0,1,2,3 =
+? Number of reference motif (1-5) (5) =
+? Relative start position (-1000-1000) (1) =
+? Number of extra positions (0-1000) (0) =
+X 1 Keyboard input
+  2 File input
+? 0,1,2 =
+Separate sets with commas
+? String=AVL,AST,,WYRF
+? Minimum matches (1.00-4.00) (4.00) =3
+Probability of score     3.0000 = 0.718E-02
+  1 Exact match
+  2 Percentage match
+  3 Cut-off score and score matrix
+  4 Cut-off score and weight matrix
+  5 Direct repeat
+X 6 Membership of set
+  7 Pattern complete
+? 0,1,2,3,4,5,6,7 =7
+? (y/n) (y) Save pattern in a file 
+? Pattern definition file=EXAM.PAT
+Motif  6 needs a file name to store set as a weight matrix
+? Weight matrix file name=DEMO.WTS
+Weight matrix needs a title
+? Title=Demonstration class 6 weight matrix
+
+Pattern description
+
+Motif  1 named aa       is of class    1
+Which is an exact match to the string
+aa
+Motif  2 named pmatch   is of class    2
+which is a match of score     2. to the string
+qqq
+and the N-terminal residue can take positions      3 to       3
+relative to the N-terminal end of motif   1
+It is anded with the previous motif.
+Motif  3 named sm       is of class    3
+which is a match of score    36. to the string
+wqa
+and the N-terminal residue can take positions      4 to       4
+relative to the N-terminal end of motif   2
+It is anded with the previous motif.
+Motif  4 named hth      is of class    4
+Which is a match to a weight matrix with score -51.586
+and the N-terminal residue can take positions      4 to       4
+relative to the N-terminal end of motif   3
+It is anded with the previous motif.
+Motif  5 named repeat   is of class    5
+Which is a repeat with repeat length    3 and score    36.
+The loop-out can have sizes      0 to      2
+and the N-terminal residue can take positions     21 to      24
+relative to the N-terminal end of motif   4
+It is anded with the previous motif.
+Motif  6 named mset     is of class    6
+Which is membership of a set with score   3.000
+It is anded with the previous motif.
+Probability of finding pattern = 0.4109E-14
+Expected number of matches  = 0.2539E-10
+? Maximum pattern probability (0.00-1.00) (1.00) =
+? Minimum pattern score (-9999.00-9999.00) (-9999.00) =
+ Select display mode
+X 1 Motif by motif
+  2 Inclusive
+  3 Graphical
+  4 EMBL feature table
+? 0,1,2,3,4 =
+ Searching
+
+Total matches found      0
+Menus and their numbers are 
+m0 = This menu
+m1 = General
+m2 = Screen control
+m3 = Statistical analysis of content
+m4 = Structure
+m5 = Search
+ ? = Help
+ ! = Quit
+? Menu or option number=6
+Page through text files
+? Name of file to read=exam.pat
+ A1          aa       Class
+ aa
+ @ End of string
+ A2          pmatch   Class
+      1      Relative motif
+      3      Relative start position
+      0      Number of extra positions
+ qqq
+ @ End of string
+   2.00000   Cutoff
+ A3          sm       Class
+      2      Relative motif
+      4      Relative start position
+      0      Number of extra positions
+ wqa
+ @ End of string
+  36.00000   Cutoff
+ A4          hth      Class
+      3      Relative motif
+      4      Relative start position
+      0      Number of extra positions
+hth                                      File name
+ A5          repeat   Class
+      4      Relative motif
+     21      Relative start position
+      3      Number of extra positions
+      3      Length
+      0      Minimum loop
+      2      Maximum loop
+  36.00000   Cutoff
+ A6          mset     Class
+      5      Relative motif
+      1      Relative start position
+      0      Number of extra positions
+DEMO.WTS                                 File name
+End of file
+Menus and their numbers are 
+m0 = This menu
+m1 = General
+m2 = Screen control
+m3 = Statistical analysis of content
+m4 = Structure
+m5 = Search
+ ? = Help
+ ! = Quit
+? Menu or option number=6
+Page through text files
+? Name of file to read=demo.wts
+ Demonstration class 6 weight matrix
+      4     0     3.000     4.000
+ P   1   2   3   4
+ N   0   0   0   0
+ C   0   0   0   0
+ S   0   1   0   0
+ T   0   1   0   0
+ P   0   0   0   0
+ A   1   1   0   0
+ G   0   0   0   0
+ N   0   0   0   0
+ D   0   0   0   0
+ E   0   0   0   0
+ Q   0   0   0   0
+ B   0   0   0   0
+ Z   0   0   0   0
+ H   0   0   0   0
+ R   0   0   0   1
+ K   0   0   0   0
+ M   0   0   0   0
+ I   0   0   0   0
+ L   1   0   0   0
+ V   1   0   0   0
+ F   0   0   0   1
+ Y   0   0   0   1
+ W   0   0   0   1
+End of file
+Menus and their numbers are 
+m0 = This menu
+m1 = General
+m2 = Screen control
+m3 = Statistical analysis of content
+m4 = Structure
+m5 = Search
+ ? = Help
+ ! = Quit
+? Menu or option number=28
+  Pattern searcher
+? (y/n) (y) Read pattern from keyboard 
+X 1 Exact match
+  2 Percentage match
+  3 Cut-off score and score matrix
+  4 Cut-off score and weight matrix
+  5 Direct repeat
+  6 Membership of set
+  7 Pattern complete
+? 0,1,2,3,4,5,6,7 =2
+? Motif name=avlst
+? String=avlst
+? Minimum matches (1.00-5.00) (5.00) =3
+Probability of score     3.0000 = 0.394E-02
+  1 Exact match
+X 2 Percentage match
+  3 Cut-off score and score matrix
+  4 Cut-off score and weight matrix
+  5 Direct repeat
+  6 Membership of set
+  7 Pattern complete
+? 0,1,2,3,4,5,6,7 =7
+? (y/n) (y) Save pattern in a file n
+
+Pattern description
+
+Motif  1 named avlst    is of class    2
+which is a match of score     3. to the string
+avlst
+Probability of finding pattern = 0.3941E-02
+Expected number of matches  = 0.2030E+01
+? Maximum pattern probability (0.00-1.00) (1.00) =
+? Minimum pattern score (-9999.00-9999.00) (-9999.00) =
+ Select display mode
+X 1 Motif by motif
+  2 Inclusive
+  3 Graphical
+  4 EMBL feature table
+? 0,1,2,3,4 =4
+ Searching
+
+FT   avlst       152    156       Program
+Total matches found      1
+Minimum and maximum observed scores        3.00        3.00
+ 
+.end lit
+.para
+General notes
+.para
+These methods allow users to define and search for
+complex patterns of motifs defined as single objects.
+The programs allow individual DNA motifs to be defined in eight 
+different
+ways, and protein motifs in six. Motifs are combined, using the logical 
+operators AND, OR and NOT, to describe a pattern. The pattern also 
+specifies the ranges of allowed relative separations of the individual 
+motifs. 
+.para
+First some definitions.
+.para
+A MOTIF is a contiguous subsequence of fixed length.
+At its simplest 
+it could be a single definite base or amino acid; a more complex motif 
+might be better represented as a consensus or a weight matrix; 
+two more-abstract types of 
+motif are direct and inverted repeats. 
+.para
+A PATTERN is a higher order of structure defined by a list of motifs. The 
+motifs in a pattern are combined using the logical operators AND, OR and 
+NOT. The list also defines the allowed relative separations of the 
+motifs. In the current versions of the programs up
+ to 50 motifs can be combined into a single pattern. So using these 
+definitions there are two 
+differences between motifs and patterns: 1) the distances between all 
+elements of a motif are fixed, but 
+the separations of parts of patterns can vary;
+ 2) all characters in a motif are defined 
+using the same method (class), but different parts of a pattern can be 
+defined in completely different ways.
+.para
+Each motif 
+can be represented in 9 ways (known as the motif class):
+.sk1
+.lit
+           MOTIF CLASSES
+CLASS           DESCRIPTION
+ 1       Exact match to a short defined sequence. The IUB symbols
+         can be used for DNA sequences.
+ 2       Percentage match to a defined short sequence. In nucleic acids, 
+         the IUB symbols can be used.
+ 3       Match to a defined sequence, using a score matrix and cutoff
+         score. The DNA matrix (see option 18) gives scores to IUB symbols 
+         depending on their level of redundancy. MDM78 is used for proteins.
+ 4       Match to a weight matrix with cutoff score.
+ 5       As class 4 but on the complementary strand.
+ 6       Inverted repeat or stem-loop. Fixed stem length, range of 
+         loop sizes, and cutoff score using A-T, G-C=2; G-T=1.
+ 7       Exact match to short sequence but with a defined step size.
+ 8       Direct repeat. Fixed repeat length, range of loop-out sizes,
+         cutoff score, and score matrix (for protein sequences MDM78 and
+         for nucleic acids an identity matrix).
+ 9       Membership of a set. A list of sets of allowed amino acids for 
+         each position in the motif. The sets are separated by commas(,).
+         For example IVL,,,DEKR,FYWILVM defines a motif of length 5 amino 
+         acids in which one of I,V or L must be found in the first position, 
+         then anything in the next two positions, D,E,K or R in the fourth 
+         position and F,Y,W,I,L,V or M in the fifth. This class only applies
+         to protein sequences because for nucleic acids "membership of a 
+set"
+         can be achieved using IUB symbols.
+
+    Classes 1 - 4, 8 and 9 apply to protein sequences, and classes 1-8 to 
+    nucleic acids.
+
+.end lit
+.para
+Class 1: exact match.
+.para
+The motif is defined by a short sequence, which for nucleic acids,
+ may include IUB symbols. All symbols must match.
+.para
+Class 2: percentage match
+.para
+The motif is defined by a short sequence, which for nucleic acids,
+may include IUB symbols. The minimum number of matching characters 
+must 
+also be specified.
+.para
+Class 3: match using a score matrix
+.para
+The motif is defined by a short sequence, which for nucleic acids,
+may include IUB symbols. The motif is not compared directly with the 
+sequence to count the number of matching characters. Instead a matrix is 
+used to provide a score for all possible pairs of characters. The motif 
+score for 
+any position along the sequence is the sum of the scores found by 
+looking-up the scores for each pair of aligned characters. A match is 
+declared if some minimum score is achieved.
+.para
+Class 4: weight matrix
+.para
+The motif is defined by a table of values (called weights or scores). The 
+table gives a score for finding each possible character at each position 
+along the length of the motif. It therefore 
+has dimension motif-length x character-set-size, and allows us to give 
+different scores for each character at each position. It is equivalent to 
+having a different score matrix for each position along the motif, and 
+provides the most flexible and specific method of defining motifs. The 
+weight matrices are created by program PIP option 20 and 
+stored as files. The file contains the values
+for each position, as well as an overall minimum score. 
+There are two ways in which these values can be used to calculate an 
+overall 
+score for any section of the sequence. The simplest way is to add the 
+values in the file. (This means that the highest possible score
+can be calculated by adding the top value at each column 
+position, and the lowest 
+by adding the bottom value.)
+ The normal way of using the values in the file is as 
+follows. 
+First the programs divide the values in each column by the column total 
+so 
+that they sum to 1.0
+Then the natural 
+logs of these values are used as scores. When the matrix is applied to a 
+sequence these logarithmic values are summed (which is of course 
+equivalent 
+to multiplying the frequencies).
+Note that using the natural logs of the frequencies as 
+weights and 
+adding them means that the overall cutoff score must be less than zero, 
+whereas if the original
+values in the weight matrix file are added, the cutoff score will be 
+greater than zero. The search routines therefore decide whether the user 
+wants to add values or multiply frequencies
+by examining the value of the cutoff score: it will add if the cutoff 
+is 
+greater than zero and add logs of frequencies if it is less than zero.
+ Hence we effectively get two 
+motif classes in one. The program PIP, when creating weight matrix 
+files, will ask the user whether the scores should be added or multiplied. 
+ If the values in the table have been defined 
+without using a set of aligned sequences
+it is easier for the user to 
+choose a cutoff score if the values are added.
+.para
+Class 5: complement of weight matrix
+.para
+The motif is defined by a weight matrix, but the program searches for its 
+complement.
+.para
+Class 6: inverted repeat, or stem-loop
+.para
+The motif is defined by a repeat length, a minimum score
+ and a range of loop sizes. The scores are A-T=2, G-C=2, G-T=1, else=0.
+The loop sizes are defined by a minimum 
+and maximum distance from the 3' end of the stem.
+For a stem-loop these will be positive numbers. For example to 
+define a stem of length 8 and loop sizes varying from 3 to 5, the stem 
+would be set to 8, the minimum start distance to 3 and the maximum 
+to 5. To define an 
+inverted repeat the minimum distance will be negative. For example stem 
+length=9,
+minimum distance=-9, and maximum distance=-8 will find 
+inverted repeats of lengths 9 and 10. 
+E.g. AAAAATTTT and AAAAATTTTT would be found, the first having a base 
+at 
+its centre, the second having none.
+.para
+Class 7: exact match, defined step size.
+.para
+The motif is defined by a short sequence, which for nucleic acids,
+ may include IUB symbols. All symbols must match. The class differs 
+from 
+class 1 in that searches will move in steps of some given size. For 
+example 
+we could search for a certain codon and use a step size of 3 and hence
+ keep in a 
+single reading frame.
+.para
+Class 8: direct repeat
+.para
+The motif is defined by a repeat length, a minimum score
+ and a range of loop sizes. The scores are defined using MDM78 for protein 
+sequences and an identity matrix for nucleic acids.
+The loop sizes are defined by a minimum 
+and maximum distance from the 3' end of the stem.
+.para
+Class 9: membership of a set
+.para
+This motif class is for protein sequences. It is defined by lists of 
+allowed amino acids for each position in the motif, and a cut-off score.
+Positions at which any amino acid can occur are left blank.
+All allowed amino acids for each position give a score of 1.
+The motifs can be defined in two ways: either typed at the keyboard or 
+read 
+in as a weight-matrix-like file.
+When the motif is defined at the keyboard the sets of allowed amino 
+acids
+are separated by commas(,).
+         For example IVL,,,DEKR,FYWILVM defines a motif of length 5 amino 
+         acids in which one of I,V or L must be found in the first position, 
+         then anything in the next two positions, D,E,K or R in the fourth 
+         position and F,Y,W,I,L,V or M in the fifth.  To specify that the 
+whole motif must match a score of 3 would be required (i.e. one of the 
+allowed amino acids must be found for each of the three defined 
+positions).
+If the motif is read from a file the file must have been written by 
+program 
+PIP, or have been saved by the pattern searching routines. If the 
+user 
+elects to save a pattern, and it includes class 9 motifs typed at the 
+keyboard, then the program will save the class 9 motifs as weight matrix 
+files. Therefore it will request file names for each motif of this class. 
+If the motif given above as an example were saved the weight matrix file
+would have 5 columns.
+The first column 
+would contain zeroes except for the I, V and L rows 
+which would be set to 1; the next two columns would all be zero; the next 
+would be zero except for the D,E,K and R rows which would be 1; the final 
+column would contain 1's in rows F,Y,W,I,L,V and M, with 
+the rest zero.
+.para
+
+The logical operator (AND, OR or NOT) used to add each motif to the 
+pattern
+is specified by preceding 
+the class number by the letters A, O or N. A = AND, O = OR, N = NOT.
+The default is A, so N2 means include, using the NOT operator, a class 2 
+motif; O2 means include, using the OR operator, a class 2 motif; both A2 
+and 
+2 mean include, using the AND operator, a class 2 motif.
+
+.para
+Range setting.
+.para
+The motifs in a pattern are numbered according to their order in the list. 
+Apart from the first motif in a pattern all motifs are given a range 
+of allowed positions relative to a motif further up the list. 
+For example
+suppose we have a pattern defined by A AND B AND C AND D.
+Motif A can occur anywhere, but B must have its range of allowed 
+positions defined relative to the position of motif A, and C's positions 
+can be defined relative to either A or B, depending on which is most 
+convenient, and likewise D's positions can be relative to A or B or C.
+.para
+Notice that the positions of motifs can be defined relative to more than 
+one motif. Suppose we have a pattern consisting of 
+motifs A, B and C, and that B occurs 5-10 residues right of A, C occurs 5-
+10 
+residues right of B, and also C is never more than 15 residues from A. 
+Then 
+it is quite consistent with the methods to include motif C into the 
+pattern 
+twice using the AND operator: once relative to A and once relative to B. 
+This will define the relative spacing and the ORDER of the motifs in the 
+pattern. (If we simply defined the position of C relative to A it could be 
+found to the left of B).
+.para
+Motifs combined together using the OR operator are all given the same 
+range. For example suppose we had a pattern A AND (B OR C) AND (D OR E),
+ then B and C each have the same range, and D and E also have 
+the same range as one another. The range for D and E can be relative to 
+A or to B.
+.para
+Motifs cannot have their ranges defined relative to motifs that are 
+included using the NOT operator. For example if we had the pattern A NOT 
+B 
+AND C, then the range for C can only be defined relative to motif A.
+.para
+Speed can be gained by arranging the order 
+of the motifs so that those higher up the list are of types that can be 
+searched for rapidly and that are also unlikely to be found.
+.para
+Motifs combined by the OR operator are alternatives: if any one of a set 
+of motifs 
+combined by the OR operator is found, then a match is declared. All
+alternatives will be reported. For example if we had a pattern defined by 
+A 
+AND (B OR C), then all places where A occurs and B is found within range, 
+and all places where A is found and C is found within range will be 
+reported. A typical use would be where we might allow a motif to appear 
+on 
+either strand of the DNA sequence. For example a weight matrix 
+representing 
+the heatshock element could be used in a pattern which included 
+heatshock 
+as a motif class 4 combined using the OR operator 
+with heatshock as a motif class 5.
+.para
+The probability calculations are performed for each motif as it is 
+defined. 
+If an overall probability cut-off is given the calculation is repeated for 
+each match found. To achieve maximum searching speed do not give an 
+overall 
+probability cut-off. Overall cut-off scores should only be used if the 
+motif 
+classes used are compatible.
+.para
+There are currently 
+several ways to display the matches: 1 = each 
+motif and its position is listed; 2 = all the sequence between the two 
+outermost motifs is listed; 3 = graphical, with a spike marking the 
+position 
+of the leftmost motif. The library versions also give entry names, and a 
+one 
+line title; in addition they can be used to produce aligned families of 
+sequences. When this mode of output is selected the program will write a 
+separate file for each match. The files will be called ENTRYNAME.DAT 
+where 
+ENTRYNAME is the name of the entry in the library. The matching 
+sequence 
+will be written out so that the spacing between motifs is constant, and 
+set to the maximum allowed by the pattern definition. Any gaps will be 
+filled with dashes (-). If the individual sequences were subsequently 
+written one above the other
+they should line up so that all motifs are in register. There two types of 
+output of this sort: one, option 4, writes out whole sequences, the other, 
+option 5, writes out only the sequences between the two outermost 
+motifs.
+If the individual sequences were subsequently 
+written one above the other
+they should line up so that all motifs are in register. There two types of 
+output of this sort: one, option 4, writes out whole sequences, the other, 
+option 5, writes out only the sequences between the two outermost 
+motifs.
+Note that for option 4 users are asked to type the position of the 
+first motif, and the reason for
+this is explained below. 
+Consider a pattern found in several sequences. Consider only
+the first motif in 
+the pattern and suppose that it was found in different positions in these 
+sequences. 
+Say that of these positions the one furthest from the left end was 
+position 100. Then, in order to ensure that all the sequences would align, 
+we must specify that motif 1 must start at position 100. 
+Any sequences in which motif 1 started 
+nearer to the left end than position 100 would be padded accordingly.
+These modes of output 
+should only be used when the position of each motif is defined relative to 
+its 
+immediate neighbour.
+.para
+The pattern descriptions can be saved to files. These files 
+can be used instead of typing definitions again at the keyboard. As the 
+files are annotated,
+they can easily 
+be changed using system editors, and the modified versions used to 
+define the variant patterns for the programs.
+.para 
+.para
+Use of lists of entry names 
+.para
+The two programs that operate on libraries have the ability to 
+restrict their searches to subsets of the libraries. This does not require 
+sublibraries to be created but instead is achieved by using files 
+containing a list of the entry names of sequences. The user may choose to 
+search only those entries on the list or, alternatively to search all but 
+those on the list (i.e. in the latter case
+the list contains the names of those to be excluded).
+ The programs can search libraries that have indexes and those that 
+do not.
+ If a list of names for inclusion is used,
+then the search will be faster if the index is present. In all other 
+circumstances the whole library will be read. 
+The list must be in library order except when it is used
+to include entries, and an index is available.
+The list must contain each entry name on a separate line, with the name 
+starting in column 1 of the line. ie there must be no spaces at the start 
+of the line.
+The list of entry names
+can be produced by the keyword searches of nip, pip, etc as long 
+as the listings produced have a space character separating the entry name 
+from the entry description. This will depend on how well the library 
+reformatting programs work. For example swissprot entry names tend to run 
+into the beginning of the descriptions, but other libraries are generally 
+OK.
+
+.para
+One use of the programs is to look for patterns that we already know 
+about, but in new sequences. However it is hoped that they will also be 
+useful for finding new motifs. For example
+several known control regions in 
+nucleic acid 
+sequences consist of particular direct or inverted repeats;
+the inclusion of
+direct and inverted repeats as motif classes
+makes it possible to 
+find previously unknown
+motifs of these types. 
+Using these new programs we can 
+ask questions like: "are there any inverted or direct repeats near to 
+sections of sequence that contain both a
+CCAAT box and a TATA box?"; and to search for such things throughout 
+the 
+libraries. In addition, the mode of output in which all the sequence 
+between 
+the two outermost motifs found is printed out, allows us to extract 
+sequences and examine them in more detail for further common 
+subsequences. 
+For example we might want to collect together all the sequences 
+between 
+putative CCAAT and TATA boxes.
+.para
+A further use of the inverted repeat motif class is the following. If a 
+regulatory sequence in DNA is poorly defined but also an inverted repeat, 
+then it might be an advantage to specify it both as a consensus sequence 
+and 
+a superimposed inverted repeat. In this way two weak definitions can be 
+combined to produce a stronger pattern.
+.para
+Given only a few examples of a motif it 
+should be possible to perform initial searches using a 
+class 3 motif, and then, using plausible matching sequences, create a 
+more 
+specific weight matrix for the same motif.
+.para
+If motifs are combined with the first motif using the OR operator
+they will be ignored until all 
+permutations that include the first motif have been looked for. 
+The whole search will then be repeated, in 
+turn, for each of 
+those motifs that are combined with the first motif using the OR 
+operator.
+An interesting consequence of this is that the program can be used, 
+without 
+change, to compare any newly determined sequence with all known 
+individual 
+motifs. We achieve this by having a pattern in which all known relevant 
+motifs are combined using the OR operator.
+If we ask to use this pattern with 
+a sequence, the program will automatically compare each individual 
+motif in 
+the pattern with the whole length of the 
+sequence. As the number of known 
+motifs grows this should become an increasingly useful standard 
+procedure.
+.para
+The NOT operator is obviously 
+useful for making sure particular motifs are not present, but it can also 
+be used to bracket the levels of matches found. We may want a degree of 
+match that lies between two limits - binding should occur, but not too 
+strongly; or base-pairs should form, but not too many. We can specify 
+this 
+by asking for a match with a low score, in combination with a match and 
+a 
+high score, both for the same motif, but with the high score included 
+using 
+the NOT operator.
+.para
+The algorithm is designed to find all sections of a sequence that satisfy 
+the pattern rather than only the best match. 
+Particularly if some of the motifs in a pattern are less well defined than 
+others, this can often result in the same region of a sequence being 
+reported as having several matches, but which only vary in the 
+positions of the weakest motifs.
+.para
+General remarks on motif searching
+.para
+Generally motifs are short subsequences that are thought to be 
+associated with 
+particular functions in some known sequences. Often 
+we search for them to try to 
+understand or interpret other sequences. Sometimes we search for 
+motifs and
+patterns to 
+test a hypothesis about their role: are they found in the expected 
+positions in the expected sequences. In doing so we should remember 
+that, in both proteins and nucleic acids,
+ what we are really looking for is a particular 
+three dimensional structure with certain affinities for other structures, 
+and that we are assuming that the sequence of the motif alone
+defines the 3D structure we searching for. 
+ The overall structure 
+may be completely different to those in which the motif is functional, 
+and 
+hence the motif may have a different shape or be inaccessible. 
+We should be aware of the 
+importance of the context in which a motif is found. Where does it lie 
+relative to the overall structure, is it accessible, is the three 
+dimensional spacing between 
+it and other motifs correct? For example, is it on the same side of the 
+double helix, and the correct distance from some other motif? How does 
+context affect our assessment of the significance of finding a motif? 
+Finding false mammalian mRNA splice junctions in non-coding sequences 
+is 
+far less important than finding false sites in pre-mRNA sequences, but 
+finding them in the correct places is most important! In other words, it 
+is 
+often the case that when we are searching for a motif that is known to 
+be  
+necessary for some function, then a positive result in the form of a 
+match 
+in the required position, is more important than a high background of 
+matches in the wrong positions. Being 
+ able to write 
+down the probability of finding a motif in a random sequence tells us how 
+well it is defined. 
+In nucleic 
+acids the DNA may contain many superimposed types of information such 
+as 
+those concerned with histone phasing, protein coding or mRNA secondary 
+structure. These overlapping "codes" may interfere with one another 
+causing 
+matches to motifs to be poorer than expected.
+In general we will only have a limited number of examples of the 
+motif and we do not know how representative they are.
+.para
+Sequences have superimposed functions: some parts may be of general 
+structural 
+importance and give rise to an overall framework, and other parts give 
+specificity and hence are not common; we may want to use a set of 
+aligned 
+sequences to define a motif, but want to use only the framework 
+positions.
+ Alternatively we may want to pick out 
+only those parts of a set of aligned sequences that give a particular 
+property, and to ignore other similarities that are due to some other 
+property
+and which could obscure the pattern 
+we are interested in.
+It is possible to apply a mask to a set of aligned sequences in 
+order to give weight to selected positions only.
+ The ability to define a mask allows certain positions 
+to be used in the motif and others to be ignored, and yet still permits the 
+use of a set of aligned sequences to calculate weights. The mask is 
+requested and applied 
+by the program and results in the masked positions being zero 
+in 
+the weight matrix. The mask is defined in the following way. 
+Suppose we had a motif of length 15, then the mask 
+x--x--xx-x will give zero weights to positions 2,3,5,6 and 9 (note it is 
+the dashes (-) that are significant and that positions 
+1,4,7,8,10,11,12,13,14 and 15 
+will be non-zero). Of course 
+the same set of sequences could be used with several alternative masks 
+in 
+order to extract different features and create corresponding weight 
+matrices.
+.para
+The programs are described in Staden,R. 
+CABIOS 4, 53-60, 1988; Staden,R.
+ CABIOS 5, 89-96, 1989, anf a forthcoming Methods in 
+Enzymology.
+.left margin1
+@ end of help

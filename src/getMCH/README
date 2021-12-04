@@ -1,0 +1,53 @@
+		Extracting Sequences from Trace Files
+			      Simon Dear
+			(sd@mrc-lmb.cam.ac.uk)
+			   19 November 1992
+
+
+To obtain the sequence from a trace file, the program 'trace2seq' can
+be used.  It can operate on several trace file sources: ABI 373A
+sample files, Pharmacia A.L.F. traces (created by 'alfsplit') and SCF
+traces (created by 'makeSCF' or from other sources).  The sequence is
+stored in a file. A header, required for assembly into the sequence
+assembly programs xdap and xbap, may optionally be produced.
+
+Usage is as follows:
+
+	trace2seq (-ABI | -ALF | -SCF) {tracefilename}
+		  -output {outputfilename}
+		  [-header (0|1)] [-raw filename]
+
+By default, a header is not produced. To be included, the -header
+option with argument 1, or the -raw option should be used. The -raw
+option allows the trace file name, that forms part of the header, to
+be explicitly specified. By default the trace file name in the header
+is that from from which the sequence came.
+
+An example:
+
+To output the sequence from the ABI 373A trace 'trace.abi', with the
+inclusion of a header, into a file called 'abi.seq':
+
+	trace2seq -ABI trace.abi -output abi.seq -header 1
+
+
+After the operation, 'abi.seq' will contain:
+
+	;   827     0   827ABI trace.abi
+	AG--TGCATGCCTGCAGGTCGACTCTAGAGG-TCCCGGGGTACCGAGCTC
+	GAATTC-TAATCATGGTCATAGCTGT-TCCTGTGTGAAATT-TTATCCGC
+	TCACAATTCCACACAACATACGAGCCGGAAGCATAAAGTGTAAAGCCTGG
+	GGTGCCTAATGAGTGAGCTAACTCACATTAATTGCGTTGCGCTCACTGCC
+	CGCTTTCCAGTCGGGAAACCTGTCGTGCCAGCTGCATTAATGAATCGGCC
+	AACGCGCGGGGAGAGGCGGTTTGCGTATTGGGCGCCAGGGTGGTTTTA-T
+	TTTCACCAGTGAGACGGGCAACAGCTGATTGCCCTTCACCGCCTGGCCCT
+	GAGAGGAGTTGCAGCAAGCGGTCCACGCT-GTT-TGCCCCAGCAGGCG-A
+	AATCCTGTTTTGATGGTTGGTTCC-GAAATCGGCAAAAATCCCTTATAAA
+	TTC-AAAGGATAGG-CCGAG--TGGGG-T-AGTTTTT-TTTCCGG-TTTG
+	AACAAGT-GTTCCCCTGTT-AAAGGA-CGTGGG--TC-AACCGTT-AAA-
+	GGG-G--AA--CCGTTTT-TTTATGGG--A--GGC---TT-C--GTTCCG
+	TTA-CCTG-TT-AA-GTTTTTTTGGGGTT-TGG-G-CGTAAG-GCT-AAT
+	-GGACC-TAATGG-GGCCC-GATTTTGGGTT-TGGGGGAAGCGGA--GAC
+	GG-GG-TG-GTGGGTGTAT-GGA-GTC--G-TTAGG-TGGGAAT--T-GG
+	TG--T-GG--ATCG-TT-G--T--GGTTTTT-GGT-T-TAGGGGTGGTTT
+	--GTGTTTTTT-GTGT-TTG--TT--T

@@ -1,0 +1,69 @@
+#! /bin/csh -f
+#
+# script to make a free text index for the pir library
+#
+
+echo "pirfreetext.script Version 1.0"
+echo ""
+
+set RM = "/bin/rm -f"
+set SORT = sort
+set UNIQ = uniq
+
+#
+# LIBFILE is the name youve given to the library file
+#
+set LIBFILE1 = pir1.dat
+set LIBFILE2 = pir2.dat
+set LIBFILE3 = pir3.dat
+set WORDS = stopwords
+
+pirfreetext $LIBFILE1 pir1.list
+if ( $status ) goto abort
+pirfreetext $LIBFILE2 pir2.list
+if ( $status ) goto abort
+pirfreetext $LIBFILE3 pir3.list
+if ( $status ) goto abort
+
+# sort on words, remove dumplicates, remove stopwords
+${SORT} -b +1 pir1.list | ${UNIQ} | excludewords ${WORDS} >!  freetext.presort
+if ( $status ) goto abort
+${RM} pir1.list
+${SORT} -b +1 pir2.list | ${UNIQ} | excludewords ${WORDS} >>  freetext.presort
+if ( $status ) goto abort
+${RM} pir2.list
+${SORT} -b +1 pir3.list | ${UNIQ} | excludewords ${WORDS} >>  freetext.presort
+if ( $status ) goto abort
+${RM} pir3.list
+
+# resort on entry name
+${SORT} freetext.presort >! freetext.sorted
+if ( $status ) goto abort
+${RM} freetext.presort
+
+# include entry numbers in the file
+freetext2 freetext.sorted freetext.entry
+if ( $status ) goto abort
+${RM} freetext.sorted
+
+# sort on text
+${SORT} -b +2 freetext.entry >! freetext.sorted2
+if ( $status ) goto abort
+${RM} freetext.entry
+
+# create the index
+freetext4 freetext.sorted2 freetext.trg freetext.hit
+if ( $status ) goto abort
+${RM} freetext.sorted2
+
+echo "Completion successful"
+echo ""
+
+exit 0
+
+#
+# Abort
+#
+abort:
+echo "pirfreetext.script: aborting due to serious error"
+exit 2

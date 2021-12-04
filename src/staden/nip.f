@@ -1,0 +1,1023 @@
+C   NIP Nucleotide interpretation program
+C
+C   author: Rodger Staden, Medical Research Council Centre,
+C           Laboratory of Molecular Biology, Hills Road,
+C           Cambridge, England
+C     12-1-90 Closed idev if.ne.kbout after rdseq
+C     16-3-90 Removed escape after bpause
+C     5-4-90  Changed getdev to redir and removed all close(unit=idev)
+C             etc (see redir)
+C     6-7-90  Added showfi
+C     9-7-90  Renamed amenu to menu
+C    14-8-90  Modified 6 phase translation
+C    22-8-90  Modified 6 phase translation so it will do all listings
+C    24-9-90  Fixed bug in graphics output for pattern search
+C    5-11-90  Very many changes for addition of file of file names
+C             search for patterns - affects patternn,patternnc,nipl,
+C             nip,anals89,asubs89 (rdwmt)
+C   11-12-90  Chabges relating to new way of handling pir libs. New filnll 
+C             here and new parameter
+C   11-1-91  Modified positional base preferences to allow standard to be
+C            read form a file: call from main has extra arguments
+C   22-2-91  For find open frames and trandk send maxseq instead of idim3
+C            in odrer to give sufficient space for 6 phase translation
+C  17-4-91  New splice junction search
+C  7-5-91  Many changes to do with use of feature tables
+C          including the argument lists to: codons, codtdk, trandk, opentr, pltmap,
+C          codimp. Also forced out use of option 38 by caling 39 instead
+C 7-6-91 New sequence library routines for cdrom format. PIR stuff junked
+C 18-7-91 trndom did not write title!
+C 18-7-91 Added titles to pattern files
+C 25-2-92 Changed call to rdseq !!!!!!!!
+C 8-5-92 upped maxseq to 330000
+C 17-6-92 Declared SIGNAL as an external as there's an intrinsic with
+C         the same name under AIX
+      SUBROUTINE FMAIN()
+      INTEGER BOTOPT,TOPOPT
+      PARAMETER (NAMLEN = 60)
+      CHARACTER*(NAMLEN) FILE1,FILE2,FILE3,FILE4,FILE5,FILE6,FILE7
+      CHARACTER*(NAMLEN) HELPF,POINTF,FILMAR,FILNAM,FILEIN
+      CHARACTER*(NAMLEN) FOFNAM
+      CHARACTER*(NAMLEN) LIBLF
+      PARAMETER (BOTOPT=-10,TOPOPT=70,
+     +           MAXSEQ=330000,
+     +           MXSPAN=603,
+     +           MAXWIN=MAXSEQ+MXSPAN,
+     +           MAXWIR=330000,
+     +           MAXD48=MAXWIR/48,
+     +           MAXD2=MAXWIR/2,
+     +           MAXD3=MAXWIR/3,
+     +           MAXSD2=MAXSEQ/2,
+     +           MAXSD3=MAXSEQ/3,
+     +           MAXMEN=-8,
+     +           MAXOPT=67,
+     +           MAXDEV=9,
+     +           MXWTLN = 120,
+     +           IDM = 5,
+     +           IDME = 17)
+      PARAMETER (FILE1='EUKRIBS',
+     +             FILE2='INTRONS',
+     +             FILE3='ECPROMS',
+     +             FILE4='ECRIBS',
+     +             FILE5='RENZYM4',
+     +             FILE6='RENZYM6',
+     +             FILE7='RENZYMAL',
+     +             HELPF='NIPHELP',
+     +             POINTF='NIPHPNT',
+     +             FILMAR='NIPMARG',
+     +             LIBLF = 'SEQUENCELIBRARIES')
+      PARAMETER (MAXMOT = 50, MAXWTS = 4000)
+      CHARACTER*(NAMLEN) NAMSAV(MAXMOT)
+      CHARACTER*8 KEYNS(MAXMOT)
+      INTEGER HELPS(BOTOPT:TOPOPT),HELPE(BOTOPT:TOPOPT),DEVNOS(MAXDEV)
+      REAL WORKR(MAXWIR)
+      INTEGER WORKI(MAXWIR),OPT,MARGB(MAXOPT),MARGT(MAXOPT)
+      PARAMETER (MAXWRD = 6)
+      PARAMETER (MAXDIC = 4**MAXWRD)
+      INTEGER WORDP(MAXDIC),WORDN(MAXDIC)
+      PARAMETER (MAXNZ1 = MAXSEQ/10,
+     +           MAXEN  = 1000,
+     +           MAXEN8 = MAXEN*8)
+      INTEGER ENZYM1(MAXNZ1),ENZYM2(MAXNZ1),ENZYM3(MAXNZ1)
+      INTEGER ENZYME(MAXEN8),ENZYM4(MAXNZ1)
+C  MAT1 SIMPLE IDENTITY
+C  MAT2 IUB SCORES 0-1
+C  MAT3 IUB SCORES 0-36
+C  MAT4 INVERTED REPEAT
+      INTEGER MAT1(IDM,IDM),MAT2(IDME,IDME)
+      INTEGER MAT3(IDME,IDME),MAT4(IDM,IDM)
+      CHARACTER SEQ(MAXWIN),SEQW(MAXSEQ),PAA(5,5,5),PAAS(5,5,5)
+      CHARACTER CHRSET(IDM)
+      EQUIVALENCE (WORKR,WORKI)
+      EQUIVALENCE (ENZYME,WORDN)
+C   EXTERNALS
+      EXTERNAL SIGNAL
+      DATA CHRSET/'T','C','A','G','-'/
+      DATA MAT1/
+     +            1,0,0,0,0,
+     +            0,1,0,0,0,
+     +            0,0,1,0,0,
+     +            0,0,0,1,0,
+     +            0,0,0,0,0/
+      DATA MAT2/
+     +1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+     +0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+     +0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+     +0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,
+     +1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+     +0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,
+     +1,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,
+     +1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,
+     +0,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,
+     +0,1,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,
+     +1,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,
+     +1,1,1,0,0,0,0,1,0,1,0,1,0,0,0,0,0,
+     +1,1,0,1,0,0,1,0,1,0,1,0,1,0,0,0,0,
+     +0,1,1,1,0,1,0,0,1,1,0,0,0,1,0,0,0,
+     +1,0,1,1,0,1,0,1,0,0,1,0,0,0,1,0,0,
+     +1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+     +0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0/
+      DATA MAT3/
+     +     36, 0, 0, 0, 9, 0,18,18, 0, 0,18,12,12, 0,12, 9, 0,
+     +      0,36, 0, 0, 9, 0,18, 0,18,18, 0,12,12,12, 0, 9, 0,
+     +      0, 0,36, 0, 9,18, 0,18, 0,18, 0,12, 0,12,12, 9, 0,
+     +      0, 0, 0,36, 9,18, 0, 0,18, 0,18, 0,12,12,12, 9, 0,
+     +      9, 9, 9, 9,36,18,18,18,18,18,18,27,27,27,27,36, 0,
+     +      0, 0,18,18,18,36, 0, 9, 9, 9, 9, 6, 6,12,12,18, 0,
+     +     18,18, 0, 0,18, 0,36, 9, 9, 9, 9,12,12, 6, 6,18, 0,
+     +     18, 0,18, 0,18, 9, 9,36, 0, 9, 9,12, 6, 6,12,18, 0,
+     +      0,18, 0,18,18, 9, 9, 0,36, 9, 9, 6,12,12, 6,18, 0,
+     +      0,18,18, 0,18, 9, 9, 9, 9,36, 0,12, 6,12, 6,18, 0,
+     +     18, 0, 0,18,18, 9, 9, 9, 9, 0,36, 6,12, 6,12,18, 0,
+     +     12,12,12, 0,27, 6,12,12, 6,12, 6,36, 8, 8, 8,27, 0,
+     +     12,12, 0,12,27, 6,12, 6,12, 6,12, 8,36, 8, 8,27, 0,
+     +      0,12,12,12,27,12, 6, 6,12,12, 6, 8, 8,36, 8,27, 0,
+     +     12, 0,12,12,27,12, 6,12, 6, 6,12, 8, 8, 8,36,27, 0,
+     +      9, 9, 9, 9,36,18,18,18,18,18,18,27,27,27,27,36, 0,
+     +      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0/
+      DATA MAT4/
+     +            0,0,2,1,0,
+     +            0,0,0,2,0,
+     +            2,0,0,0,0,
+     +            1,2,0,0,0,
+     +            0,0,0,0,0/
+      DATA PAAS/'F','F','L','L','-','S','S','S','S','S',
+     1'Y','Y','*','*','-','C','C','*','W','-',
+     1'-','-','-','-','-','L','L','L','L','L',
+     1'P','P','P','P','P','H','H','Q','Q','-',
+     1'R','R','R','R','R','-','-','-','-','-','I','I','I','M','-',
+     1'T','T','T','T','T',
+     1'N','N','K','K','-','S','S','R','R','-','-','-','-','-','-',
+     1'V','V','V','V','V','A','A','A','A','A','D','D','E','E','-',
+     1'G','G','G','G','G',
+     1'-','-','-','-','-','-','-','-','-','-',
+     1'-','-','-','-','-','-','-','-','-','-',
+     1'-','-','-','-','-','-','-','-','-','-'/
+      DATA PAA/'F','F','L','L','-','S','S','S','S','S',
+     1'Y','Y','*','*','-','C','C','*','W','-',
+     1'-','-','-','-','-','L','L','L','L','L',
+     1'P','P','P','P','P','H','H','Q','Q','-',
+     1'R','R','R','R','R','-','-','-','-','-','I','I','I','M','-',
+     1'T','T','T','T','T',
+     1'N','N','K','K','-','S','S','R','R','-','-','-','-','-','-',
+     1'V','V','V','V','V','A','A','A','A','A','D','D','E','E','-',
+     1'G','G','G','G','G',
+     1'-','-','-','-','-','-','-','-','-','-',
+     1'-','-','-','-','-','-','-','-','-','-',
+     1'-','-','-','-','-','-','-','-','-','-'/
+C   Initialise help
+      CALL INTHLP('nip', TOPOPT)
+C   GET DEVICE NUMBERS
+      CALL UNITNO(KBIN,KBOUT,DEVNOS,MAXDEV)
+      CALL OPENGR(DEVNOS(3))
+      IFORNO = 0
+      LIBNO = 1
+      IGORT = 0
+C      CALL CLEARV
+      WRITE(KBOUT,1000)
+1000  FORMAT(
+     +' NIP (Nucleotide interpretation program) V7.0 July 1992',/,
+     +' Author: Rodger Staden'/)
+C   READ IN THE POINTERS TO THE HELP FILE
+      CALL SETHLP(HELPS,HELPE,BOTOPT,TOPOPT,POINTF,DEVNOS(4),KBOUT)
+      CALL INITGR(KBIN,KBOUT,HELPS(0),HELPE(0),HELPF,DEVNOS(4))
+      IOK=0
+      CALL INITLU(IDM)
+      CALL SETPAR(IOK)
+      IF(IOK.NE.0) GO TO 9999
+C   GET SCREEN AND MARGIN SIZES
+      CALL GETMRG(ISXMAX,ISYMAX,MARGL,MARGR,MARGB,MARGT,
+     +MAXOPT,DEVNOS(1),FILMAR)
+      IDEV=KBOUT
+      MOPT=0
+      IDIMT = 0
+2     CONTINUE
+      IDEVLL = DEVNOS(5)
+      IDEVEN = DEVNOS(6)
+      IDEVAN = DEVNOS(7)
+      IDEVDL = DEVNOS(8)
+      IDEVLF = DEVNOS(9)
+      CALL RDSEQ(
+     +SEQ(2+MXSPAN/2),MAXSEQ,IDIMT,J1,J2,ISTART,IEND,IDIM1,IDIMB,
+     +DEVNOS(1),FILNAM,KBIN,KBOUT,
+     +HELPS(3),HELPE(3),HELPF,DEVNOS(4),IDEV,IFORNO,
+     +IDEVLL,IDEVEN,IDEVAN,IDEVDL,
+     +IDEVLF,LIBNO,LIBLF,WORKI,MAXWIR,IOK)
+C  SAVE FILE NAME
+      FILEIN=FILNAM
+      IF(IOK.NE.0)GO TO 1
+      CALL SHOWFI(KBOUT,FILEIN)
+C   GIVE COMPOSITION AS A CHECK
+      IF(IDIMB.GT.0)CALL BCOMP(SEQ(2+MXSPAN/2),IDIMB,J1,J2,ISTART,
+     +KBOUT)
+C   set pointers to sequence: all this stuff relates to buffering sequences
+C   in disk files, which is no longer done. As it was such a pain to put in
+C   and may become useful again it is being left, although newer functions
+C   cannot be sure of conforming.
+********
+C  MAXSEQ = THE DIMENSION OF THE RAM BUFFER SEQ
+C  IDIMT  = THE ACTUAL SEQUENCE LENGTH (AND THEREFORE THE NUMBER OF ELEMENTS 
+C           IN THE DISK BUFFER)
+C  ISTART = THE SEQUENCE NUMBER OF THE CHARACTER OCCUPYING SEQ(1)
+C  J1     = THE SEQUENCE NUMBER OF THE FIRST CHARACTER IN THE ACTIVE REGION
+C  J2     = THE SEQUENCE NUMBER OF THE LAST CHARACTER IN THE ACTIVE REGION
+C  IDIM1  = J2-J1+1 I.E. THE NUMBER OF ELEMENTS IN THE ACTIVE REGION
+C  IEND   = THE SEQUENCE NUMBER OF THE LAST ELEMENT OF SEQ
+C  IDIMB  = IEND-ISTART+1 I.E. THE NUMBER OF ELEMENTS IN THE RAM BUFFER
+********
+      IDIM1P=IDIMB+MXSPAN
+C   need array size divisible by 3 for translation
+      IDIM3=3*((IDIMB+3)/3)
+1     CONTINUE
+      CALL BPAUSE(KBIN,KBOUT,IOK)
+C      IF(IOK.NE.0)GO TO 9999
+C   give menu, get option
+C
+      CALL MENU(OPT,KOPT,MOPT,MAXOPT,MAXMEN,KBIN,KBOUT,
+     +HELPS(0),HELPE(0),HELPF,DEVNOS(4))
+C
+C   change region
+C
+      IF((OPT.EQ.4).AND.(IDIMT.GT.0))THEN
+C        CALL REDEFA
+C     +  (SEQ(2+MXSPAN/2),IDIMT,J1,J2,MAXSEQ,IDIM1,ISTART,IEND,IDIMB,
+C     +  DEVNOS(5),KBIN,KBOUT,
+C     +  IOK,SEQW,LREC,NREC,
+C     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),MACTYP,MACSHT,MACLNG)
+        CALL GTREG(KBIN,KBOUT,ISTART,IEND,J1,J2,
+     +  'Define active region',
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),IOK)
+        IDIM1 = J2 - J1 + 1
+        GO TO 1
+      END IF
+C
+C   STOP
+C
+      IF(OPT.EQ.2)GO TO 9999
+C
+C   LIST
+C
+      IF((OPT.EQ.5).AND.(IDIMB.GT.0))THEN
+        CALL LSTSEQ(SEQ(2+MXSPAN/2),IDIMB,IDEV,KBIN,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),ISTART,IEND,IDIMT,KOPT)
+        GO TO 1
+      END IF
+C
+C   codon usage method to find genes
+C
+      IF((OPT.EQ.42).AND.(IDIM1.GT.0))THEN
+        CALL PCODUS(
+     +  SEQ,IDIM1P,IEND,MXSPAN,
+     +  ISXMAX,ISYMAX,J1,J2,ISTART,MARGL,MARGR,MARGB(OPT),MARGT(OPT),
+     +  DEVNOS(1),FILNAM,KBIN,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),PAA)
+        GO TO 1
+      END IF
+C
+C   fickett
+C
+      IF((OPT.EQ.48).AND.(IDIM1.GT.0)) THEN
+        CALL FICKET(SEQ,IDIM1P,IDIM1,MXSPAN,
+     +  ISXMAX,ISYMAX,MARGL,MARGR,MARGB(OPT),MARGT(OPT),
+     +  J1-ISTART+1,J2-ISTART+1,KBIN,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),KOPT)
+        GO TO 1
+      END IF
+C
+C   dinucfreq
+C
+      IF((OPT.EQ.22).AND.(IDIM1.GT.0))THEN
+        CALL DINUCF(SEQ(2+MXSPAN/2),IDIMB,
+     +  J1-ISTART+1,J2-ISTART+1,IDEV,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4))
+        GO TO 1
+      END IF
+C
+C   BASE COMPOSITION
+C
+      IF((OPT.EQ.21).AND.(IDIM1.GT.0))THEN
+        CALL BCOMP(SEQ(2+MXSPAN/2),IDIMB,
+     +  J1,J2,ISTART,IDEV)
+        GO TO 1
+      END IF
+C
+C   WRITE OUT ACTIVE SEQUENCE
+C
+      IF((OPT.EQ.8).AND.(IDIM1.GT.0))THEN
+        CALL WRTACT(DEVNOS(1),FILNAM,KBIN,KBOUT,
+     +  SEQ(J1+1-ISTART+1+MXSPAN/2),IDIM1,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4))
+        GO TO 1
+      END IF
+C
+C  ruler
+C
+      IF((OPT.EQ.12).AND.(IDIM1.GT.0))THEN
+        CALL RULER(J1,J2,MARGL,MARGR,
+     +  MARGB(OPT),MARGT(OPT),ISXMAX,ISYMAX,KBIN,KBOUT,1,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4))
+        GO TO 1
+      END IF
+C
+C   composition
+C
+      IF((OPT.EQ.24).AND.(IDIM1.GT.0))THEN
+        CALL COMPN(SEQ,IDIM1P,MXSPAN,
+     +  MARGL,MARGR,MARGB(OPT),MARGT(OPT),ISXMAX,ISYMAX,
+     +  J1-ISTART+1,J2-ISTART+1,KBIN,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),KOPT)
+        GO TO 1
+      END IF
+C
+C   composition chi
+C
+      IF((OPT.EQ.25).AND.(IDIM1.GT.0))THEN
+        CALL CCHI(SEQ,IDIM1P,MXSPAN,
+     +  MARGL,MARGR,MARGB(OPT),MARGT(OPT),ISXMAX,ISYMAX,
+     +  J1,J2,ISTART,IEND,KBIN,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),WORKR,KOPT)
+        GO TO 1
+      END IF
+C
+C   dichi
+C
+      IF((OPT.EQ.26).AND.(IDIM1.GT.0))THEN
+        CALL DICHI(SEQ,IDIM1P,MXSPAN,
+     +  MARGL,MARGR,MARGB(OPT),MARGT(OPT),ISXMAX,ISYMAX,
+     +  J1,J2,ISTART,IEND,KBIN,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),WORKR,KOPT)
+        GO TO 1
+      END IF
+C
+C   trichi
+C
+      IF((OPT.EQ.27).AND.(IDIM1.GT.0))THEN
+        CALL TRICHI(SEQ,IDIM1P,MXSPAN,
+     +  MARGL,MARGR,MARGB(OPT),MARGT(OPT),ISXMAX,ISYMAX,
+     +  J1,J2,ISTART,IEND,KBIN,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),WORKR,KOPT)
+        GO TO 1
+      END IF
+C
+C   negentropy
+C
+      IF((OPT.EQ.59).AND.(IDIM1.GT.0))THEN
+        CALL NEGENT(SEQ,IDIM1P,MXSPAN,
+     +  MARGL,MARGR,MARGB(OPT),MARGT(OPT),ISXMAX,ISYMAX,
+     +  J1,J2,ISTART,IEND,KBIN,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),WORKR,KOPT)
+        GO TO 1
+      END IF
+C
+C   ribosomes (prokaryotic)
+C
+      IF((OPT.EQ.58).AND.(IDIM1.GT.0))THEN
+        CALL PRIBS(SEQ(2+MXSPAN/2),IDIMB,
+     +  MARGL,MARGR,MARGB(OPT),MARGT(OPT),
+     +  ISXMAX,ISYMAX,J1-ISTART+1,J2-ISTART+1,
+     +  DEVNOS(1),FILE4,KBIN,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4))
+        GO TO 1
+      END IF
+C
+C   clear all
+C
+      IF(OPT.EQ.10) THEN
+        CALL CLEARG
+        GO TO 1
+      END IF
+C
+C   xhairs
+C
+      IF((OPT.EQ.13).AND.(IDIM1.GT.0))THEN
+        XMAX=J2
+        XMIN=J1
+        YMAX=ISYMAX
+        YMIN=0.
+        IIIIX=0
+        IIIIY=0    
+        CALL CLEARV
+        CALL XHAIRN(XMAX,XMIN,YMAX,YMIN,
+     +  MARGL,MARGR,MARGB(OPT),MARGT(OPT),
+     +  ISXMAX,ISYMAX,IIIIX,IIIIY,N,KBOUT,
+     +  SEQ(2+MXSPAN/2),ISTART,IDIMB,
+     +  SEQ(2+MXSPAN/2),ISTART,IDIMB,1)
+        GO TO 1
+      END IF
+C
+C   clear vt100
+C
+      IF(OPT.EQ.11)THEN
+        CALL CLEARV
+        GO TO 1
+      END IF
+C
+C   CHANGE MARGINS
+C
+      IF(OPT.EQ.14)THEN
+        CALL MARGC(ISXMAX,ISYMAX,MARGL,MARGR,MARGB,MARGT,
+     +  HELPS(OPT),HELPE(OPT),MAXOPT,HELPF,DEVNOS(4),KBIN,KBOUT)
+        GO TO 1
+      END IF
+C
+C   reverse
+C
+      IF((OPT.EQ.29).AND.(IDIMB.GT.0))THEN
+        WRITE(KBOUT,4001)J1,J2
+4001    FORMAT(' Reverse and complement sequence from',I7,' to',I7)
+        CALL SQREV(SEQ(2+(MXSPAN/2)-ISTART+J1),IDIM1)
+        CALL SQCOM(SEQ(2+(MXSPAN/2)-ISTART+J1),IDIM1)
+        GO TO 1
+      END IF
+C
+C   translation list
+C
+C      IF((OPT.EQ.38).AND.(IDIMB.GT.0))THEN
+C        CALL TRAN3(SEQ(2+MXSPAN/2),IDIMB,SEQW,IDIM3,
+C     +  IDEV,DEVNOS(1),FILNAM,KBIN,KBOUT,
+C     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),ISTART,IEND,IDIMT,
+C     +  PAA)
+C        GO TO 1
+C      END IF
+C
+C   Analyse frequencies of repeats
+C
+      IF((OPT.EQ.38).AND.(IDIM1.GT.0))THEN
+        CALL SQTREE(SEQ(J1-ISTART+2+MXSPAN/2),WORKI,IDIM1,
+     +  WORDP,MAXDIC,WORKI(IDIM1+1),MAXWIR-IDIM1+1,
+     +  ENZYME,MAXEN8,IDM,ISTART,
+     +  IDEV,KBIN,KBOUT,HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4))
+        GO TO 1
+      END IF
+C
+C   translation to disk
+C
+      IF((OPT.EQ.40).AND.(IDIM1.GT.0))THEN
+        CALL TRANDK(SEQ(2+MXSPAN/2),IDIMB,SEQW,MAXSEQ,
+     +  ISTART,IEND,IDIMT,
+     +  DEVNOS(1),DEVNOS(8),FILNAM,KBIN,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),PAA,J1,J2,
+     +  WORKI,MAXSEQ)
+        GO TO 1
+      END IF
+C
+C   longest open frame
+C
+      IF((OPT.EQ.54).AND.(IDIM1.GT.0))THEN
+        CALL OPENFR(SEQ(2+MXSPAN/2),IDIMB,J1,J2,ISTART,
+     +  IDEV,KBIN,KBOUT,PAA,
+     +  SEQW,MAXSEQ,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4))
+        GO TO 1
+      END IF
+C
+C   codons and base composition and molecular weights
+C
+      IF((OPT.EQ.23).AND.(IDIMB.GT.0))THEN
+        CALL CODONS(SEQ(2+MXSPAN/2),IDIMB,J1,J2,IDEV,
+     +  DEVNOS(1),FILNAM,KBIN,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),PAA,WORKI,MAXSEQ,SEQW)
+        GO TO 1
+      END IF
+C
+C   shepherd
+C
+      IF((OPT.EQ.47).AND.(IDIM1.GT.0)) THEN
+        CALL SHEPED(
+     +  SEQ,IDIM1P,IDIM1,MXSPAN,
+     +  ISXMAX,ISYMAX,J1-ISTART+1,J2-ISTART+1,MARGL,MARGR,
+     +  MARGB(OPT),MARGT(OPT),KBIN,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),PAA,KOPT)
+        GO TO 1
+      END IF
+C
+C   positional base preferences for average amino acid composition
+C
+      IF((OPT.EQ.43).AND.(IDIM1.GT.0)) THEN
+        CALL PBASEP(
+     +  SEQ,IDIM1P,MXSPAN,
+     +  ISXMAX,ISYMAX,J1,J2,ISTART,IEND,
+     +  MARGL,MARGR,MARGB(OPT),MARGT(OPT),
+     +  KBIN,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),PAA,DEVNOS(1),
+     +  FILNAM,KOPT)
+        GO TO 1
+      END IF
+C
+C   hairpins
+C
+      IF((OPT.EQ.30).AND.(IDIM1.GT.0))THEN
+        CALL HAIRPN(SEQ(2+MXSPAN/2),IDIMB,WORKI(1),
+     +  WORKI(1+MAXD3),
+     +  WORKI(1+2*MAXD3),MAXD3,MARGL,MARGR,MARGB(OPT),
+     +  MARGT(OPT),ISXMAX,ISYMAX,J1-ISTART+1,J2-ISTART+1,
+     +  ISTART,IDEV,KBIN,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4))
+        GO TO 1
+      END IF
+C
+C   plot map
+C
+      IF((OPT.EQ.16).AND.(IDIM1.GT.0))THEN
+        CALL PLTMAQ(DEVNOS(1),FILNAM,WORKI,MAXSEQ,MARGL,MARGR,
+     +  MARGB(OPT),MARGT(OPT),ISXMAX,ISYMAX,J1,J2,KBIN,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4))
+        GO TO 1
+      END IF
+C
+C   reading frames using codon improbability expecting codon frequencies
+C   to depend on base composition
+C
+      IF((OPT.EQ.45).AND.(IDIM1.GT.0)) THEN
+        CALL IMPBC(
+     +  SEQ,IDIM1P,IDIM1,MXSPAN,WORKR,
+     +  IDIM1P,ISXMAX,ISYMAX,J1-ISTART+1,J2-ISTART+1,
+     +  MARGL,MARGR,MARGB(OPT),
+     +  MARGT(OPT),KBIN,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),PAA,KOPT)
+        GO TO 1
+      END IF
+C
+C   new file
+C
+      IF(OPT.EQ.3)GO TO 2
+C
+C   SPLICE JUNCTIONS
+C
+      IF((OPT.EQ.62).AND.(IDIM1.GT.0)) THEN
+C        CALL SPLIC1(
+C     +  SEQ(2+MXSPAN/2),IDIMB,
+C     +  ISXMAX,ISYMAX,J1-ISTART+1,J2-ISTART+1,
+C     +  MARGL,MARGR,MARGB(OPT),MARGT(OPT),
+C     +  DEVNOS(1),
+C     +  FILE2,KBOUT)
+C        GO TO 1
+        CALL FSPLIC(
+     +  SEQ(2+MXSPAN/2),IDIMB,MARGL,MARGR,MARGB(OPT),MARGT(OPT),
+     +  ISXMAX,ISYMAX,J1-ISTART+1,J2-ISTART+1,
+     +  DEVNOS(1),FILE2,FILNAM,KBIN,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),IDEV,
+     +  WORKI,WORKR(1+MXWTLN*IDM),WORKR(1+2*MXWTLN*IDM),
+     +  WORKI(1+3*MXWTLN*IDM),WORKI(1+3*MXWTLN*IDM+MXWTLN),
+     +  WORKI(1+3*MXWTLN*IDM+2*MXWTLN),
+     +  WORKI(1+3*MXWTLN*IDM+3*MXWTLN),
+     +  WORKI(1+3*MXWTLN*IDM+4*MXWTLN),
+     +  IDM,MXWTLN,SEQW,CHRSET,KOPT)
+        GO TO 1
+      END IF
+C     +HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4))
+C
+C   SPLICE JUNCTIONS AG,GT NOT OBLIGATORY
+C
+C      IF((OPT.EQ.63).AND.(IDIM1.GT.0))CALL SPLIC2(
+C     +SEQ(2+MXSPAN/2),IDIMB,
+C     1ISXMAX,ISYMAX,J1-ISTART+1,J2-ISTART+1,
+C     +MARGL,MARGR,MARGB(OPT),MARGT(OPT),
+C     +DEVNOS(1),FILE2,KBOUT)
+C     +HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4))
+C   SPLICE JUNCTIONS AG,GT REMOVED
+C
+C      IF((OPT.EQ.64).AND.(IDIM1.GT.0))CALL SPLIC3(
+C     +SEQ(2+MXSPAN/2),IDIMB,
+C     1ISXMAX,ISYMAX,J1-ISTART+1,J2-ISTART+1,
+C     +MARGL,MARGR,MARGB(OPT),MARGT(OPT),
+C     +DEVNOS(1),FILE2,KBOUT)
+C     +HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4))
+C
+C   signal searches from named plot files
+C
+      IF((OPT.EQ.63).AND.(IDIM1.GT.0))THEN
+        CALL SIGNAL(
+     +  SEQ(2+MXSPAN/2),IDIMB,MARGL,MARGR,MARGB(OPT),MARGT(OPT),
+     +  ISXMAX,ISYMAX,J1-ISTART+1,J2-ISTART+1,
+     +  DEVNOS(1),FILNAM,KBIN,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),IDEV,
+     +  WORKI,WORKR(1+MXWTLN*IDM),WORKI(1+2*MXWTLN*IDM),
+     +  IDM,MXWTLN,SEQW,CHRSET,KOPT,2)
+        GO TO 1
+      END IF
+C
+C  PLOT WORD FREQ/ EXPECTED WORD FREQ
+C
+      IF((OPT.EQ.64).AND.(IDIM1.GT.0))THEN
+        CALL WORDFP(SEQ,IDIM1P,IDIMB,MXSPAN,
+     +  MARGL,MARGR,MARGB(OPT),MARGT(OPT),ISXMAX,ISYMAX,
+     +  J1,J2,ISTART,IEND,KBIN,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4))
+        GO TO 1
+      END IF
+C
+C   PROKARYOTIC PROMOTERS
+C
+      IF((OPT.EQ.55).AND.(IDIM1.GT.0)) THEN
+        CALL PPROM1(
+     +  SEQ(2+MXSPAN/2),IDIMB,
+     +  ISXMAX,ISYMAX,J1-ISTART+1,J2-ISTART+1,
+     +  MARGL,MARGR,MARGB(OPT),MARGT(OPT),
+     +  DEVNOS(1),FILE3,KBOUT)
+        GO TO 1
+      END IF
+C     +HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4))
+C
+C   PROKARYOTIC PROMOTERS ON COMPLEMENTARY STRAND
+C
+      IF((OPT.EQ.56).AND.(IDIM1.GT.0)) THEN
+        CALL PPROM3(
+     +  SEQ(2+MXSPAN/2),IDIMB,
+     +  ISXMAX,ISYMAX,J1-ISTART+1,J2-ISTART+1,
+     +  MARGL,MARGR,MARGB(OPT),MARGT(OPT),
+     +  DEVNOS(1),FILE3,KBOUT)
+        GO TO 1
+      END IF
+C     +HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4))
+C
+C   PROKARYOTIC PROMOTERS -35 AND -10 SEPARATELY
+C
+      IF((OPT.EQ.57).AND.(IDIM1.GT.0)) THEN
+        CALL PPROM2(
+     +  SEQ(2+MXSPAN/2),IDIMB,
+     +  ISXMAX,ISYMAX,J1-ISTART+1,J2-ISTART+1,
+     +  MARGL,MARGR,MARGB(OPT),MARGT(OPT),
+     +  DEVNOS(1),FILE3,KBOUT)
+        GO TO 1
+      END IF
+C     +HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4))
+C
+C   ribosomes (eukaryotic)
+C
+      IF((OPT.EQ.61).AND.(IDIM1.GT.0)) THEN
+        CALL RIBEUK(
+     +  SEQ(2+MXSPAN/2),IDIMB,
+     +  ISXMAX,ISYMAX,J1-ISTART+1,J2-ISTART+1,
+     +  MARGL,MARGR,MARGB(OPT),MARGT(OPT),
+     +  DEVNOS(1),FILE1,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4))
+        GO TO 1
+      END IF
+C
+C   polyA
+C
+      IF((OPT.EQ.65).AND.(IDIM1.GT.0)) THEN
+        CALL SRCHP(
+     +  SEQ(2+MXSPAN/2),
+     +  IDIMB,MARGL,MARGR,MARGB(OPT),MARGT(OPT),
+     +  ISXMAX,ISYMAX,J1-ISTART+1,J2-ISTART+1,KBOUT)
+        GO TO 1
+      END IF
+C
+C  type text
+C
+      IF(OPT.EQ.6) THEN
+        CALL TTEXT(DEVNOS(1),FILNAM,KBIN,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4))
+        GO TO 1
+      END IF
+C
+C   help
+C
+      IF(OPT.EQ.1) THEN
+        CALL HELP(HELPS,HELPE,BOTOPT,TOPOPT,HELPF,DEVNOS(4),
+     +  KBIN,KBOUT)
+        GO TO 1
+      END IF
+C
+C   start codons
+C
+      IF((OPT.EQ.50).AND.(IDIM1.GT.0))THEN
+        CALL CLEARV
+        CALL STARTS(SEQ(2+MXSPAN/2),IDIMB,J1-ISTART+1,J2-ISTART+1,
+     +  MARGL,MARGR,MARGB(OPT),MARGT(OPT),ISXMAX,ISYMAX,PAA)
+        GO TO 1
+      END IF
+C
+C   stop codons
+C
+      IF((OPT.EQ.51).AND.(IDIM1.GT.0))THEN
+        CALL CLEARV
+        CALL STOPS(SEQ(2+MXSPAN/2),IDIMB,J1-ISTART+1,J2-ISTART+1,
+     +  MARGL,MARGR,MARGB(OPT),MARGT(OPT),ISXMAX,ISYMAX,PAA)
+        GO TO 1
+      END IF
+C
+C   stop codons complementary
+C
+      IF((OPT.EQ.52).AND.(IDIM1.GT.0))THEN
+        CALL CLEARV
+        CALL STOPSC(SEQ(2+MXSPAN/2),IDIMB,J1-ISTART+1,J2-ISTART+1,
+     +  MARGL,MARGR,MARGB(OPT),MARGT(OPT),ISXMAX,ISYMAX,PAA)
+        GO TO 1
+      END IF
+C
+C   stop codons complementary and normal
+C
+      IF((OPT.EQ.53).AND.(IDIM1.GT.0))THEN
+        CALL CLEARV
+        CALL STOPSB(SEQ(2+MXSPAN/2),IDIMB,J1-ISTART+1,J2-ISTART+1,
+     +  MARGL,MARGR,MARGB(OPT),MARGT(OPT),
+     +  ISXMAX,ISYMAX,PAA)
+        GO TO 1
+      END IF
+C
+C   codon improbability
+C
+      IF((OPT.EQ.28).AND.(IDIMB.GT.0))THEN
+        CALL CODIMP(SEQ(2+MXSPAN/2),IDIMB,WORKR,IDIMB,DEVNOS(1),
+     +  FILNAM,KBIN,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),J1,J2,IDEV,
+     =  WORKI(101),MAXSEQ-101,SEQW)
+        GO TO 1
+      END IF
+C
+C   REPEATS
+C
+      IF((OPT.EQ.32).AND.(IDIM1.GT.0))THEN
+        IF(IDIM1.LE.MAXWIR)THEN
+          CALL PREPT1(
+     +    SEQ(2+MXSPAN/2),WORKI,IDIMB,J1,J2,ISTART,
+     +    MARGL,MARGR,MARGB(OPT),MARGT(OPT),ISXMAX,ISYMAX,KBIN,KBOUT,
+     +    HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),IDEV,KOPT,
+     +    WORDP,WORDN,MAXWRD,MAXDIC)
+        ELSE
+          WRITE(KBOUT,1001)MAXWIR
+1001      FORMAT(' Maximum length of active region for this option=',
+     +    I7)
+        END IF
+        GO TO 1
+      END IF
+C
+C   codons to disk
+C
+      IF((OPT.EQ.41).AND.(IDIMB.GT.0)) THEN
+        CALL CODTDK(
+     +  SEQ(2+MXSPAN/2),IDIMB,J1,J2,
+     +  DEVNOS(1),FILNAM,KBIN,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),PAA,WORKI,MAXSEQ,SEQW)
+        GO TO 1
+      END IF
+C
+C   zdna
+C
+      IF((OPT.EQ.33).AND.(IDIM1.GT.0))THEN
+        CALL ZDNA(SEQ,IDIM1P,MXSPAN,
+     +  MARGL,MARGR,MARGB(OPT),MARGT(OPT),ISXMAX,ISYMAX,
+     +  J1-ISTART+1,J2-ISTART+1,KBIN,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),KOPT)
+        GO TO 1
+      END IF
+C
+C   zdna runs of RY or YR
+C
+      IF((OPT.EQ.34).AND.(IDIM1.GT.0)) THEN
+        CALL ZDNARN(
+     +  SEQ(2+MXSPAN/2),IDIMB,
+     +  MARGL,MARGR,MARGB(OPT),MARGT(OPT),ISXMAX,ISYMAX,
+     +  J1-ISTART+1,J2-ISTART+1,KBIN,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),KOPT)
+        GO TO 1
+      END IF
+C
+C   zdnaROD
+C
+      IF((OPT.EQ.35).AND.(IDIM1.GT.0))THEN
+        CALL ZDNARD(SEQ,IDIM1P,MXSPAN,
+     +  MARGL,MARGR,MARGB(OPT),MARGT(OPT),ISXMAX,ISYMAX,
+     +  J1-ISTART+1,J2-ISTART+1,KBIN,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),KOPT)
+        GO TO 1
+      END IF
+C
+C   base phasing due to coding
+C
+      IF((OPT.EQ.44).AND.(IDIM1.GT.0)) THEN
+        CALL BPHASE(
+     +  SEQ,IDIM1P,IDIM1,MXSPAN,
+     +  ISXMAX,ISYMAX,MARGL,MARGR,MARGB(OPT),MARGT(OPT),
+     +  J1-ISTART+1,J2-ISTART+1,KBIN,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),KOPT)
+        GO TO 1
+      END IF
+C
+C   trna
+C
+      IF((OPT.EQ.49).AND.(IDIM1.GT.0)) THEN
+        CALL TRNA(SEQ(2+MXSPAN/2),IDIMB,J1-ISTART+1,J2-ISTART+1,
+     +  ISTART,
+     +  MARGL,MARGR,MARGB(OPT),MARGT(OPT),ISXMAX,ISYMAX,
+     +  IDEV,KBIN,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),KOPT)
+        GO TO 1
+      END IF
+C
+C  REPEATS
+C
+      IF((OPT.EQ.31).AND.(IDIM1.GT.0))THEN
+        IF(IDIM1.LE.MAXWIR)THEN
+          CALL PREPT2(
+     +    SEQ(2+MXSPAN/2),WORKI,IDIMB,J1,J2,ISTART,
+     +    MARGL,MARGR,MARGB(OPT),MARGT(OPT),ISXMAX,ISYMAX,KBIN,KBOUT,
+     +    HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),IDEV,KOPT,
+     +    WORDP,WORDN,MAXWRD,MAXDIC)
+        ELSE
+          WRITE(KBOUT,1001)MAXWIR
+        END IF
+        GO TO 1
+      END IF
+C
+C   reading frame search using codon improbability expecting even codons per
+C   acid
+C
+      IF((OPT.EQ.46).AND.(IDIM1.GT.0)) THEN
+        CALL IMPAC(
+     +  SEQ,IDIM1P,IDIM1,MXSPAN,WORKR,
+     +  IDIM1P,ISXMAX,ISYMAX,J1-ISTART+1,J2-ISTART+1,
+     +  MARGL,MARGR,MARGB(OPT),MARGT(OPT),
+     +  KBIN,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),PAA,KOPT)
+        GO TO 1
+      END IF
+C
+C   new search
+C
+      IF((OPT.EQ.17).AND.(IDIM1.GT.0)) THEN
+        KOPT = 1
+        CALL SEARCH(SEQ(2+MXSPAN/2),IDIMB,J1,J2,ISTART,SEQW,MAXSD3,
+     +  SEQW(1+MAXSD3),MAXSD3,
+     +  SEQW(1+2*MAXSD3),MAXSD3,
+     +  ENZYM1,ENZYM2,ENZYM3,ENZYM4,MAXNZ1,
+     +  ENZYME,ENZYME(1+MAXEN),ENZYME(1+2*MAXEN),ENZYME(1+3*MAXEN),
+     +  ENZYME(1+4*MAXEN),ENZYME(1+5*MAXEN),ENZYME(1+6*MAXEN),
+     +  ENZYME(1+7*MAXEN),MAXEN,
+     +  MARGL,MARGR,MARGB(OPT),MARGT(OPT),ISXMAX,ISYMAX,IDEV,
+     +  DEVNOS(1),FILNAM,FILE5,FILE6,FILE7,KBIN,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),PAA,WORKI,WORDP,MAXDIC,
+     +  KOPT)
+        GO TO 1
+      END IF
+C
+C    Translate and list 0-6 phases
+C
+      IF((OPT.EQ.39).AND.(IDIM1.GT.0))THEN
+        CALL OPENTR(SEQ(2+MXSPAN/2),IDIMB,ISTART,
+     +  IDEV,KBIN,KBOUT,PAA,
+     +  SEQW,MAXSEQ,WORKI,WORKI(IDIMB+1),MAXSEQ-IDIMB,
+     +  DEVNOS(1),FILNAM,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),KOPT)
+        GO TO 1
+      END IF
+C
+C   GET DISK OUTPUT FILE ON UNIT DEVNOS(2) IF REQUIRED
+C
+      IF(OPT.EQ.7)THEN
+        CALL REDIR(IDEV,DEVNOS(2),DEVNOS(3),IGORT,FILNAM,KBIN,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),KOPT)
+        GO TO 1
+      END IF
+C
+C   signal searches from named plot files
+C
+      IF((OPT.EQ.20).AND.(IDIM1.GT.0))THEN
+        CALL SIGNAL(
+     +  SEQ(2+MXSPAN/2),IDIMB,MARGL,MARGR,MARGB(OPT),MARGT(OPT),
+     +  ISXMAX,ISYMAX,J1-ISTART+1,J2-ISTART+1,
+     +  DEVNOS(1),FILNAM,KBIN,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),IDEV,
+     +  WORKI,WORKR(1+MXWTLN*IDM),WORKI(1+2*MXWTLN*IDM),
+     +  IDM,MXWTLN,SEQW,CHRSET,KOPT,1)
+        GO TO 1
+      END IF
+C
+C   SIGNAL SEARCH ON DINUCLEOTIDES
+C
+      IF((OPT.EQ.60).AND.(IDIM1.GT.0)) THEN
+        CALL DISIG(
+     +  SEQ(2+MXSPAN/2),IDIMB,MARGL,MARGR,MARGB(OPT),MARGT(OPT),
+     +  ISXMAX,ISYMAX,J1-ISTART+1,J2-ISTART+1,
+     +  DEVNOS(1),FILNAM,KBIN,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),IDEV,
+     +  WORKI,WORKR(1+MXWTLN*IDM*IDM),WORKI(1+2*MXWTLN*IDM*IDM),
+     +  IDM,MXWTLN,SEQW,CHRSET,KOPT)
+        GO TO 1
+      END IF
+C
+C  SEQFIT
+C
+      IF((OPT.EQ.18).AND.(IDIM1.GT.0))THEN
+        CALL SEQFIT(SEQ(2+MXSPAN/2),IDIMB,SEQW,MAXSEQ,
+     +  WORKI,WORKI(1+MAXD2),MAXD2,
+     +  MARGL,MARGR,MARGB(OPT),MARGT(OPT),ISXMAX,ISYMAX,
+     +  J1,J2,ISTART,IDEV,
+     +  DEVNOS(1),FILNAM,KBIN,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),KOPT)
+        GO TO 1
+      END IF
+C
+C  SEPFIT
+C
+      IF((OPT.EQ.19).AND.(IDIM1.GT.0))THEN
+        CALL SEPFIT(SEQ(2+MXSPAN/2),IDIMB,SEQW,MAXSEQ,
+     +  WORKI,WORKI(1+MAXD2),MAXD2,
+     +  MARGL,MARGR,MARGB(OPT),MARGT(OPT),ISXMAX,ISYMAX,J1,J2,
+     +  ISTART,IDEV,
+     +  DEVNOS(1),FILNAM,KBIN,KBOUT,MAT3,IDME,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),KOPT)
+        GO TO 1
+      END IF
+C
+C  LOCAL SIMILARITY OR COMPLEMENTARITY
+C
+      IF((OPT.EQ.36).AND.(IDIM1.GT.0))THEN
+        CALL LOCALF(SEQ(2+MXSPAN/2),IDIMB,SEQW,SEQW(MAXSD2+1),MAXSD2,
+     +  WORKI,WORKI(1+MAXD2),MAXD2,
+     +  MARGL,MARGR,MARGB(OPT),MARGT(OPT),
+     +  ISXMAX,ISYMAX,J1,J2,ISTART,
+     +  IDEV,KBIN,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),DIALOG)
+        GO TO 1
+      END IF
+C
+C  SET GENETIC CODE
+C
+      IF(OPT.EQ.37) THEN
+        CALL SETGEN(PAAS,PAA,KBIN,KBOUT,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4))
+        GO TO 1
+      END IF
+C
+C  WRITE LABELS
+C
+      IF(OPT.EQ.15) THEN
+        CALL LABLER(KBIN,KBOUT,ISXMAX,ISYMAX,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4))
+        GO TO 1
+      END IF
+C
+C  CHANGE DNA TO RNA OR RNA TO DNA
+C
+      IF((OPT.EQ.66).AND.(IDIM1.GT.0))THEN
+        WRITE(KBOUT,1002)ISTART,IEND
+1002    FORMAT(' Exchange T and U for the region',I7,' TO',I7)
+        CALL DNARNA(SEQ(2+MXSPAN/2),IDIMB)
+        GO TO 1
+      END IF
+C
+C  SHOW SETTINGS
+C
+      IF(OPT.EQ.9)THEN
+        WRITE(KBOUT,4000)FILEIN,J1,J2,IDIM1
+4000    FORMAT(' Sequence=',A,/,' Start=',I7,' End=',I7,
+     +' LENGTH=',I7)
+C       THIS NEXT LINE IS BECAUSE SOMETIMES THE FILE IS NOT READY TO EDIT!
+        CLOSE(UNIT=DEVNOS(2))
+        CALL SEQEDT(SEQ(2+MXSPAN/2),MAXSEQ,IDIMB,KBIN,
+     +  KBOUT,HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),DEVNOS(1),
+     +  FILNAM,FILEIN,IDM,IOK)
+        IF(IOK.NE.0) GO TO 1
+********
+C  MAXSEQ = THE DIMENSION OF THE RAM BUFFER SEQ
+C  IDIMT  = THE ACTUAL SEQUENCE LENGTH (AND THEREFORE THE NUMBER OF ELEMENTS 
+C           IN THE DISK BUFFER)
+C  ISTART = THE SEQUENCE NUMBER OF THE CHARACTER OCCUPYING SEQ(1)
+C  J1     = THE SEQUENCE NUMBER OF THE FIRST CHARACTER IN THE ACTIVE REGION
+C  J2     = THE SEQUENCE NUMBER OF THE LAST CHARACTER IN THE ACTIVE REGION
+C  IDIM1  = J2-J1+1 I.E. THE NUMBER OF ELEMENTS IN THE ACTIVE REGION
+C  IEND   = THE SEQUENCE NUMBER OF THE LAST ELEMENT OF SEQ
+C  IDIMB  = IEND-ISTART+1 I.E. THE NUMBER OF ELEMENTS IN THE RAM BUFFER
+C  IDIM3  = A BUFFER SIZE USED BY TRANSLATION ROUTINE
+C  THIS IS A FUDGE AND ONLY WORKS FOR UNBUFFERED SEQUENCES!!!!!!!!!!!
+        J1 = 1
+        J2 = IDIMB
+        IDIMT = IDIMB
+        IEND = IDIMB
+        IDIM1 = IDIMB
+        IDIM3=3*((IDIMB+3)/3)
+        WRITE(KBOUT,4000)FILEIN,J1,J2,IDIM1
+        GO TO 1
+      END IF
+C
+C  PATTERN SEARCH
+C
+      IF((OPT.EQ.67).AND.(IDIM1.GT.0))THEN
+        CALL PATTEN(SEQ(J1-ISTART+2+MXSPAN/2),IDIM1,SEQW,MAXSEQ,
+     +  WORKI(1),WORKI(MAXMOT+1),WORKI(2*MAXMOT+1),WORKI(3*MAXMOT+1),
+     +  WORKI(4*MAXMOT+1),WORKI(5*MAXMOT+1),WORKI(6*MAXMOT+1),
+     +  WORKI(7*MAXMOT+1),WORKI(8*MAXMOT+1),WORKI(9*MAXMOT+1),
+     +  WORKI(10*MAXMOT+1),WORKI(11*MAXMOT+1),WORKI(12*MAXMOT+1),
+     +  WORKI(13*MAXMOT+1),WORKI(14*MAXMOT+1),WORKI(15*MAXMOT+1),
+     +  WORKI(16*MAXMOT+1),WORKI(17*MAXMOT+1),WORKI(18*MAXMOT+1),
+     +  WORKI(19*MAXMOT+1),WORKI(20*MAXMOT+1),
+     +  WORKR(22*MAXMOT+1),WORKR(23*MAXMOT+1),
+     +  FILNAM,MAXMOT,MAXWTS,IDEV,DEVNOS(6),DEVNOS(7),
+     +  MARGL,MARGR,MARGB(OPT),MARGT(OPT),ISXMAX,ISYMAX,J1,
+     +  KBIN,KBOUT,DEVNOS(8),IDM,SEQ(1),IDME,
+     +  MAT1,MAT2,MAT3,MAT4,NAMSAV,KEYNS,
+     +  HELPS(OPT),HELPE(OPT),HELPF,DEVNOS(4),FOFNAM,DEVNOS(1))
+C  NB IVE SENT THE START OF SEQ TO BE USED IN PATTEN. THIS IS OK
+C  AS LONG AS MAXMOT<MXSPAN/2, AND NO MOTIF REQUIRES TO START TO
+C  THE LEFT OF THE FIRST REAL SEQUENCE ELEMENT
+        GO TO 1
+      END IF
+      GO TO 1
+C
+9999  CONTINUE
+      CALL SHUTD
+      END

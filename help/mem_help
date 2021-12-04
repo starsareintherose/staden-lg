@@ -1,0 +1,698 @@
+
+ @0. B 1 @MEP
+  This is a program  for analysing families of nucleotide sequences in
+  order  to find common motifs and potential binding sites.  The ideas
+  in  this  program  were  described  in  Staden,  R.   "Methods   for
+  discovering  novel  motifs  in  nucleic  acid  sequences".  Computer
+  Applications in the Biosciences, 5, 293-298, (1989).
+
+        The program  can  read  sequences  stored  in  either  of  two
+  formats: 1) all sequences aligned in a single file; 2) all sequences
+  in separate files and accessed through a file of file names.
+
+        The  program  contains  functions  that  can  answer   several
+  questions about a set of sequences:
+
+  Which words are most common?
+  Which words occur in the most sequences?
+  Which words contain the most information?
+  Which words occur in equivalent positions in the sequences?
+  Which words are inverted repeats?
+  Which words occur on both strands of the sequences?
+  Where are the inverted repeats?
+  Where are the fuzzy words?
+
+        Most of the program is concerned with analysing what it  terms
+  "fuzzy words" within the set of sequences. The analysis is explained
+  below. Note that the standard version of the programs is limited  to
+  words of maximum length 8 letters, and a maximum fuzziness of 2.
+
+        The following analyses (preceded by their option numbers)  are
+  included:
+    ? = Help
+    ! = Quit
+    3 = Read new sequences
+    4 = Redefine active region
+    5 = List the sequences
+    6 = List text file
+    7 = Direct output to disk
+   10 = Clear graphics
+   11 = Clear text
+   12 = Draw ruler
+   13 = Use cross hair
+   14 = Reset margins
+   15 = Label diagram
+   16 = Draw map
+   17 = Search for strings
+   18 = Set strand
+   19 = Set composition
+   20 = Set word length
+   21 = Set number of mismatches
+   22 = Show settings
+   23 = Make dictionary Dw
+   24 = Make dictionary Ds
+   25 = Make fuzzy dictionary Dm from Dw
+   26 = Make fuzzy dictionary Dm from Ds
+   27 = Make fuzzy dictionary Dh from Dm
+   28 = Examine fuzzy dictionary Dm
+   29 = Examine fuzzy dictionary Dh
+   30 = Examine words in Dm
+   31 = Examine words in Dh
+   32 = Save or restore a dictionary
+   33 = Find inverted repeats
+
+        Some of these methods produce graphical  results  and  so  the
+  program  is  generally used from a graphics terminal (a vdu on which
+  lines and points can be drawn as well as characters).
+
+  The positions of each of the plots is defined relative  to  a  users
+  drawing board which has size 1-10,000 in x and 1-10,000 in y.  Plots
+  for each  option  are  drawn  in  a  window  defined  by  x0,y0  and
+  xlength,ylength. Where x0,y0 is the position of the bottom left hand
+  corner of the window, and xlength is the width  of  the  window  and
+  ylength the height of the window.
+     --------------------------------------------------------- 10,000
+     1                                                       1
+     1       --------------------------------------   ^      1
+     1       1                                    1   1      1
+     1       1                                    1   1      1
+     1       1                                    1 ylength  1
+     1       1                                    1   1      1
+     1       1                                    1   1      1
+     1       --------------------------------------   v      1
+     1  x0,y0^                                               1
+     1       <---------------xlength-------------->          1
+     ---------------------------------------------------------      1
+     1                                                   10,000
+
+  All values are in drawing board  units  (i.e.  1-10,000,  1-10,000).
+  The default window positions are read from a file "MEPMARG" when the
+  program is started. Users can have their own file if required.
+
+        The options for the program are accessed from  3  main  menus:
+  general,  screen  control  and dictionary analylsis.  Both menus and
+  options are selected by number.
+
+        The most important and novel part of the program is its use of
+  "fuzzy dictionaries" and an information theory measure, to help show
+  the most interesting motifs.  Central to the method is the idea of a
+  fuzzy   dictionary   of  word  frequencies.  A  dictionary  of  word
+  frequencies is an ordered list of all the words in the sequences and
+  a  count  of the number of times that they occur. A fuzzy dictionary
+  is an equivalent list but which contains instead, for each  word,  a
+  count  of  the number of times similar words occur in the sequences.
+  We term words that are similar "relations". The fuzziness is defined
+  by the number of letters in a word that are allowed to be different.
+  So if we had a fuzziness of 1 we allow 1 letter to be different. For
+  example,  with  a  fuzziness of 1, the entry in the fuzzy dictionary
+  for the word TTTTTT would contain a count of the  numbers  of  times
+  TTTTTT  occured  plus  the  number  of  times all words differing by
+  exactly one letter from TTTTTT occured.
+
+        Once the fuzzy dictionary has been created we can  examine  it
+  in  several  ways  to find candidate control sequences. The simplest
+  question we can ask is which word in  the  dictionary  is  the  most
+  common.   Sometimes  this  simple  criterion of "most common" may be
+  adequate to discover a new motif but in general we would not  expect
+  it  to  be  sufficient. For example some words will be common simply
+  because of a base composition bias in the sequences being  analysed.
+  In  addition  a  word  can be the most frequent and yet not be "well
+  defined". This last point is best explained by an example.
+
+        Suppose we were looking at  two letter words and allowing  one
+  mismatch,  and  that  there were 10 occurences of TT and 5 of AC. We
+  could align the 10 words that were one letter different from TT  and
+  the  5  that  were  related to AC. Then we could count the number of
+  times each base occured in each position for each of these two  sets
+  of words. Suppose we got the two base frequency tables shown below.
+     TT                  AC
+         T 6 4               T 1 0
+         C 1 3               C 0 4
+         A 1 2               A 4 1
+         G 2 1               G 0 0
+
+  These tables show that although TT occurs (with one letter mismatch)
+  more often than AC, the ratio of base frequencies for AC at 4/5, 4/5
+  is higher than those for TT at 6/10, 4/10. Hence we would  say  that
+  AC was better defined than TT.  Expressing this another way we would
+  say that the definition of AC contained more information  than  that
+  for TT. The program calculates the information content in a way that
+  takes into account both the sequence composition and  the  level  of
+  definition of the motif.
+
+        Definitions
+
+        Here we deal only with the dictionary  analysis.   Suppose  we
+  are dealing with a set of sequences and are examining them for words
+  that are six characters in length.
+
+        Dictionary Dw contains a count of the  number  of  times  each
+  word  occurs  in  the  set  of  sequences. For example the entry for
+  TTTTTT contains a value equal to the number of times the word TTTTTT
+  occurs in the set of sequences.
+
+        Dictionary Ds contains a count  of  the  number  of  different
+  sequences  in  which  each word occurs. For example if the entry for
+  word TTTTTT contains the value 10, it denotes that the  word  TTTTTT
+  occurs  in  ten  different sequences. Unlike Dw it only counts words
+  once for each  sequence.  For  example  if  we  had  a  set  of  100
+  sequences, the maximum possible value that Ds could take is 100, and
+  this would only happen if a word occurred in every sequence. However
+  for  the same set of sequences, Dw could contain values greater than
+  100, and this would show that a word had occurred more than once  in
+  at least one sequence.
+
+        From either of the two dictionaries Dw or Ds we can  calculate
+  a  fuzzy  dictionary  Dm.  For  each  word,  the  entry in the fuzzy
+  dictionary Dm contains the sum of the dictionary values (taken  from
+  either  Dw  or  Ds)  for  all  words  that differ from it by up to m
+  letters. For example if m=2 the entry for TTTTTT contains the number
+  of  times  that TTTTTT occurs in the dictionary, plus the counts for
+  all words that differ from TTTTTT by 1 or 2 letters.  Obviously  the
+  interpretation  of  the  values  in  Dm  depends on which of the two
+  dictionaries Dw or Ds they were derived from. When derived  from  Dw
+  the entry for any word in Dm gives the total number of times it, and
+  its relations, occur in the set of sequences. When derived  from  Ds
+  the  entry  for  any  word in Dm gives the total number of different
+  sequences that contain a word and each of its relations.
+
+        Finally,  from  fuzzy  dictionary  Dm  we  can  derive   fuzzy
+  dictionary  Dh.  All  entries in Dh are zero except for the word(s),
+  within each set of relations, that are most frequent. For example if
+  TTTTTT  occurred  20  times  but  had  a relation that occurred more
+  often, then the entry for TTTTTT would be zero.  However  if  TTTTTT
+  did  not  have  a more frequently occurring relation, then the entry
+  for TTTTTT would contain the value 20.
+ @1. B 1 @Help
+  This option gives online help. The user should select option numbers
+  and  the  current  documentation  will  be given. Note that option 0
+  gives an introduction to the program, and that ? will get help  from
+  anywhere  in the program.  The following analyses (preceded by their
+  option numbers) are included:
+    ? = Help
+    ! = Quit
+    3 = Read new sequences
+    4 = Redefine active region
+    5 = List the sequences
+    6 = List text file
+    7 = Direct output to disk
+   10 = Clear graphics
+   11 = Clear text
+   12 = Draw ruler
+   13 = Use cross hair
+   14 = Reset margins
+   15 = Label diagram
+   16 = Draw map
+   17 = Search for strings
+   18 = Set strand
+   19 = Set composition
+   20 = Set word length
+   21 = Set number of mismatches
+   22 = Show settings
+   23 = Make dictionary Dw
+   24 = Make dictionary Ds
+   25 = Make fuzzy dictionary Dm from Dw
+   26 = Make fuzzy dictionary Dm from Ds
+   27 = Make fuzzy dictionary Dh from Dm
+   28 = Examine fuzzy dictionary Dm
+   29 = Examine fuzzy dictionary Dh
+   30 = Examine words in Dm
+   31 = Examine words in Dh
+   32 = Save or restore a dictionary
+   33 = Find inverted repeats
+ @2. B 1 @Quit
+  This function stops the program.
+ @3. B 1 @Read a new sequence.
+
+        It can read sequences stored in either of two formats: 1)  all
+  sequences  aligned  in  a  single file; 2) all sequences in separate
+  files and accessed through a file of file  names.  Typical  dialogue
+  follows:
+
+  X 1 Read file of aligned sequences
+    2 Use file of file names
+  ? 0,1,2 =
+
+  ? File of aligned sequences=F1
+  Number of files           88
+
+ @4. B 1 @Define active region
+  For its analytic functions the program always works on a  region  of
+  the  sequence called the active region. When  new sequences are read
+  into the program the active region is automatically set to start  at
+  the  beginning  of the sequences and go up to the end of the longest
+  one.
+ @5. B 1 @List a sequence.
+  The sequence can be listed with line lengths of 50 bases  with  each
+  sequence  numbered in the order in which they were read.  Output can
+  be directed to a disk file by first selecting disk  output.  Typical
+  dialogue follows.
+
+  ? Menu or option number=5
+
+                10        20        30        40        50
+     1  TAGCGGATCCTACCTGACGCTTTTTATCGCAACTCTCTACTGTTTCTCCA
+     2  CAAATAATCAATGTGGACTTTTCTGCCGTGATTATAGACACTTTTGTTAC
+     3  TAATTTATTCCATGTCACACTTTTCGCATCTTTGTTATGCTATGGTTATT
+     4  ACTAATTTATTCCATGTCACACTTTTCGCATCTTTGTTATGCTATGGTTA
+     5  AGGCACCCCAGGCTTTACACTTTATGCTTCCGGCTCGTATGTTGTGTGGA
+     6  TAATGTGAGTTAGCTCACTCATTAGGCACCCCAGGCTTTACACTTTATGC
+     7  ACACCATCGAATGGCGCAAAACCTTTCGCGGTATGGCATGATAGCGCCCG
+     8  GGGGCAAGGAGGATGGAAAGAGGTTGCCGTATAAAGAAACTAGAGTCCGT
+     9  AGGGGGTGGAGGATTTAAGCCATCTCCTGATGACGCATAGTCAGCCCATC
+    10  AAAACGTCATCGCTTGCATTAGAAAGGTTTCTGGCCGACCTTATAACCAT
+
+                60
+     1  TACCCGTTTTT
+     2  GCGTTTTTGT
+     3  TCATACCATAAG
+     4  TTTCATACC
+     5  ATTGTGAGC
+     6  TTCCGGCTCG
+     7  GAAGAGAGT
+     8  TCAGGTGT
+     9  ATGAATG
+    10  TAATTACG
+ @6. B 1 @List a text file.
+  Allows the user to have a text file displayed on the screen. It will
+  appear one page at a time.
+ @7. B 1 @Direct output to disk
+
+        Used to direct output that would normally appear on the screen
+  to a file.
+
+        Select redirection of either text or graphics, and supply  the
+  name of the file that the output should be written to.
+
+        The results from the next options selected will not appear  on
+  the  screen  but  will  be  written  to  the  file. When option 7 is
+  selected again the file will be closed and output will again  appear
+  on the screen.
+ @10. B 1 @Clear graphics
+  Clears the screen of both text and graphics.
+ @11. B 1 @Clear text
+  Clears only text from the screen.
+ @12. B 1 @Draw a ruler.
+  This option allows the user to draw a ruler or  scale  along  the  x
+  axis  of  the  screen  to help identify the coordinates of points of
+  interest. The user can define the position of the first  amino  acid
+  to  be marked (for example if the active region is 1501 to 8000, the
+  user might wish to mark every 1000th amino acid starting  at  either
+  1501  or  2000  -  it depends if the user wishes to treat the active
+  region as an independent unit with its own numbering starting at its
+  left  edge,  or  as  part  of the whole sequence). The user can also
+  define the separation of the ticks on the scale and their height. If
+  required  the  labelling  routine  can be used to add numbers to the
+  ticks.
+ @13. B 1 @Use crosshair.
+  This function puts a steerable cross on the screen that can be  used
+  to find the coordinates of points in the sequence. The user can move
+  the cross around using the directional keys; when he hits the  space
+  bar  the  program  will  print  out  the coordinates of the cross in
+  sequence units and the option will be exited.
+
+        If instead, you hit a , the position will be displayed but the
+  cross will remain on the screen.
+
+        If a letter s is hit the sequence around  the  cross  hair  is
+  displayed and the cross remains on the screen.
+ @14. B 1 @Reposition plots
+  The positions of each of the plots is defined relative  to  a  users
+  drawing board which has size 1-10,000 in x and 1-10,000 in y.  Plots
+  for each  option  are  drawn  in  a  window  defined  by  x0,y0  and
+  xlength,ylength. Where x0,y0 is the position of the bottom left hand
+  corner of the window, and xlength is the width  of  the  window  and
+  ylength the height of the window.
+     --------------------------------------------------------- 10,000
+     1                                                       1
+     1       --------------------------------------   ^      1
+     1       1                                    1   1      1
+     1       1                                    1   1      1
+     1       1                                    1 ylength  1
+     1       1                                    1   1      1
+     1       1                                    1   1      1
+     1       --------------------------------------   v      1
+     1  x0,y0^                                               1
+     1       <---------------xlength-------------->          1
+     ---------------------------------------------------------      1
+     1                                                   10,000
+
+  All values are in drawing board  units  (i.e.  1-10,000,  1-10,000).
+  The default window positions are read from a file "MEPMARG" when the
+  program is started. Users can have their own file if  required.   As
+  all  the  plots  start  at  the same position in x and have the same
+  width, x0 and xlength are the same for all options. Generally  users
+  will  only  want  to change the start level of the window y0 and its
+  height ylength. This option allows users to change window  positions
+  whilst  running  the  program.   The  routine  prompts first for the
+  number of the option that the users wishes to reposition;  then  for
+  the  y  start and height; then for the x start and length. Note that
+  changes to the x values affect all options. If the user  types  only
+  carriage  return  for any value it will remain unchanged. The cross-
+  hair can be used to choose suitable heights.
+ @15. B 1 @Label a diagram
+  This routine allows users to label any diagrams they have  produced.
+  They  are  asked  to  type  in a label. When the user types carriage
+  return to finish typing the label  the  cross-hair  appears  on  the
+  screen. The user can position it anywhere on the screen. If the user
+  types R (for right justify) the label will be written on the diagram
+  with  its  right end at the cross-hair position. If the user types L
+  (for left justify) the label will be written on the diagram with its
+  left  end  at  the  cross  hair  position.  The cross-hair will then
+  immediately reappear. The user may put the  same  label  on  another
+  part of the diagram as before or if he hits the space bar he will be
+  asked if he wishes to type in another label.
+ @16. B 1 @Display a map.
+  It is often convenient to plot a map alongside graphed  analysis  in
+  order to indicate features within the sequence. This function allows
+  users to draw maps using files arranged in the form of EMBL  feature
+  tables.  Of  course the EMBL table are usually only used for nucleic
+  acid sequence annotation but, as long as the features are written in
+  the correct format, they can be employed by this routine. The map is
+  composed of a line representing the sequence and then further  lines
+  denoting the endpoints of each feature the user identifies. The user
+  is asked to  define  height  at  which  the  line  representing  the
+  sequence  should be drawn; then for the feature height; then for the
+  features to plot.
+ @17. B 1 @Search for strings
+  Search for  strings  perfoms  searches  of  all  the  sequences  for
+  selected words and shows which sequences they are found in. The user
+  types in a word and defines the allowed number  of  mismatches.  The
+  results  are  listed  or plotted. If listed the display includes the
+  sequence number, the position  in  the  sequence  and  the  matching
+  string.  The results are plotted in the following way. The x axis of
+  the plot represents the length of the aligned sequences  and  the  y
+  direction  is  divided  into  sufficient  strips to accommodate each
+  sequence. So if a match is found in the 3rd sequence at  a  position
+  equivalent  to  halfway  along  the  longest of the sequences then a
+  short vertical line will be drawn at the midpoint of the 3rd  strip.
+  If  the  sequences are aligned it can be useful if the motifs happen
+  to appear  in  related  positions.  For  example  see  the  original
+  publication. Typical dialogue follows.
+
+  ? Menu or option number=17
+  X 1 Plot match positions
+    2 Plot histogram of matches
+  ? 0,1,2 =
+  ? Word to search for=TTGACA
+  ? Minimum match (0-6) (6) =5
+  ? (y/n) (y) Plot results N
+       2    35 TAGACA
+       5    14 TTTACA
+       6    37 TTTACA
+      11    14 TAGACA
+      14    14 TTGACA
+      17    14 GTGACA
+      17    22 TTAACA
+      20     1 TTGACA
+ @18. B 1 @Set strand
+  Set strand  allows  the  user  to  define  which  strand(s)  of  the
+  sequences to analyse: input stand, complement of input, or both.
+ @19. B 1 @Set composition
+  Set composition  gives  the  user  three  choices  for  setting  the
+  composition  of  the  sequences  for  use  in the calculation of the
+  information content of  words.  The  user  can  select  the  overall
+  composition  of  the  sequences as read, an even composition, or can
+  type in any other 4 values.
+ @20. B 1 @Set word length
+  Set word length sets the length of word for which dictionaries  will
+  be made.
+ @21. B 1 @Set number of mismatches
+  Set number of  mismatches  sets  the  level  of  fuzziness  for  the
+  creation of dictionary Dm.
+ @22. B 1 @Show settings
+  Show  settings  show  the  current  settings  for   all   parameters
+  associated with dictionary analysis. A typical diaplsy follows:
+   ? Menu or option number=22
+   Current word length  =   6
+   Number of mismatches =   1
+   Start position       =     1
+   End position         =    63
+   Input strand only
+   Observed composition
+   Dictionary Dw unmade
+   Dictionary Ds unmade
+   Dictionary Dm unmade
+   Dictionary Dh unmade
+ @23. B 1 @Make dictionary Dw
+  Make dictionary Dw creates a dictionary that contains  a  count   of
+  the frequency of occurrence of each word in the collected sequences.
+ @24. B 1 @Make dictionary Ds
+  Make dictionary Ds creates a dictionary that contains a count of the
+  number of different sequences that contain each word.
+ @25. B 1 @Make dictionary Dm from Dw
+  Make dictionary Dm  from Dw creates a dictionary from dictionary  Dw
+  that contains the frequency of occurrence of each word (say X) in Dw
+  plus the frequency of occurrence of each word  in  Dw  that  differs
+  from  X  by  up  to m letters. Dm is called a fuzzy dictionary as it
+  contains the  frequencies  of  occurrence  of  all  words  plus  the
+  frequencies of all the words that are similar to them.
+ @26. B 1 @Make dictionary Dm from Ds
+  Make dictionary Dm  from Ds creates a dictionary from dictionary  Ds
+  that contains the frequency of occurrence of each word (say X) in Ds
+  plus the frequency of occurrence of each word  in  Ds  that  differs
+  from  X  by  up  to m letters. Dm is called a fuzzy dictionary as it
+  contains the  frequencies  of  occurrence  of  all  words  plus  the
+  frequencies of all the words that are similar to them.
+ @27. B 1 @Make dictionary Dh from Dm
+  Make dictionary Dh  creates a  dictionary  from  dictionary  Dm  and
+  whose  entries are zero except for those words in any set of related
+  words that are most frequent. It finds the dominant  words  in  each
+  set of relations and stores their counts.
+ @28. B 1 @Examine dictionary Dm
+  Examine dictionary Dm  allows  users  to  analyse  the  contents  of
+  dictionary  Dm  to  find  the  most common words or those words that
+  contain the most information.  The  user  supplies  a  frequency  or
+  information  cutoff and chooses to have the results sorted on either
+  value. The program will find the top  100  words  that  achieve  the
+  cutoff  values  and present them to the user sorted as selected. The
+  information  content  will  be  calcutated  from  either  Dw  or  Ds
+  depending  which  was  used  to  create  Dm,  and  using the current
+  composition setting. Typical dialogue follows:
+
+  ? Menu or option number=28
+  Looking for highest scoring words
+  The highest word score =          115
+  ? Minimum word score (0-115) (0) =60
+  ? Minimum information (0.00-1.00) (0.00) =.62
+  X 1 Sort on information
+    2 Sort on word score
+  ? 0,1,2 =
+
+  ? Maximum number to list (0-100) (100) =
+
+  The words are
+   Total words=           9 Maximum information=  0.7385326
+  TTGACA      60   0.73850
+  AAAAAC      64   0.66460
+  AAAAAA      90   0.64880
+  GTTTTT      66   0.64300
+  TTTTTG      73   0.64070
+  TTTTGT      63   0.63820
+  TTTTTC      65   0.63810
+  AAAATA      63   0.62670
+  TATAAT      65   0.62510
+  The highest word score =          115
+  ? Minimum word score (0-115) (0) =60
+  ? Minimum information (0.00-1.00) (0.00) =.62
+  X 1 Sort on information
+    2 Sort on word score
+  ? 0,1,2 =2
+  ? Maximum number to list (0-100) (100) =
+
+  The words are
+   Total words=           9 Maximum information=  0.7385326
+  AAAAAA      90   0.64880
+  TTTTTG      73   0.64070
+  GTTTTT      66   0.64300
+  TTTTTC      65   0.63810
+  TATAAT      65   0.62510
+  AAAAAC      64   0.66460
+  TTTTGT      63   0.63820
+  AAAATA      63   0.62670
+  TTGACA      60   0.73850
+  The highest word score =          115
+  ? Minimum word score (0-115) (0) =!
+
+ @29. B 1 @Examine dictionary Dh
+  Examine dictionary Dh  allows  users  to  analyse  the  contents  of
+  dictionary   Dh  to  find  the most common words or those words that
+  contain the most information.  The  user  supplies  a  frequency  or
+  information  cutoff and chooses to have the results sorted on either
+  value. The program will find the top  100  words  that  achieve  the
+  cutoff  values  and present them to the user sorted as selected. The
+  information  content  will  be  calcutated  from  either  Dw  or  Ds
+  depending  which  was  used  to  create  Dh  and  using  the current
+  composition setting. Typical dialogue follows:
+
+  ? Menu or option number=29
+  Looking for highest scoring words
+  The highest word score =          115
+  ? Minimum word score (0-115) (0) =60
+  ? Minimum information (0.00-1.00) (0.00) =.6
+  X 1 Sort on information
+    2 Sort on word score
+  ? 0,1,2 =
+
+  ? Maximum number to list (0-100) (100) =
+
+  The words are
+   Total words=           4 Maximum information=  0.7385326
+  TTGACA      60   0.73850
+  AAAAAA      90   0.64880
+  TATAAT      65   0.62510
+  TTTTTT     115   0.60630
+  The highest word score =          115
+  ? Minimum word score (0-115) (0) =50
+  ? Minimum information (0.00-1.00) (0.00) =.5
+  X 1 Sort on information
+    2 Sort on word score
+  ? 0,1,2 =
+
+  ? Maximum number to list (0-100) (100) =
+
+  The words are
+   Total words=           8 Maximum information=  0.7385326
+  TTGACA      60   0.73850
+  TCTTGA      54   0.66080
+  AAAAAA      90   0.64880
+  TATAAT      65   0.62510
+  ACTTTA      57   0.61960
+  TTTTTT     115   0.60630
+  AGTATA      51   0.60540
+  TTATAA      55   0.59300
+  The highest word score =          115
+  ? Minimum word score (0-115) (0) =50
+  ? Minimum information (0.00-1.00) (0.00) =
+
+  X 1 Sort on information
+    2 Sort on word score
+  ? 0,1,2 =
+
+  ? Maximum number to list (0-100) (100) =
+
+  The words are
+   Total words=           8 Maximum information=  0.7385326
+  TTGACA      60   0.73850
+  TCTTGA      54   0.66080
+  AAAAAA      90   0.64880
+  TATAAT      65   0.62510
+  ACTTTA      57   0.61960
+  TTTTTT     115   0.60630
+  AGTATA      51   0.60540
+  TTATAA      55   0.59300
+  The highest word score =          115
+  ? Minimum word score (0-115) (0) =!
+
+ @30. B 1 @Examine words in Dm
+  Examine words  in  Dm  allows  users  to  analyse  the  contents  of
+  dictonary  Dm  at  the  level  of  individual  words  to  find their
+  frequency, information content, and  to  see  their  base  frequency
+  table.  The user types in a word to examine and the program displays
+  the values and table. The information  content  will  be  calcutated
+  from  either  Dw  or  Ds  depending which was used to create Dm, and
+  using the current composition setting. Typical dialogue follows:
+  ? Menu or option number=30
+  ? Word to examine=TTGACA
+  TtgacA            60  0.7385326
+      56    56     6     7     5    11
+       4     3     2     1    52     1
+       1     4     2    53     3    48
+       3     1    54     3     4     4
+  TTGACA
+  ? Word to examine=TATAAT
+  taTAat            65  0.6251902
+      56     3    53     4     4    60
+       6     1     5     5     5     3
+       3    60     5    57    57     4
+       4     5     6     3     3     2
+  TATAAT
+  ? Word to examine=
+
+ @31. B 1 @Examine words in Dh
+  Examine words  in  Dh  allows  users  to  analyse  the  contents  of
+  dictonary  Dh  at  the  level  of  individual  words  to  find their
+  frequency, information content, and  to  see  their  base  frequency
+  table.  The user types in a word to examine and the program displays
+  the values and table. The information  content  will  be  calcutated
+  from  either  Dw  or  Ds  depending which was used to create Dm, and
+  using the current composition setting. Typical dialogue follows:
+
+   ? Menu or option number=31
+  ? Word to examine=TTGACA
+  TtgacA            60  0.7385326
+      56    56     6     7     5    11
+       4     3     2     1    52     1
+       1     4     2    53     3    48
+       3     1    54     3     4     4
+  TTGACA
+  ? Word to examine=TATAAT
+  taTAat            65  0.6251902
+      56     3    53     4     4    60
+       6     1     5     5     5     3
+       3    60     5    57    57     4
+       4     5     6     3     3     2
+  TATAAT
+  ? Word to examine=GGGGGG
+  gggggg             0  0.6199890
+       3     1     1     2     3     4
+       1     3     1     2     2     1
+       2     1     1     1     1     1
+      11    12    14    12    11    11
+  GGGGGG
+  ? Word to examine=
+
+ @32. B 1 @Save or restore a dictionary
+  Save or restore  dictionary  allows  users  to  write  or  read  any
+  dictionary  to  and from disk files. The user is asked te define the
+  dictionary and file. The function is useful  if  the  machine  being
+  used  is  very  slow at calculating because the files can be handled
+  quickly. However note that the files  cannot  be  processed  by  any
+  other program.
+ @33. B 1 @Find inverted repeats
+  Find inverted repeats performs searches for simple  inverted  repeat
+  sequences  in  each  sequence.  They  are defined by a range of loop
+  sizes and a minimum number of potential basepairs. The  results  can
+  be  plotted  or listed. The x axis of the plot represents the length
+  of the aligned  sequences  and  the  y  direction  is  divided  into
+  sufficient  strips  to  accommodate each sequence. So if an inverted
+  repeat is found in the 3rd sequence  at  a  position  equivalent  to
+  halfway  along  the  longest  of the sequences then a short vertical
+  line will be drawn at the midpoint of the 3rd strip.  Alternatively,
+  if  the  results  are  listed, the potential hairpin loops are drawn
+  out, with the sequence number and the position of the loop.  Typical
+  dialogue follows.
+
+  ? Menu or option number=33
+  Define the range of loop sizes
+  ? Minimum loop size (0-10) (3) =0
+  ? Maximum loop size (1-20) (3) =
+  ? Minimum number of basepairs (1-20) (6) =
+  ? (y/n) (y) Plot results N
+   Searching
+
+  Sequence     3    34
+             C
+            G.T
+            T-A
+            A-T
+            T.G
+            T.G
+            G.T
+       ATCTTT TATTTCA
+           33
+
+  Sequence     5    35
+             T
+            G.T
+            T.G
+            A-T
+            T.G
+            G.T
+            C-G
+            T.G
+       TCCGGC AATTGTG
+           34
+
+
+ @ End of help

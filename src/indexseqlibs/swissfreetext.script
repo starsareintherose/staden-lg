@@ -1,0 +1,53 @@
+#! /bin/csh -f
+#
+# script to make a free text index for the swissprot newdata library
+#
+
+echo "swissfreetext.script Version 1.0"
+echo ""
+
+set RM = "/bin/rm -f"
+set SORT = sort
+set UNIQ = uniq
+
+#
+# LIBFILE is the name you've given to the library file
+#
+set LIBFILE = seq.dat
+set WORDS = stopwords
+
+# get free text
+emblfreetext $LIBFILE freetext.list
+if ( $status ) goto abort
+
+# sort on words, remove dumplicates, remove stopwords, resort on entry name
+${SORT} -b +1 freetext.list | ${UNIQ} | excludewords ${WORDS} | ${SORT} >! freetext.sorted
+if ( $status ) goto abort
+${RM} freetext.list
+
+# include entry numbers in the file
+freetext2 freetext.sorted freetext.entry
+if ( $status ) goto abort
+${RM} freetext.sorted
+
+# sort on text
+${SORT} -b +2 freetext.entry >! freetext.sorted2
+if ( $status ) goto abort
+${RM} freetext.entry
+
+# create the index
+freetext4 freetext.sorted2 freetext.trg freetext.hit
+if ( $status ) goto abort
+${RM} freetext.sorted2
+
+echo "Completion successful"
+echo ""
+
+exit 0
+
+#
+# Abort
+#
+abort:
+echo "swissfreetext.script: aborting due to serious error"
+exit 2

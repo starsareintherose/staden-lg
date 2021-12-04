@@ -1,0 +1,75 @@
+#! /bin/csh -f
+#
+# script to make an author index for the embl newdata library
+#
+
+echo "emblauthor.script Version 1.0"
+
+set RM = "/bin/rm -f"
+set SORT = sort
+
+#
+#
+#
+
+# get authors
+emblauthor bb.dat bb.list
+if ( $status ) goto abort
+emblauthor fun.dat fun.list
+if ( $status ) goto abort
+emblauthor inv.dat inv.list
+if ( $status ) goto abort
+emblauthor mam.dat mam.list
+if ( $status ) goto abort
+emblauthor org.dat org.list
+if ( $status ) goto abort
+emblauthor patent.dat patent.list
+if ( $status ) goto abort
+emblauthor phg.dat phg.list
+if ( $status ) goto abort
+emblauthor pln.dat pln.list
+if ( $status ) goto abort
+emblauthor pri.dat pri.list
+if ( $status ) goto abort
+emblauthor pro.dat pro.list
+if ( $status ) goto abort
+emblauthor rod.dat rod.list
+if ( $status ) goto abort
+emblauthor syn.dat syn.list
+if ( $status ) goto abort
+emblauthor una.dat una.list
+if ( $status ) goto abort
+emblauthor vrl.dat vrl.list
+if ( $status ) goto abort
+emblauthor vrt.dat vrt.list
+if ( $status ) goto abort
+
+
+# sort on entry name
+${SORT} bb.list fun.list inv.list mam.list org.list patent.list phg.list pln.list pri.list pro.list rod.list syn.list una.list vrl.list vrt.list >! author.sorted
+if ( $status ) goto abort
+${RM} bb.list fun.list inv.list mam.list org.list patent.list phg.list pln.list pri.list pro.list rod.list syn.list una.list vrl.list vrt.list
+
+# include entry numbers in the file
+freetext2 author.sorted author.entry
+if ( $status ) goto abort
+${RM} author.sorted
+
+# sort on text
+${SORT} -b +2 author.entry >! author.sorted2
+if ( $status ) goto abort
+${RM} author.entry
+
+# create the index
+hitNtrg author.sorted2 author.trg author.hit 35
+if ( $status ) goto abort
+${RM} author.sorted2
+
+exit 0
+
+#
+# Abort
+#
+abort:
+echo "emblauthor.script: aborting due to serious error"
+exit 2

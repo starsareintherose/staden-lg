@@ -1,0 +1,112 @@
+Notes on indexing the sequence libraries
+========================================
+
+We handle EMBL, SwissProt, GenBank, PIR in codata form, NRL3D.
+
+Currently we produce entryname index, accession number index, brief
+index (brief index contains the entry name the primary accession number
+the sequence length and an 80 character description) and a freetext
+index for all but nrl3d (only entryname and brief).
+
+
+Naturally the libraries are all in different formats.
+
+To produce any of the indexes requires the creation of several intermediate
+files and the indexing programs are written so that the intermediate files
+are the same for all libraries. This means that only the programs that read
+the distributed form of each library need to be unique to that library, and
+all the other processing programs can be used for all libraries.
+
+
+However even the though the indexes have the same format, programs (like nip)
+that read the libraries need to treat each library separately because their
+actual contents are written differently.
+
+
+With the exception of the freetext index creation script all the
+procedures run quite quickly.
+
+Making the entry name index
+---------------------------
+
+Common program entryname2
+
+EMBL		emblentryname1
+SwissProt	emblentryname1
+
+GenBank		genbentryname1
+
+PIR		pirentryname1
+NRL3D		pirentryname1
+
+
+Making the accession number index
+---------------------------------
+
+Common programs access2 access4
+
+EMBL		emblaccess1
+SwissProt	emblaccess1
+
+GenBank		genbaccess1
+
+PIR		piraccess1 piraccess2 
+NRL3D		No accession numbers
+
+Making the brief index
+----------------------
+
+Common program title2
+
+EMBL		embltitle1
+SwissProt	embltitle1
+
+GenBank		genbtitle1
+
+PIR		pirtitle1 pirtitle2 (pir3 has no accession numbers)
+NRL3D		pirtitle2
+
+Making the freetext index
+-------------------------
+
+Common programs freetext2 freetext4
+
+EMBL		emblfreetext
+SwissProt	emblfreetext
+
+GenBank		genbfreetext
+
+PIR		pirfreetext
+NRL3D		not done
+
+Note the file stopwords is required.
+
+Scripts
+-------
+
+emblentryname.script
+emblaccession.script
+embltitle.script
+emblfreetext.script
+
+swissentryname.script
+swissaccession.script
+swisstitle.script
+emblfreetext.script
+
+
+genbentrynamescript
+genbaccession.script
+genbtitle.script
+genbfreetext.script
+
+pirentryname.script
+piraccession.script
+pirtitle.script
+pirfreetext.script
+
+makenrl3d.script
+
+
+
+

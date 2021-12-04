@@ -1,0 +1,36 @@
+
+SHELL=/bin/sh
+
+CC = cc
+CFLAGS = -g -ansi -prototypes
+LIBFLAGS =
+
+SRC = .
+PROGS = frog toad
+all: $(PROGS)
+
+FROGOBJ =\
+	frog.o\
+	mach-io.o
+
+frog : $(FROGOBJ)
+	$(CC) $(CFLAGS) -o frog $(FROGOBJ) $(LIBFLAGS)
+
+
+TOADOBJ =\
+	toad.o\
+	scfIO.o\
+	mach-io.o
+
+toad : $(TOADOBJ)
+	$(CC) $(CFLAGS) -o toad $(TOADOBJ) $(LIBFLAGS)
+
+
+#
+# Specials
+#
+%.o:$(SRC)/%.c
+	$(CC) $(CFLAGS) -c $<
+
+clean:
+	/bin/rm -f $(PROGS) $(FROGOBJ)

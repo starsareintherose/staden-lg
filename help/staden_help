@@ -1,0 +1,184 @@
+
+        Introduction to the Staden sequence analysis package  and  its
+  user interface
+
+        The package contains the following programs:
+
+    GIP     Gel input program
+    SAP     Sequence assemble program
+    NIP     Nucleotide interpretation program
+    PIP     Protein interpretation program
+    SIP     Similarity investigation program
+    MEP     Motif exploration program
+    NIPL    Nucleotide interpretation program (library)
+    PIPL    Protein interpretation program (library)
+    SIPL    Similarity investigation program (library)
+
+  GIP  uses  a   digitiser   for   entry   of   DNA   sequences   from
+  autoradiographs.
+  SAP handles everything relating to assembling gel readings in  order
+  to  produce  a consensus sequence. It can also deal with families of
+  protein sequences.
+  NIP provides functions for analysing  and  interpretting  individual
+  nucleotide sequences.
+  PIP provides functions for analysing  and  interpretting  individual
+  protein sequences.
+  MEP analyses families of nucleotide sequences to help  discover  new
+  motifs.
+  NIPL performs pattern searches on nucleotide sequence libraries.
+  PIPL performs pattern searches on protein sequence libraries.
+  SIP provides functions for comparing and aligning pairs  of  protein
+  or nucleotide sequences.
+  SIPL searches nucleotide and protein sequence libraries for  entries
+  similar to probe sequences.
+
+
+        Documentation
+
+        As is explained below, the programs SAP, NIP, PIP, SIP and MEP
+  have  online  help,  and  the  help  files  have the names: HELPSAP,
+  HELPNIP, HELPPIP, HELPSIP, HELPMEP. These files can be displayed  on
+  the  screen or printed using the appropriate commands. Currently the
+  help for the other programs is also contained in  these  files.  For
+  example help for NIPL is in HELPNIP. This file is called HELPSTADEN.
+
+        Sequence formats
+
+        The shotgun sequencing program SAP deals only with simple text
+  files  for gel readings, and is a self-contained system.  However as
+  there is still no single agreed format for finished sequences or for
+  libraries  of  sequences, the other programs in the package can read
+  data that is stored in several ways.
+
+        The analytical programs can read individual  sequences  stored
+  in  the following formats: Staden, EMBL, Genbank, PIR (also known as
+  NBRF), and GCG, but for storing whole  libraries  we  use  only  PIR
+  format.  In  addition  these programs can perform a number of simple
+  operations using libraries stored in this format. They  can  extract
+  entries  by  entry  name, can search titles for keywords, can search
+  the whole of the annotation files  for  keywords,  and  can  extract
+  annotations for any named entry.  We reformat all sequence libraries
+  into PIR format. Currently we have NBRF, EMBL, SWISSPROT and VECBASE
+  libraries in PIR format.
+
+        The library  searching  programs  operate  only  on  sequences
+  stored in PIR format.
+
+        The  analytical  programs  will  operate  with  uppercase   or
+  lowercase  sequence  characters. In addition T and U are equivalent.
+  SAP uses uppercase letters for original gel readings  and  lowercase
+  letters  for  characters that are corrected by the automatic editor.
+  Programs NIP  and  PIP  use  IUB  symbols  for  redundancy  in  back
+  translations  and  for  sequence  searches.   The  symbols are shown
+  below.
+
+
+              NC-IUB SYMBOLS
+
+        A,C,G,T
+        R        (A,G)        'puRine'
+        Y        (T,C)        'pYrimidine'
+        W        (A,T)        'Weak'
+        S        (C,G)        'Strong'
+        M        (A,C)        'aMino'
+        K        (G,T)        'Keto'
+        H        (A,T,C)      'not G'
+        B        (G,C,T)      'not A'
+        V        (G,A,C)      'not T'
+        D        (G,A,T)      'not C'
+        N        (G,A,C,T)    'aNy'
+
+
+        The user interface
+
+        The user interface is common to all programs. It consists of a
+  set  of  menus and a uniform way of presenting choices and obtaining
+  input from the user. This section describes: the  menu  system;  how
+  options  are  selected  and   other  choices  made;  how  values are
+  supplied to the program;  how help is obtained, and  how  to  escape
+  from  any  part of a program. In addition it gives information about
+  saving results in files and  the  use  of  graphics  for  presenting
+  results.
+
+        Menus
+
+        Each program has several menus and numerous options. Each menu
+  or  option  has  a  unique  number that is used to identify it. Menu
+  numbers are distinguished from option numbers by being  preceded  by
+  the  letter  m (or M, all programs make no distinction between upper
+  and lower case letters). With the exception of some parts of program
+  SAP,  the  menus  are  not hierachical, rather the options they each
+  contain are simply lists of related functions and their  identifying
+  numbers. Therefore options can be selected independently of the menu
+  that is currently being shown on the  screen,   and  the  menus  are
+  simply  memory  aides.  All options and menus are selected by typing
+  their option number when the programs present the prompt
+
+        "? Menu or option number =".
+
+        To select a menu type its number preceded by the letter M.  To
+  select  an  option  type  its number.  If you type only "return" you
+  will get menu m0 which is simply a list of menus. If you  select  an
+  option  you  will  return  to the current menu after the function is
+  completed.
+
+        When you select an option, in  many  cases  the  program  will
+  immediately perform the operation selected without further dialogue.
+  If you precede an option number by the letter d (e.g. D17), you will
+  force the program to offer dialogue about the selected option before
+  the function operates, hence allowing you to change the value of any
+  of  its parameters.  If you precede an option number by the symbol ?
+  (e.g. ?17), you will be given help on the option (here 17).
+
+        Where possible, equivalent  or  identical  options  have  been
+  given  the  same numbers in all programs, and so users quickly learn
+  the numbers for the functions they employ most often.
+
+        Help
+
+        As mentioned above, help about each option can be obtained  by
+  preceding  the option number  by the symbol ? when you are presented
+  with the prompt "? Menu or option number", but there are two further
+  ways of obtaining help. Whenever the program asks a question you can
+  respond by typing the symbol ?  and  you  will  receive  information
+  about  the  current  option. In addition, option number 1 in all the
+  programs will give help on all of a programs functions.
+
+        Quitting
+
+        To exit from any point in a program you type ! for quit. If  a
+  menu is on the screen this will stop the program, otherwise you will
+  be returned to the last menu.
+
+        Other interactions
+
+        Questions are  presented in a  few  restricted  ways.  In  all
+  cases  typing only "return" in response to a question means yes, and
+  typing N or n means no.
+
+        Obvious opposites such as "clear screen"  and  "keep  picture"
+  are  presented with only the default shown. For example in this case
+  the default is generally "keep picture" so the program will display:
+
+        "(y/n) (y) Keep picture"
+
+        and the picture will be retained if the  user  types  anything
+  other than N or n, (in which case the screen will be cleared).
+
+        Where there are choices that are  not  obvious  opposites,  or
+  there  are  more than two choices, two further conventions are used:
+  "radio buttons" and "check boxes".
+
+        Radio buttons are used when only one of a  number  of  choices
+  can  be made at any one time. The choices are presented arranged one
+  above the other, each choice with a number for  its  selection,  and
+  the  default choice marked with an X. For example in the restriction
+  enzyme search routine the following choices are offered:
+
+
+           Select output mode
+     1 order results enzyme by enzyme
+     2 order results by positon
+   X 3 show only infrequent cutters
+     4 show names above the sequence
+   

@@ -1,0 +1,6 @@
+#! /bin/sh
+
+if test -d /nfs/al/pubseq/pubseq/inhouse/sun-nematode/squirrel/tables ; then
+    cd /nfs/al/pubseq/pubseq/inhouse/sun-nematode/squirrel/tables
+    make all
+fi

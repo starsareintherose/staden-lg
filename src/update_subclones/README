@@ -1,0 +1,25 @@
+Software to Maintain Subclone Library Database
+----------------------------------------------
+
+The subclone library database stores information on sublcone libraries.
+For the syntax of this file (subclones) refer to the file
+subclones.syntax.
+
+update_subclones
+	Programs that prompts the user for information to be added to
+	the subclone library database. Ensure that the owner of
+	update_subclones is the same as that of subclones, and that the
+	setuid bit is set.
+
+update_subclones.c
+	The source code for subclonedb and update_subclones
+
+format.awk
+	An attempt to write an awk script to produce output for humans
+	to read. It produces a tbl format file. To use type:
+
+	    awk -f format.awk subclones | tbl | ptroff -t >! out.ps
+
+subclones
+	The subclone library database
+

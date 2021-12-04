@@ -1,0 +1,18 @@
+ Dir: $SQUIRREL/scripts/
+Date: Fri May 07 12:13:12 BST 1993
+
+This directory contains all the scripts required by squirrel, plus a
+few others. The following concern the users of squirrel directly:
+
+squirrel
+	This is the main script that drives squirrel. It should be
+	placed in the user's project directory and edited
+	appropriately.
+
+packhorse
+	This is for merging multiple ABI results folders into one, so
+	that squirrel can process them all in one pass.
+
+clean
+	This removes results folders, but only if there appears to be
+	no files left unprocessed.

@@ -1,0 +1,172 @@
+\documentstyle[a4,11pt]{article}
+
+\title{Installing the Staden Package}
+\author{Simon Dear}
+\date{21 May 1993}
+
+
+
+\begin{document}
+\maketitle
+
+
+
+\section{Introduction}
+
+On the accompanying tape you will find executables for 
+one of SunOS 4.x, Sun
+Solaris 2.x, DEC Ultrix, DEC OSF/1 and Silicon Graphics SGI operating systems.
+Also there are sources for all the programs in the Staden package.
+Programs in the package are:
+\begin{description}
+
+\item[mep and xmep] Motif exploration program.
+\item[nip and xnip] Nucleotide interpretation program.
+\item[nipl] Nucleotide interpretation program (library).
+Searches nucleotide libraries for patterns of motifs.
+\item[pip and xpip] Protein interpretation program.
+\item[pipl] Protein interpretation program (library).
+Searches protein libraries for patterns of motifs.
+\item[sip and xsip] Similarity investigation program.
+\item[sipl] Similarity investigation program (library).
+Compares a probe protein or nucleic acid sequence against
+a library of sequences.
+\item[sap and xsap] The original sequence assembly program.
+\item[bap and xbap] Our latest, most advanced sequence assembly program.
+\item[dap and xdap] An obsolete assembly program, superceded by {\em bap}.
+\item[lip] Library interface program.
+\item[rep] Repeat examination program.
+\item[ted] X windows utility for displaying and editing
+fluorescent sequencing machine traces.
+\item[splitp1, splitp2 and splitp3] Refer to help/SPLITP.MEM.
+\item[sethelp] Builds online help files.
+\item[gip] Gel input program.
+\item[convert] Converts between {\em xdap\/} and {\em xbap\/} databases.
+\item[cop and cop-bap] Checks completed {\em xdap\/} and {\em xbap\/}
+databases for editing errors.
+\item[trace2seq] Extracts sequence from trace files.
+\item[getABISampleName] Extracts sample names from ABI trace files.
+\item[makeSCF] Converts existing trace files to the compact
+SCF format.
+\item[alfsplit] Splits the Pharmacia A.L.F. gel
+file into multiple files, one for each sample.
+\item[frog] Relabels lanes in ABI trace files.
+\item[+ numerous scripts (including {\em squirrel (v1.4)\/})]
+
+\end{description}
+
+
+\section{Requirements}
+
+You will need a tape drive to read the software off the distribution
+tape (QIC-150, TK50, or Exabyte). You will also need a large amount of
+disk storage to accommodate the whole package. For release
+version-1993.0, requirements were
+31Mb (SunOS 4.x),
+36Mb (Sun Solaris 2.x)
+30Mb (DEC Ultrix)
+37Mb (DEC OSF/1)
+and
+27Mb (Silicon Graphics SGI.)
+
+
+To compile the Staden package you will require:
+\begin{itemize}
+\item An ANSI C compiler.
+\item A FORTRAN-77 compiler.
+\item X11 (Release 4 or 5).
+\item GNU make (except with SunOS and Solaris 2.x.)
+\end{itemize}
+
+\section{Installation}
+
+To install the package,
+\begin{enumerate}
+\item Create a directory for where you would like the software to be
+placed. You may have to be superuser to do this.
+      \begin{verbatim} mkdir /home/Staden\end{verbatim}
+\item Change to this directory.
+      \begin{verbatim} cd /home/Staden\end{verbatim}
+\item Place the tape into the tape unit.
+\item Extract the software off the distribution tape (NOTE: the device name may be
+different on your machine):
+      \begin{verbatim} tar xvf /dev/rst0\end{verbatim}
+\item C shell users should set the environment variable {\bf STADENROOT}
+to be the directory where the package is installed and source the file
+{\em staden.login} found there. This is best done by adding lines to their
+{\em .login} file:
+\begin{verbatim}
+    setenv STADENROOT /home/Staden
+    source $STADENROOT/staden.login
+\end{verbatim}
+Users of the Bourne shell, sh, should similarly add lines their {\em .profile} file:
+\begin{verbatim}  
+    STADENROOT=/home/Staden
+    export STADENROOT
+    . $STADENROOT/staden.profile
+\end{verbatim}
+
+The startup routines set environment variables and modify the shell's
+search path so that it can find the programs in the Staden Package.
+When users next log on to the system, they will be able to use the
+programs.
+
+\end{enumerate}
+
+
+\section {Installation on Unsupported Platforms}
+
+Install the software as you would for a supported machine.  You will
+need to remake all executables.  The script {\em Staden\_install} can
+be used to help recompile the package. A large number of
+assumptions have been made, and you may need to change the makefiles
+to suit your system.
+
+The sources have been organised into subdirectories of the directory
+{\bf src}. In {\bf Misc} are routines common to many programs. They
+should be made first.  In {\bf staden} are all the programs of the
+Staden suite ({\em mep}, {\em nip}, {\em pip}, {\em sap}, {\em sip},
+{\em dap}, {\em gip}, {\em vep}, {\em lip} and {\em rep}) with the
+exception of {\em bap}.  Code for our latest sequence assembly program
+{\em bap} is in directories {\bf bap} and {\bf bap/osp-bits}.  Make
+the objects in {\bf staden} first, then the ones in {\bf
+bap/osp-bits}, and finally the ones in {\bf bap}. In {\bf ted} is the
+trace editing program.
+
+
+\section {Other Software Provided}
+
+Other software and scripts can be found in the {\bf alf\/}, {\bf
+abi\/}, {\bf cop\/}, {\bf getMCH\/}, {\bf scf\/}, {\bf frog\/} and {\bf
+scripts}
+directories.
+Each directory contains documentation describing the programs
+contained.
+
+Since release version-1993.0 we have distributed the {\em squirrel (v1.4)}
+package. Please read the disclaimer that accompanies this software.
+Additional sources and scripts can be found in {\bf expGetSeq}, {\bf vepe},
+{\bf newted} and {\bf squirrel-1.4} directories.
+
+Many scripts (including {\em squirrel}) and filters were developed at the MRC-LMB for
+{\bf INTERNAL USE ONLY}.
+We are aware that people elsewhere will want to develop
+similar software.
+We include them in the Staden Package merely as {\bf EXAMPLES} of
+what has been achieved elsewhere.
+{\bf THESE SCRIPTS WILL NOT WORK ON YOUR SYSTEM WITHOUT MODIFICATION.}
+
+\section {When All Else Fails...}
+If you have any problems please contact the authors,
+\mbox{Rodger Staden}
+\mbox{(\em rs@mrc-lmba.cam.ac.uk\/)},
+\mbox{Simon Dear}
+\mbox{(\em sd@mrc-lmba.cam.ac.uk\/)}
+and
+\mbox{James Bonfield}
+\mbox{(\em jkb@mrc-lmba.cam.ac.uk\/)},
+by email or by writing to us at:
+MRC Laboratory of Molecular Biology, Hills Road, Cambridge, \mbox{CB2 2QH}, U.K.
+We also welcome general comments on the package.
+
+\end{document}

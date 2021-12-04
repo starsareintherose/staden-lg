@@ -1,0 +1,35 @@
+Guide to this directory                Simon Dear, 3 December 1991
+------------------------------------------------------------------
+
+In this directory there are all the sources required to make COP, plus
+documentation.
+
+COP.GUIDE
+
+	Guide to the design and use of cop
+
+makefile
+
+	Makefile for cop.
+
+cop.c
+
+	Main program module.
+
+misc.c misc.h
+
+	Useful everyday routines.
+
+xdap_db.c xdap_db.h
+
+	Routines to read xdap databases.
+
+getSeq.c fpoint.c fpoint.h opp.c opp.h seq.c seq.h seqIOABI.c
+seqIOABI.h seqIOALF.c seqIOALF.h seqIOEdit.h seqIOPlain.c
+seqIOPlain.h mystdlib.h
+
+	Routines to read in trace files. Taken from ted.
+
+align.c llin.c llin.h uascii.gbl upam.gbl
+	
+	Alignment routines. Taken from fasta.

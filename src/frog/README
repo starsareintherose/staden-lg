@@ -1,0 +1,27 @@
+	  Frog: A Utility to Relabel Bases in ABI 373A Files
+			      Simon Dear
+			(sd@mrc-lmb.cam.ac.uk)
+			   20 November 1992
+
+
+Correcting ABI 373A traces that have had their bases labelled
+incorrectly is not a simple matter. The program "frog" is a utility to
+swap bases around.
+
+To use frog you will need to know the existing base lane order, and
+the correct base order. For example, the base order may currently be
+CAGT but examination of the sequence (eg a known cloning site) may
+reveal that it should gave been CATG. With this information, simply
+run frog as follows:
+
+    frog old new [ABI_files...]
+
+where "old" is the current (incorrect) lane ordering and "new" is the
+correct lane ordering.
+
+In the previous example we discovered that the T and G lanes have been
+inadvertantly switched. We could correct the file (trace.abi, say) by
+typing:
+
+    frog CAGT CATG trace.abi
+

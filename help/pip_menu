@@ -1,0 +1,80 @@
+-1 0 21 2 T General
+-1 0 21 2 X General
+-2 0 50 2 T Screen control
+-2 0 71 2 X Screen
+-3 0 117 2 T Statistical analysis of content
+-3 0 142 2 X Statistics
+-4 0 179 2 T Structures and repeats
+-4 0 204 2 X Structures
+-5 0 225 2 T Search
+-5 0 225 2 X Search
+0 -1 243 76 T PIP
+0 -1 243 76 X PIP
+1 0 3546 8 T Help
+1 0 3546 8 X Help
+2 0 3889 3 T Quit
+2 0 3889 3 X Quit
+3 1 3962 220 T Read a new sequence
+3 1 3962 220 X Read a new sequence
+4 1 13792 12 T Redefine active region
+4 1 13792 12 X Redefine active region
+5 1 14480 33 T List a sequence
+5 1 14480 33 X List a sequence
+6 1 15941 4 T List a text file
+6 1 15941 4 X List a text file
+7 1 16083 12 T Direct output to disk
+7 1 16083 12 X Direct output to disk
+8 1 16567 7 T Write active region to disk
+8 1 16567 7 X Write active region to disk
+9 1 16922 26 T Edit the sequence
+9 1 16922 26 X Edit the sequence
+10 2 18386 3 T Clear graphics
+10 2 18386 3 X Clear graphics
+11 2 18463 3 T Clear text
+11 2 18463 3 X Clear text
+12 2 18531 13 T Draw a ruler
+12 2 18531 13 X Draw a ruler
+13 2 19278 13 T Use cross hair
+13 2 19278 13 X Use cross hair
+14 2 19865 35 T Reset margins
+14 2 19865 35 X Reset margins
+15 2 22019 13 T Label a diagram
+15 2 22019 13 X Label a diagram
+16 2 22811 13 T Display a map
+16 2 22811 13 X Display a map
+17 5 23611 254 T Short sequence search
+17 1 23611 254 T Short sequence search
+17 5 23611 254 X Short sequence search
+17 1 23611 254 X Short sequence search
+18 5 34012 57 T Compare a sequence
+18 1 34012 57 T Compare a sequence
+18 5 34012 57 X Compare a sequence
+18 1 34012 57 X Compare a sequence
+19 5 35654 69 T Compare a sequence using a score matrix
+19 1 35654 69 T Compare a sequence using a score matrix
+19 5 35654 69 X Compare a sequence using a score matrix
+19 1 35654 69 X Compare a sequence using a score matrix
+20 5 37587 214 T Search for a motif using a weight matrix
+20 5 37587 214 X Search for a motif using a weight matrix
+21 3 46771 20 T Calculate amino acid composition
+21 3 46771 20 X Calculate amino acid composition
+22 4 47655 20 T Plot hydrophobicity
+22 3 47655 20 T Plot hydrophobicity
+22 4 47655 20 X Plot hydrophobicity
+22 3 47655 20 X Plot hydrophobicity
+23 4 48439 19 T Plot charge
+23 3 48439 19 T Plot charge
+23 4 48439 19 X Plot charge
+23 3 48439 19 X Plot charge
+24 4 48953 72 T Plot robson prediction
+24 4 48953 72 X Plot robson prediction
+26 4 51912 32 T Draw a helix wheel
+26 4 51912 32 X Draw a helix wheel
+25 4 53561 36 T Plot hydrophobic moment
+25 3 53561 36 T Plot hydrophobic moment
+25 4 53561 36 X Plot hydrophobic moment
+25 3 53561 36 X Plot hydrophobic moment
+27 1 55101 87 T Back translate to dna
+27 1 55101 87 X Back translate to dna
+28 5 59337 809 T Search for patterns of motifs
+28 5 59337 809 X Search for patterns of motifs

@@ -1,0 +1,156 @@
+-1 0 22 2 T General
+-1 0 22 2 X General
+-2 0 51 2 T Screen control
+-2 0 72 2 X Screen
+-3 0 118 2 T Statistical analysis of content
+-3 0 143 2 X Statistics
+-4 0 180 2 T Structures and repeats
+-4 0 205 2 X Structures
+-5 0 242 2 T Translation and codons
+-5 0 242 2 X Translation and codons
+-6 0 279 2 T Gene search by content
+-6 0 279 2 X Gene search by content
+-7 0 309 2 T General signals
+-7 0 309 2 X General signals
+-8 0 340 2 T Specific signals
+-8 0 340 2 X Specific signals
+0 -1 359 16 T NIP
+0 -1 359 16 X NIP
+1 0 1155 7 T Help
+1 0 1155 7 X Help
+2 0 1469 3 T Quit
+2 0 1469 3 X Quit
+3 1 1543 220 T Read a new sequence
+3 1 1543 220 X Read a new sequence
+4 1 11372 15 T Define active region
+4 1 11372 15 X Define active region
+5 1 12100 24 T List a sequence
+5 1 12100 24 X List a sequence
+6 1 13103 6 T List a text file.
+6 1 13103 6 X List a text file.
+7 1 13300 12 T Direct output to disk
+7 1 13300 12 X Direct output to disk
+8 1 13785 10 T Write active region to disk
+8 1 13785 10 X Write active region to disk
+9 1 14128 31 T Edit the sequence
+9 1 14128 31 X Edit the sequence
+10 2 15970 3 T Clear graphics
+10 2 15970 3 X Clear graphics
+11 2 16036 3 T Clear text
+11 2 16036 3 X Clear text
+12 2 16101 12 T Draw a ruler
+12 2 16101 12 X Draw a ruler
+13 2 16833 13 T Use crosshair
+13 2 16833 13 X Use crosshair
+14 2 17443 35 T Reposition plots
+14 2 17443 35 X Reposition plots
+15 2 19598 28 T Label a diagram
+15 2 19598 28 X Label a diagram
+16 2 20703 34 T Display a map
+16 2 20703 34 X Display a map
+17 1 22073 599 T Search for restriction enzymes
+17 1 22073 599 X Search for restriction enzymes
+18 7 46675 105 T Compare a short sequence
+18 1 46675 105 T Compare a short sequence
+18 7 46675 105 X Compare a short sequence
+18 1 46675 105 X Compare a short sequence
+19 7 49650 106 T Compare a short sequence using a score matrix
+19 7 49650 106 X Compare a short sequence using a score matrix
+20 7 53349 230 T Search for a motif using a weight matrix
+20 7 53349 230 X Search for a motif using a weight matrix
+21 3 63267 4 T Count base composition
+21 3 63267 4 X Count base composition
+22 3 63440 14 T Count dinucleotide frequencies
+22 3 63440 14 X Count dinucleotide frequencies
+23 5 64100 179 T Count codons and amino acids
+23 3 64100 179 T Count codons and amino acids
+23 5 64100 179 X Count codons and amino acids
+23 3 64100 179 X Count codons and amino acids
+24 3 72137 57 T Plot base composition
+24 3 72137 57 X Plot base composition
+25 3 73213 23 T Plot local deviations in base composition
+25 3 73213 23 X Plot local deviations in base composition
+26 3 74495 23 T Plot local deviations from dinucleotide composition
+26 3 74495 23 X Plot local deviations from dinucleotide composition
+27 3 75793 23 T Plot local deviations from trinucleotide composition
+27 3 75793 23 X Plot local deviations from trinucleotide composition
+28 5 77065 18 T Calculate codon constraint
+28 5 77065 18 X Calculate codon constraint
+59 3 77869 12 T Plot negentropy
+59 3 77869 12 X Plot negentropy
+30 4 78454 74 T Search for hairpin loops
+30 4 78454 74 X Search for hairpin loops
+31 4 80321 23 T Search for long range inverted repeats
+31 4 80321 23 X Search for long range inverted repeats
+32 4 81157 37 T Search for repeats
+32 4 81157 37 X Search for repeats
+33 4 82467 12 T Search for z dna (total ry, yr)
+33 4 82467 12 X Search for z dna (total ry, yr)
+34 4 82984 12 T Search for z dna (runs of ry, yr)
+34 4 82984 12 X Search for z dna (runs of ry, yr)
+35 4 83623 15 T Search for z dna (best phased value)
+35 4 83623 15 X Search for z dna (best phased value)
+36 4 84350 92 T Local similarity or complementarity search
+36 4 84350 92 X Local similarity or complementarity search
+37 5 87778 39 T Set genetic code
+37 5 87778 39 X Set genetic code
+38 4 89050 74 T Examine repeats
+38 3 89050 74 T Examine repeats
+39 5 91670 286 T Translate and list in upto six phases
+39 5 91670 286 X Translate and list in upto six phases
+40 5 103780 134 T Translate and write the protein sequence to disk
+40 5 103780 134 X Translate and write the protein sequence to disk
+41 5 108198 71 T Calculate and write codon table to disk
+41 5 108198 71 X Calculate and write codon table to disk
+42 6 111525 132 T Codon usage method
+42 6 111525 132 X Codon usage method
+43 6 118508 182 T Positional base preference method.
+43 6 118508 182 X Positional base preference method.
+44 6 127924 39 T Uneven positional base frequencies.
+44 6 127924 39 X Uneven positional base frequencies.
+45 6 130287 33 T Codon improbability on base composition
+45 6 130287 33 X Codon improbability on base composition
+46 6 132146 28 T Codon improbability on amino acid composition
+46 6 132146 28 X Codon improbability on amino acid composition
+47 6 133744 14 T Shepherd RNY preference method
+47 6 133744 14 X Shepherd RNY preference method
+48 6 134410 30 T Ficketts method
+48 6 134410 30 X Ficketts method
+49 6 136094 139 T tRNA gene search.
+49 6 136094 139 X tRNA gene search.
+50 7 141894 4 T Plot start codons
+50 7 141894 4 X Plot start codons
+51 7 142027 4 T Plot stop codons
+51 7 142027 4 X Plot stop codons
+52 7 142188 4 T Plot stop codons on the complementary strand
+52 7 142188 4 X Plot stop codons on the complementary strand
+53 7 142365 4 T Plot stop codons on both strands
+53 7 142365 4 X Plot stop codons on both strands
+54 5 142536 45 T Search for longest open reading frames
+54 5 142536 45 X Search for longest open reading frames
+55 8 144437 67 T Search for E. coli promoter (general)
+55 8 144437 67 X Search for E. coli promoter (general)
+56 8 148004 4 T Search for E. coli promoter (general) strand
+56 8 148004 4 X Search for E. coli promoter (general) strand
+57 8 148210 4 T Search for E. coli promoter sequences. (-35 and -10)
+57 8 148210 4 X Search for E. coli promoter sequences. (-35 and -10)
+58 8 148405 44 T Search for procaryotic ribosome binding sites
+58 8 148405 44 X Search for procaryotic ribosome binding sites
+29 1 150862 4 T Reverse and complement the sequence
+29 1 150862 4 X Reverse and complement the sequence
+60 7 151001 142 T Search using a dinucleotide weight matrix
+60 7 151001 142 X Search using a dinucleotide weight matrix
+61 8 157292 31 T Search for eukaryotic ribosome binding sites
+61 8 157292 31 X Search for eukaryotic ribosome binding sites
+62 8 158730 56 T Search for splice junctions
+62 8 158730 56 X Search for splice junctions
+63 7 162089 7 T Search using a weight matrix (complementary)
+63 7 162089 7 X Search using a weight matrix (complementary)
+64 3 162471 36 T Plot observed-expected word frequencies
+64 3 162471 36 X Plot observed-expected word frequencies
+65 9 164175 5 T Search for polya sites
+65 9 164175 5 X Search for polya sites
+66 1 164369 4 T Interconvert t and u
+66 1 164369 4 X Interconvert t and u
+67 7 164520 797 T Search for patterns of motifs
+67 7 164520 797 X Search for patterns of motifs

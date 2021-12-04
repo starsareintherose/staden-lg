@@ -1,0 +1,48 @@
+#! /bin/csh -f
+#
+# script to create an division index for the embl library in codata format
+#
+
+echo "embldivision.script Version 1.0"
+echo ""
+
+set RM = "/bin/rm -f"
+
+#
+#
+#
+
+
+awk '{printf("%-12.12s %d\n",$1,$2);}' << EOF >! division.list
+bb.dat 1
+fun.dat 2
+inv.dat 3
+mam.dat 4
+org.dat 5
+patent.dat 6
+phg.dat 7
+pln.dat 8
+pri.dat 9
+pro.dat 10
+rod.dat 11
+syn.dat 12
+una.dat 13
+vrl.dat 14
+vrt.dat 15
+EOF
+
+division division.list division.lkp
+if ( $status ) goto abort
+${RM} division.list
+
+echo "Completion successful"
+echo ""
+
+exit 0
+
+#
+# Abort
+#
+abort:
+echo "embldivision.script: aborting due to serious error"
+exit 2

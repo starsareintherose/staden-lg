@@ -1,0 +1,36 @@
+#
+# Makefile for abi - Sun version
+#
+
+#
+# Programs made by this makefile
+#
+PROGS = getABISampleName
+
+#
+# Where the wild things are
+#
+SRC = .
+TEDSRC=$(SRC)/../ted
+#
+# Sun
+#
+CC = gcc
+GCCWARNINGS = -Wreturn-type -Wunused -Wswitch -Wcomment -W -Wformat \
+	      -Wuninitialized
+CFLAGS = -ansi -g -pedantic -I$(TEDSRC) $(GCCWARNINGS)
+
+#
+# Make the programs
+#
+getABISampleName: $(SRC)/getABISampleName.c
+	$(CC) $(CFLAGS) -static -o getABISampleName $(SRC)/getABISampleName.c
+
+
+#
+# Special dependencies
+#
+all: $(PROGS)
+
+clean:
+	/bin/rm -f $(PROGS) *.o *~

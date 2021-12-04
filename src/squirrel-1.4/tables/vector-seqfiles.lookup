@@ -1,0 +1,14 @@
+/^#/ {print "# database for mapping of vector to sequence file";}
+/^#/ {print "#";}
+/^#/ {print "# Format:";}
+/^#/ {print "#        <vector> <file-name>";}
+/^#/ {print "#";}
+/^Lambda/ {print "Lambda  lambda.seq";}
+/^Lorist2/ {print "Lorist2 lorist2.vep";}
+/^Lorist6/ {print "Lorist6 lorist6.vep";}
+/^LoristB/ {print "LoristB loristB.seq";}
+/^M13mp18/ {print "M13mp18 m13mp18.vec";}
+/^M13mp7/ {print "M13mp7  m13mp7.seq";}
+/^pBS/ {print "pBS     blue.vep";}
+/^pJB8/ {print "pJB8    pjb8.vep";}
+/^pUC18/ {print "pUC18   puc18.vec";}

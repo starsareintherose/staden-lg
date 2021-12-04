@@ -1,0 +1,37 @@
+Marking regions of poor quality                  Simon Dear  Nov 17 1992
+
+Regions of poor quality can be excised using the "clip-seqs" script.
+This script takes a file of sequence file names as input, and filters
+each to the awk program clip-seq.awk. The sequence files are assumed
+to be in staden xdap format. For details on this format, see the
+README file in $STADENROOT. The files are modified to reflect the
+removal of poor data, while the original sequence is retained in a "~"
+suffixed file.
+
+Usage:
+	clip-seqs file-of-file-names
+
+
+Quality clipping is based on a simple analysis of the base content. By
+default, it works as follows. The original pre-clipped sequence is
+determined from the sequence file. The extents of good quality
+sequence is determined for both 5' and 3' ends of the sequence. The
+numbers in brackets are set in clip-seq.awk and can be set to suit
+local preferences.
+
+At the 3' end: A window of (5) bases is slid down the sequence,
+starting from base position (200) until there are (2) Ns within the
+window, or until the window reaches position (450), whichever happens
+first. The 3' extent of the good data is the set to be (50) bases
+upsteam of this position.
+
+At the 5' end: This essentially the same as for the 3' end. The window
+is slid back along the sequence starting at base position (100), until
+there are sufficient Ns or until the window reaches position (1),
+whichever happens first. There is no further adjustment of the 5'
+extent of good data.
+
+If there are existing extents in the sequence file, and they are more
+conservative than the ones calculated from the sequence, then they
+will be the extents used.
+	

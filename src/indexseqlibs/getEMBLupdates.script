@@ -1,0 +1,186 @@
+#! /bin/sh
+#
+#	This script should be run by cron, once a week
+#
+#	This script will use anonymous ftp to genbak.bio.net to
+#	retrieve the latest updates to the embl library
+#
+#	Updates appear to be made every Monday mid afternoon PST
+#	We should transfer them at 6am Tuesday
+#	The crontab file should look like:
+#
+#	    # SunOS
+#	    0 6 * * 2 /nfs/al/pubseq/pubseq/seqlibs/getEMBLupdates
+#
+#	    # Alliant Concentrix
+#	    0 6 * * 2 pubseq /nfs/al/pubseq/pubseq/seqlibs/getEMBLupdates
+#
+#
+
+#
+# Set defaults
+#
+PROGS=/nfs/al/pubseq/pubseq/inhouse/staden/src/indexseqlibs
+NEWDIR=embl-updates-new
+OLDDIR=embl-updates-old
+CURDIR=embl-updates
+FILE=emseq.all.Z
+SEQLIBS=/nfs/al/pubseq/pubseq/seqlibs
+RECIPIENT=pubseq
+# test
+#CURDIR=embl-updates-test
+#FILE=em1230.seq.Z
+
+#
+# report
+# for interactive mode use: REPORT=/dev/stty
+#
+REPORT=${SEQLIBS}/EMBLupdate.$$
+
+echo "getEMBLupdates Version 1.0" >> ${REPORT}
+echo Started: `date` >> ${REPORT}
+
+cd $SEQLIBS
+
+#
+# Remove old directory
+#
+if test -d $OLDDIR; then
+	echo Removing old directory $OLDDIR >> ${REPORT}
+	/bin/rm -r $OLDDIR
+fi
+
+#
+# Build new directory with all the stuff we need
+#
+if test -d $NEWDIR; then
+	echo Removing existing new directory $NEWDIR >> ${REPORT}
+	/bin/rm -r $NEWDIR
+fi
+mkdir $NEWDIR
+cd $NEWDIR
+
+#
+# Get files via ftp
+#
+echo FTP-ing latest updates >> ${REPORT}
+ftp -v 134.172.1.160 << EOF >> ${REPORT}
+cd pub/db/embl-newdata
+type binary
+get README
+get $FILE emseq.all.Z
+EOF
+
+#
+# Report errors during ftp
+#
+if test $? -eq 1; then
+	echo Error: Transferring files >> ${REPORT}
+	mail ${RECIPIENT} < ${REPORT}
+	exit 1
+fi
+
+#
+# Check files transferred
+#
+if test ! -f emseq.all.Z ; then
+	echo Error: File not transferred >> ${REPORT}
+	mail ${RECIPIENT} < ${REPORT}
+	exit 1
+fi
+
+#
+# Uncompress
+#
+echo Uncompressing update file >> ${REPORT}
+uncompress emseq.all.Z
+if test $? -eq 1; then
+	echo Error: Cannot uncompressing file >> ${REPORT}
+	mail ${RECIPIENT} < ${REPORT}
+	exit 1
+fi
+
+#
+# Create indices
+#
+
+#
+# entry name index
+#
+echo Building entryname index >> ${REPORT}
+emblentryname.script >> ${REPORT}
+if test $? -ne 0; then
+	echo Error: Failed to make entry name index >> ${REPORT}
+	mail ${RECIPIENT} < ${REPORT}
+	exit 1
+fi
+
+#
+# accession number index
+#
+echo Building accession number index >> ${REPORT}
+emblaccession.script >> ${REPORT}
+if test $? -ne 0; then
+	echo Error: Failed to make accession number index >> ${REPORT}
+	mail ${RECIPIENT} < ${REPORT}
+	exit 1
+fi
+
+#
+# free text index
+#
+echo Building free text index >> ${REPORT}
+emblfreetext.script >> ${REPORT}
+if test $? -ne 0; then
+	echo Error: Failed to make free text index >> ${REPORT}
+	mail ${RECIPIENT} < ${REPORT}
+	exit 1
+fi
+
+#
+# Author name index
+#
+echo Building author index >> ${REPORT}
+emblauthor.script >> ${REPORT}
+if test $? -ne 0; then
+	echo Error: Failed to make author index >> ${REPORT}
+	mail ${RECIPIENT} < ${REPORT}
+	exit 1
+fi
+
+#
+# brief title index
+#
+echo Building brief title index >> ${REPORT}
+embltitle.script >> ${REPORT}
+if test $? -ne 0; then
+	echo Error: Failed to brief title index >> ${REPORT}
+	mail ${RECIPIENT} < ${REPORT}
+	exit 1
+fi
+
+
+#
+# switch databases
+#
+echo Switching databases >> ${REPORT}
+cd $SEQLIBS
+if test -d $CURDIR; then
+	mv $CURDIR $OLDDIR
+fi
+mv $NEWDIR $CURDIR
+
+#
+# finish up
+#
+echo "" >> ${REPORT}
+echo "===========================README==========================" >> ${REPORT}
+cat $CURDIR/README >> ${REPORT}
+echo "" >> ${REPORT}
+echo "---------------------------README--------------------------" >> ${REPORT}
+echo Update successful >> ${REPORT}
+echo Finished: `date` >> ${REPORT}
+
+mail ${RECIPIENT} < ${REPORT}
+exit 0
+#

@@ -1,0 +1,68 @@
+#! /bin/sh
+# shell script to be run on cele to back up a folder and transfer to project
+# define machine on which QIC drive resides
+cd $HOME/Mac-files-$USER
+
+# next line needed to prevent mt from rewinding at the end of each operation
+unset TAPE
+echo "${1}"
+
+echo
+echo "Which tape drive are you using, the Xabyte (small video tape) or the large"
+echo "format QIC drive (large tape labelled DC 6150)?"
+echo
+echo -n "Enter \"large\" for large tape or \"small\" for small tape "
+read tapestring
+case "$tapestring" in
+	l*) tapenumber=0 ;;
+	s*) tapenumber=1 ;;
+esac
+
+while test ! "$tapenumber"
+ do
+	echo "You must enter either \"large\" or \"small\" for the tape size"
+	read tapestring
+	case "$tapestring" in
+		l*) tapenumber=0 ;;
+		s*) tapenumber=1 ;;
+	esac
+ done
+
+
+echo -n "load tape - how many data sets are already on this tape? "
+read nmark
+while test ! "$nmark"
+  do
+    echo -n "You must give a number of previous files. How many? "
+    read nmark
+  done
+
+mt -f /dev/nrst$tapenumber fsf $nmark
+if test ! $? = 0
+  then
+    echo "tape positioning failed - is tape loaded? or file number correct?"
+    exit 1
+  fi
+
+tar cvef /dev/rst$tapenumber Results?${1}
+if test ! $? = 0
+  then
+    echo "tape archive failed - perhaps tape is write protected"
+    exit 1
+  fi
+
+echo -n "Give project name to move data to (blank for no move): "
+read project
+while test "$project"
+  do 
+    if test -d $HOME/$project
+      then
+        mv -i Results?${1}/* $HOME/$project
+        rm -r Results?${1}
+	exit 0
+      else
+        echo -n "Project directory not found - please retype: "
+	read project
+      fi
+  done
+

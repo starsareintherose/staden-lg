@@ -1,0 +1,27 @@
+#! /bin/csh -f
+set FORMAT = ~wormpub/BioSW/staden/tables/format.awk
+set SUBCLONEDB = subclones
+if (-e subclones) then
+	set SUBCLONEDB = subclones
+else
+	if ($?SUBCLONES) then
+		set SUBCLONEDB = $SUBCLONES
+		if (! -e $SUBCLONEDB) then 
+			echo "Cannot open file $SUBCLONEDB"
+			exit 1
+		endif
+	else
+		echo "Cannot open file"
+		exit 1
+	endif
+endif
+
+echo "Printing last page of $SUBCLONEDB on lp"
+
+set a = `wc -l $SUBCLONEDB`
+# entries_per_page is also explicitly defined in $FORMAT
+set entries_per_page = 50
+@ b = ( ( ( $a[1] - 1 ) / $entries_per_page ) * $entries_per_page ) + 1
+tail +$b $SUBCLONEDB | awk -f $FORMAT | grep -v "^Page -" | tbl | ptroff -Plp
+
+exit 0

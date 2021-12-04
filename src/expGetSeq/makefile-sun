@@ -1,0 +1,91 @@
+#
+# Makefile for getMCH - SunOS fork
+#
+
+#
+# Turning on the AUTO_CLIP switch allows ted to automatically
+# select a left (using the -enzyme option or the .enzyme in the
+# Xted file) and right cutoff on your sequence (using 2 out of
+# 5 N's)
+#
+# Turning on the SAVE_EDITS switch allows the user to maintain
+# copies of their edits, i.e. when you open up ted on a file
+# that you have already edited, the old edits show up in the
+# ted edit window.  The user may also call up any of their
+# past editing sessions.  
+#
+# Turning on the DEF_OUT  switch makes
+# trace_name.seq the default output file name
+#
+# Turning on the QUAL_CODE switch enables LaDeana's trace quality
+# clipping code.
+#
+# Turning on the QUAL_CHECK switch (at the same time as QUAL_CODE)
+# enables the overall trace quality check.
+#
+#SWITCHES = -DAUTO_CLIP  -DDEF_OUT  -DSAVE_EDITS  -DQUAL_CODE -DQUAL_CHECK
+SWITCHES = -DAUTO_CLIP -DQUAL_CODE
+
+#
+# Programs made by this makefile
+#
+PROGS = expGetSeq
+
+#
+# Where the wild things are
+#
+SRC = .
+TEDSRC = $(SRC)/../newted
+INCLUDES = -I$(SRC) -I$(TEDSRC)
+
+#
+# Compiler - debug on
+#
+CC= gcc
+CFLAGS= -g -ansi $(SWITCHES) $(INCLUDES)
+
+
+#
+# Object files
+#
+OBJS=\
+	getMCH.o\
+	seq.o\
+	seqIOPlain.o\
+	seqIOABI.o\
+	seqIOEdit.o\
+	seqIOALF.o\
+	seqIOSCF.o\
+	opp.o\
+	fpoint.o\
+	match.o\
+	mach-io.o\
+	seqRead.o\
+	traceType.o
+
+
+#
+# Linking
+#
+expGetSeq: $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $(OBJS) -static $(LIBS)
+
+#
+# Files requiring simple C compilation (thing.c -> thing.o)
+# 
+%.o : %.c
+	$(CC) $(CFLAGS) -c $<
+%.o : $(SRC)/%.c
+	$(CC) $(CFLAGS) -c $<
+%.o : $(TEDSRC)/%.c
+	$(CC) $(CFLAGS) -c $<
+
+
+#
+# Special dependencies
+#
+clean:
+	rm -f $(PROGS) $(OBJS) *~ *.aux *.log *.bbl *.blg *.dvi *.ps
+
+all: $(PROGS)
+

@@ -1,0 +1,43 @@
+#
+# Makefile for alf - SGI version
+#
+
+SHELL=/bin/sh
+
+#
+# Programs made by this makefile
+#
+PROGS = alfsplit
+
+#
+# Where the wild things are
+#
+SRC = .
+
+#
+# Sun
+#
+CC = cc
+CFLAGS = -g -ansi -prototypes -I$(SRC)/../ted
+
+
+#
+# Make the programs
+#
+alfsplit: alfsplit.o
+	$(CC) -o alfsplit alfsplit.o $(LIBS)
+
+2rs: 2rs.o
+	$(CC) -o 2rs 2rs.o $(LIBS)
+
+
+#
+# Special dependencies
+#
+all: $(PROGS)
+
+clean:
+	/bin/rm -f $(PROGS) *.o *~
+
+%.o : $(SRC)/%.c
+	$(CC) $(CFLAGS) -c $<

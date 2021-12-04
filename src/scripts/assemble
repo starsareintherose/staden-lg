@@ -1,0 +1,168 @@
+#
+# IMPORTANT NOTICE:
+#     Assemble will only work with bap version 12.1 or greater
+#
+# Script to assemble data into a database using a file of file names.
+# The batch of readings is screened against two vectors. Any matching
+# the vectors have their names added to growing files of vector failures.
+# Those that pass are assembled. Those that fail assembly have their names
+# added to a growing list of failures. Output from 
+# the initial assembly is directed to a file that is deleted, hence
+# nothing appears on the screen. The failed files are then recompared
+# with the output directed to another file. This file is printed then
+# both output files are deleted. The procedure starts by making a copy
+# of the database to copy X (preceded by its deletion!!!!).
+#
+# use: assemble fileoffilenames
+#
+unset noclobber
+onintr bailout
+set PROJECT = F02A9
+set VECTOR_SCORE = 20
+set ASSEMBLY_SCORE = 20
+set MAX_READ_PADS = 25
+set MAX_CONTIG_PADS = 25
+set MAX_MISMATCH_1 = 8
+set MAX_MISMATCH_2 = 15
+if ($#argv != 1) then
+echo "Usage: assemble fileoffilenames"
+	exit 1
+endif
+if  (! -f $1) then
+echo "File of file names not found"
+	exit 2
+endif
+if  (! -f `head -1 $1`) then
+echo "First file in file of file names not found"
+	exit 3
+endif
+echo -n "Assembling data from file of filenames "; echo -n $1
+echo  -n " into data base "; echo $PROJECT
+echo -n "Deleting database backup: "; echo -n $PROJECT
+echo " version X"
+\rm -f $PROJECT.RLX
+\rm -f $PROJECT.SQX
+\rm -f $PROJECT.ARX
+\rm -f $PROJECT.CCX
+\rm -f $PROJECT.TGX
+bap <<endofinput
+3
+y
+$PROJECT
+0
+
+7
+1
+out$$
+
+24
+X
+1000
+
+18
+y
+$1
+passm13$$
+M13MP18_VECTOR
+$VECTOR_SCORE
+
+18
+y
+passm13$$
+passblue$$
+BLUE_VECTOR
+$VECTOR_SCORE
+
+20
+Y
+Y
+Y
+passblue$$
+fail$$
+1
+Y
+$ASSEMBLY_SCORE
+3
+$MAX_READ_PADS
+$MAX_CONTIG_PADS
+$MAX_MISMATCH_1
+
+7
+y
+
+7
+1
+show$$
+
+20
+y
+n
+y
+fail$$
+fail2$$
+1
+y
+$ASSEMBLY_SCORE
+3
+$MAX_READ_PADS
+$MAX_CONTIG_PADS
+$MAX_MISMATCH_2
+
+25
+!
+
+7
+y
+
+!
+endofinput
+cat fail2$$ >> $PROJECT.FAILS
+echo -n "Assembly for project ">>show1$$
+echo -n  $PROJECT >>show1$$
+echo -n " on " >>show1$$
+date >> show1$$
+echo -n "In directory " >> show1$$
+pwd >> show1$$
+echo -n "Input file of file names ">>show1$$
+echo $1 >> show1$$
+echo "Parameters used" >>show1$$
+echo -n "Minimum initial match  " >>show1$$
+echo $ASSEMBLY_SCORE >> show1$$
+echo -n "Maximum pads in each reading  " >>show1$$
+echo $MAX_READ_PADS >> show1$$
+echo -n "Maximum pads in contig  " >>show1$$
+echo $MAX_CONTIG_PADS >> show1$$
+echo -n "Maximum percent mismatch (for assembly)  " >>show1$$
+echo $MAX_MISMATCH_1 >> show1$$
+echo -n "Maximum percent mismatch (for report)  " >>show1$$
+echo $MAX_MISMATCH_2 >> show1$$
+echo "List of m13mp18 failures">>show1$$
+cat $1 | tr -d " " | sort >! sortin$$
+cat passm13$$ | tr -d " " | sort >! sortm13$$
+comm -23 sortin$$ sortm13$$ >> show1$$
+echo "List of bluescribe failures">>show1$$
+#assuming already have sortm13$$
+cat passblue$$ | tr -d " " | sort >! sortblue$$
+comm -23 sortm13$$ sortblue$$ >> show1$$
+comm -23 sortin$$ sortm13$$ >> $PROJECT.M13
+comm -23 sortm13$$ sortblue$$ >> $PROJECT.BLUE
+echo "List of entry failures ">>show1$$
+cat fail2$$ >> show1$$
+#cp fail$$ show1$$
+echo "Alignments for entry failures ">>show1$$
+cat show$$ >> show1$$
+lpr show1$$
+bailout:
+\rm fail$$
+\rm fail2$$
+\rm -f out$$
+\rm -f show$$
+\rm -f show1$$
+\rm -f passm13$$
+\rm -f passblue$$
+\rm -f sortin$$
+\rm -f sortm13$$
+\rm -f sortblue$$
+#cat $PROJECT.FAILS
+;
+

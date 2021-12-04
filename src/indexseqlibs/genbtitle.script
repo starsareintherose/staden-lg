@@ -1,0 +1,68 @@
+#! /bin/csh -f
+#
+# script to make a title or brief index for the genbank library
+#
+# NOTE only active for primate file
+#
+
+echo "genbtitle.script Version 1.0"
+echo ""
+
+set RM = "echo /bin/rm -f"
+set SORT = "sort -T tmp"
+
+#
+#
+#
+
+genbtitle1 gbpri.seq gbpri.list
+if ( $status ) goto abort
+genbtitle1 gbrod.seq gbrod.list
+if ( $status ) goto abort
+genbtitle1 gbmam.seq gbmam.list
+if ( $status ) goto abort
+genbtitle1 gbvrt.seq gbvrt.list
+if ( $status ) goto abort
+genbtitle1 gbinv.seq gbinv.list
+if ( $status ) goto abort
+genbtitle1 gbpln.seq gbpln.list
+if ( $status ) goto abort
+genbtitle1 gborg.seq gborg.list
+if ( $status ) goto abort
+genbtitle1 gbbct.seq gbbct.list
+if ( $status ) goto abort
+genbtitle1 gbrna.seq gbrna.list
+if ( $status ) goto abort
+genbtitle1 gbvrl.seq gbvrl.list
+if ( $status ) goto abort
+genbtitle1 gbphg.seq gbphg.list
+if ( $status ) goto abort
+genbtitle1 gbsyn.seq gbsyn.list
+if ( $status ) goto abort
+genbtitle1 gbuna.seq gbuna.list
+if ( $status ) goto abort
+
+${SORT} gbpri.list gbrod.list gbmam.list gbvrt.list gbinv.list gbpln.list gborg.list gbbct.list gbrna.list gbvrl.list gbphg.list gbsyn.list gbuna.list >! title.sorted
+if ( $status ) goto abort
+${RM} gbpri.list gbrod.list gbmam.list gbvrt.list gbinv.list gbpln.list gborg.list gbbct.list gbrna.list gbvrl.list gbphg.list gbsyn.list gbuna.list 
+
+#${SORT} gbpri.list  >! title.sorted
+#if ( $status ) goto abort
+#${RM} gbpri.list
+
+
+title2 title.sorted brief.idx
+if ( $status ) goto abort
+${RM} title.sorted
+
+echo "Completion successful"
+echo ""
+
+exit 0
+
+#
+# Abort
+#
+abort:
+echo "genbtitle.script: aborting due to serious error"
+exit 2

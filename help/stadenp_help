@@ -1,0 +1,26 @@
+  Standard Staden Programs
+
+  gip        Gel input program
+  sap        Sequence assembly program
+  (x)dap     Sequence assembly program
+  (x)nip     Nucleotide interpretation program
+  (x)pip     Protein interpretation program
+  (x)sip     Similarity investigation program
+  (x)mep     Motif exploration program
+  nipl       Nucleotide interpretation program (library)
+  pipl       Protein interpretation program (library)
+  sipl       Similarity investigation program (library) 
+  Those with (x) have both tektronix (say nip) and x (say xnip) versions.
+  Environment variables for help files
+  HELPSAP    sap
+  HELPDAP    dap
+  HELPGIP    gip
+  HELPNIP    nip
+  HELPPIP    pip
+  HELPSIP    sip
+  HELPMEP    mep
+  HELPSTADEN Introduction and user interface
+  e.g. to read HELPSTADEN type  'more $HELPSTADEN'
+ 
+
+

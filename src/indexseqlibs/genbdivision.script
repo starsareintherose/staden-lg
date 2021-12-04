@@ -1,0 +1,46 @@
+#! /bin/csh -f
+#
+# script to create an division index for the genbank library in codata format
+#
+
+echo "genbdivision.script Version 1.0"
+echo ""
+
+set RM = "/bin/rm -f"
+
+#
+#
+#
+
+
+awk '{printf("%-12.12s %d\n",$1,$2);}' << EOF >! division.list
+gbbct.seq 1
+gbinv.seq 2
+gbmam.seq 3
+gborg.seq 4
+gbphg.seq 5
+gbpln.seq 6
+gbpri.seq 7
+gbrna.seq 8
+gbrod.seq 9
+gbsyn.seq 10
+gbuna.seq 11
+gbvrl.seq 12
+gbvrt.seq 13
+EOF
+
+division division.list division.lkp
+if ( $status ) goto abort
+${RM} division.list
+
+echo "Completion successful"
+echo ""
+
+exit 0
+
+#
+# Abort
+#
+abort:
+echo "genbdivision.script: aborting due to serious error"
+exit 2

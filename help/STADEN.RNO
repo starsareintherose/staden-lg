@@ -1,0 +1,354 @@
+.npa
+.left margin2
+.para
+Introduction to the Staden sequence analysis package and its user interface
+.PARA
+The package contains the following programs:
+.lit
+
+  GIP     Gel input program
+  SAP     Sequence assemble program
+  NIP     Nucleotide interpretation program
+  PIP     Protein interpretation program
+  SIP     Similarity investigation program
+  MEP     Motif exploration program
+  NIPL    Nucleotide interpretation program (library)
+  PIPL    Protein interpretation program (library)
+  SIPL    Similarity investigation program (library)
+
+.end lit
+.left margin2
+GIP uses a digitiser for entry of DNA sequences from 
+autoradiographs.
+.left margin2
+SAP handles everything relating to assembling gel 
+readings in order to produce a consensus sequence. It can also deal with 
+families of protein sequences.
+.left margin2
+NIP provides functions for analysing and interpretting
+individual nucleotide sequences.
+.left margin2
+PIP provides functions for analysing and interpretting
+individual protein sequences.
+.left margin2
+MEP analyses families of nucleotide sequences to help discover new motifs.
+.left margin2
+NIPL performs pattern searches on nucleotide sequence libraries.
+.left margin2
+PIPL performs pattern searches on protein sequence libraries.
+.left margin2
+SIP provides functions for comparing and aligning 
+pairs of protein or nucleotide sequences.
+.left margin2
+SIPL searches nucleotide and protein sequence
+libraries for entries similar to probe sequences.
+.left margin2
+.sk1
+.para
+Documentation
+.para
+As is explained below, the 
+programs SAP, NIP, PIP, SIP and MEP have online help,
+and the help files have the names: HELPSAP, HELPNIP, HELPPIP, HELPSIP, 
+HELPMEP. These 
+files can be displayed on the screen or printed using the appropriate 
+commands. Currently the help for the other programs is also contained in 
+these files. For example help for NIPL is in HELPNIP. This file is called 
+HELPSTADEN.
+.para
+Sequence formats
+.para
+ The shotgun sequencing program SAP deals only with simple 
+text files for gel readings, and is a self-contained system.
+However as there is still no single agreed format
+ for finished sequences or for libraries of sequences,
+the other programs in the package can read data that is stored in several ways.
+.para
+The analytical programs can read individual sequences stored in the following
+formats: 
+Staden, EMBL, Genbank, PIR (also known as NBRF), and GCG, but for storing whole 
+libraries we use only PIR format. In addition 
+these programs can perform a number of 
+simple operations using libraries stored in this format. They can extract 
+entries by entry name, can search titles for keywords, can search the whole 
+of the annotation files for keywords, and can extract annotations for any 
+named entry.
+We reformat all sequence libraries into PIR format. Currently we 
+have NBRF, EMBL, SWISSPROT and VECBASE libraries in PIR format.
+.para
+The library searching programs operate only
+on sequences stored in PIR format.
+.para
+The analytical programs
+will operate with uppercase or lowercase sequence
+characters. In addition T and U are equivalent. SAP uses uppercase letters 
+for original gel readings and lowercase letters for characters that are 
+corrected by the automatic editor.
+Programs NIP  and PIP use IUB symbols for redundancy in back translations 
+and for sequence searches.
+The symbols are shown below.
+.LIT
+
+
+            NC-IUB SYMBOLS
+
+      A,C,G,T
+      R        (A,G)        'puRine'
+      Y        (T,C)        'pYrimidine'
+      W        (A,T)        'Weak'
+      S        (C,G)        'Strong'
+      M        (A,C)        'aMino'
+      K        (G,T)        'Keto'
+      H        (A,T,C)      'not G'
+      B        (G,C,T)      'not A'
+      V        (G,A,C)      'not T'
+      D        (G,A,T)      'not C'
+      N        (G,A,C,T)    'aNy'
+
+.end lit
+.PARA
+The user interface
+.PARA
+The user interface is common to all programs. 
+It consists of a set of menus and a uniform way
+ of presenting choices and obtaining input 
+from the user. This section describes: the 
+menu system; how options are selected and  other choices made; how values
+ are supplied to the program;  how help is obtained, and 
+how to escape from any part of a program. In addition it gives information 
+about saving results in files and the use of graphics for presenting 
+results.
+.para
+Menus
+.para
+Each program has several menus and numerous options. 
+Each menu or option has a unique number that is used to 
+identify it. Menu numbers are distinguished from 
+option numbers by being preceded by the letter 
+m (or M, all programs make no distinction between 
+upper and lower case letters). With the exception of 
+some parts of program SAP, the menus are not hierachical, 
+rather the options they each contain are simply lists of 
+related functions and their identifying numbers. 
+Therefore options can be selected independently
+ of the menu that is currently being shown on the 
+screen,  and the menus are simply memory aides. 
+All options and menus are selected by typing their 
+option number when the programs present the prompt 
+.para
+  "? Menu or option number =". 
+.para
+ To select a menu type its number preceded by 
+the letter M. To select an option type its number.
+If you type only "return" you will get menu m0 
+which is simply a list of menus. If you select an 
+option you will return to the current menu after the function is completed.
+.para
+ When you select an option, in many cases the 
+program will immediately perform the operation 
+selected without further dialogue.  If you precede an option 
+number by the letter d (e.g. D17), you 
+will force the program to offer dialogue about the selected option 
+before the function operates, 
+hence allowing you to change the value of any of its parameters.  If 
+you precede an option number by the symbol ? (e.g. ?17), 
+you will be given help on the option (here 17). 
+.para
+Where possible, equivalent or identical options have been given the same
+numbers in all programs, and so users quickly learn the numbers for 
+the functions they employ most often.
+.para
+Help
+.para
+As mentioned above, help about each option can be obtained by 
+preceding the option number  by the symbol ? when you are presented 
+with the prompt "? Menu or option number", but there are two further 
+ways of obtaining help. Whenever the program asks a question 
+you can respond by typing the symbol ? and you will receive information 
+about the current option. In addition, option number 1 
+in all the programs will give help on all of a programs functions.
+.para
+Quitting
+.para
+To exit from any point in a program you type ! for quit. 
+If a menu is on the screen this will stop the program, otherwise 
+you will be returned to the last menu.
+.Para
+Other interactions
+.para
+Questions are  presented in a few restricted ways. 
+In all cases typing only "return" in response to a question means 
+yes, and typing N or n means no.
+.para
+Obvious opposites such as "clear screen" and "keep picture" 
+are presented with only the default shown. For example 
+in this case the default is generally "keep picture" so the 
+program will display: 
+.para
+"(y/n) (y) Keep picture"
+.para
+and the picture will be retained if the user types anything other than N or 
+n, (in which case the screen will be cleared).
+.para
+Where there are choices that are not obvious opposites, or 
+there are more than two choices, two further conventions are used: 
+"radio buttons" and "check boxes".
+.para
+
+Radio buttons are used when only one of a number of choices can be 
+made at any one time. The choices are presented arranged one above the 
+other, each choice with a number for its selection, and the default 
+choice marked with an X. For example in the restriction 
+enzyme search routine the following choices are offered:
+.para
+.lit
+
+   Select output mode
+   1 order results enzyme by enzyme
+   2 order results by positon
+ X 3 show only infrequent cutters
+   4 show names above the sequence
+ ? Selection (1-4) (3) =
+
+.end lit
+Any single option can be selected by typing the option number, 
+and the default option, (here shown as 3), is also obtained by 
+typing only "return". Again help can be obtained by typing ? and 
+you can quit by typing !.
+.para
+Check boxes are used when any number of a set of choices can be 
+made (i.e. the choices are not exclusive). Choices are 
+made by typing choice numbers.  Each choice can be considered 
+as a switch whose setting is reversed when it is selected. Choices that are 
+currently switched on are marked with an X. 
+The user quits from making selections by typing only 
+"return". For example in the routine that plots base composition 
+you can plot the frequencies of any combination of bases, e.g. only 
+A, or A+T, or A+T+G  etc. 
+The following check box is offered to the user:
+.lit
+
+  X 1 T
+    2 C
+  X 3 A
+    4 G
+  ? Selection (1-4) () =
+
+.END LIT
+As shown this will plot the A+T composition. To switch off  T 
+you select 1, to switch on  C you select 2, etc, to quit, 
+having set the bases required you type only "return".
+.para
+Input of numerical values
+.para
+All input of integer or decimal numbers is presented in a 
+standard way with the allowed range shown in brackets and the default 
+value also in brackets. For example:
+.para
+ ? span (5-31) (11) =
+.para
+In this example you could type any number between 5 and 31, 
+or "return" only, or ! or ? (see above). Any other input will cause the 
+program to ask the question again. Typing only "return" gives the default 
+value (here 11).
+.para
+Use of the bell
+.para
+The programs use the bell to indicate that a task is completed. 
+This allows users to read textual results before they are scrolled up off 
+the screen, or to look at a plot before it is scrolled over by the menus. 
+When the bell sounds, the programs will wait
+ until return is typed. You can quit from these points by typing ! but 
+no help is available.
+.para
+Printing and saving results in files
+.para
+A few of the functions in the programs automatically  write their textual
+results 
+to disk files,  but for most functions you can choose whether results
+appear on the terminal screen or go to a file. This applies to both text 
+and graphical results.
+For these functions 
+the normal, or default, place for results to 
+appear is on the screen, and users need to decide before the 
+function is selected if they want to redirect the results to a file. 
+In all programs, option number 7, "Direct output to disk" gives control 
+over whether results appear on the screen or go to a file. When a program 
+is started results will be sent to the screen. If option 7 is selected 
+users will be given the choice of redirecting either text or graphics to a 
+file. The program will then ask users to supply a file name. From that 
+point on all results will be sent to the file until option 7 is selected again, 
+in which case the "redirection file" will be closed, and results will start 
+to appear on the screen.
+.para
+If these files contain textual results they can be looked at 
+from within the programs 
+by using option 6, "List a text file". Once you leave the program 
+you can use an appropriate system command to print the files. 
+There is no function within the programs to direct files to a printer.
+.para
+The converse of the above is also possible. That 
+is, it is possible to redirect results that would normally go to file, 
+so that they appear instead on the screen. This is often useful as a way 
+of checking results before saving them in a file. On a VAX using 
+VMS you do this by typing TT: for the name of the file that the 
+program would create. TT: is what VMS calls the screen.
+.para
+Use of graphics
+.para
+The analytical programs including NIP, PIP and SIP present the results of 
+many of their analyses graphically. The position at which the results for 
+any function appear on the screen is defined relative to a notional users 
+"drawing board" of dimension 10,000 by 10,000. This drawing board fills the 
+screen and results are drawn in windows defined using symbols x0,yo and 
+xlength,ylength, 
+where x0,y0 is the position of the bottom left hand corner of the window,
+  and xlength is the width of the window and ylength the 
+height of the window.
+.lit
+
+   --------------------------------------------------------- 10,000
+   1                                                       1
+   1       --------------------------------------   ^      1
+   1       1                                    1   1      1
+   1       1                                    1   1      1
+   1       1                                    1 ylength  1
+   1       1                                    1   1      1
+   1       1                                    1   1      1
+   1       --------------------------------------   v      1
+   1  x0,y0^                                               1
+   1       <---------------xlength-------------->          1
+   ---------------------------------------------------------      1
+   1                                                   10,000
+
+.end lit
+.para
+ The window positions for each option are read from a file 
+when a program is started. If required individual users could have their
+own set of plot positions, and also the positions
+ can be redefined from within the 
+programs using option number 14.
+.para
+For those analyses that draw continuous lines to represent results 
+(for example a plot of base composition) the user is asked to supply the 
+"Plot interval". All the analyses produce a value for every point along the 
+sequence but often it is unnecessary to actually plot the 
+values for all the points.
+The plot interval is simply the distance between the points 
+shown on the screen. If the user selects a plot interval of 1, every point 
+will be plotted; a plot interval of 3 will show every third point. It is a 
+way of speeding up the analyses.
+.para
+Saving graphics
+.para
+Many terminals are not capable of dumping their screen contents to a 
+file for subsequent printing. One convenient way of obtaining hard copy 
+of graphical results is to use a micro computer as a terminal. On 
+the Macintosh we use the terminal emulator versa
+termPro. This allows graphics to be saved as 
+Macintosh files that can be annotated and printed using 
+Macdraw and other painting programs. 
+.para
+Alternatively graphics can be redirected to a file and printed using a 
+laser printer with tektronix capability (see 
+"Printing and saving results in files").

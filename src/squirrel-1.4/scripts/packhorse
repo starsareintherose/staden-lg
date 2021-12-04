@@ -1,0 +1,84 @@
+#! /bin/csh -f
+#
+# File: packhorse
+# Version: 1.1
+#
+# Author: Simon Dear
+#         MRC Laboratory of Molecular Biology
+#	  Hills Road
+#	  Cambridge CB2 2QH
+#	  United Kingdom
+#
+# Created: 13 October 1992
+# Updated:
+#
+# Description:
+#       C shell script to back ABI results files into one directory
+#
+# Usage:
+#	packhorse dir [dir...] directory
+#
+
+# default number
+set number = 0
+
+if ($#argv < 2) then
+    echo 'Usage: packhorse dir [dir...] directory'
+    exit 2
+endif
+
+set packdir = "$argv[$#argv]"
+
+set logfile = "$packdir"/.PACK-LOG
+
+if (! -e "$packdir") then
+    mkdir "$packdir"
+else if (! -d "$packdir") then
+    echo "$packdir" exists but is not a directory
+    exit 1
+else if ( -e "$packdir"/.rsrc ) then
+    echo "$packdir" is a Results folder...abandoned
+    exit 1
+else if ( ! -e "$logfile" ) then
+    echo "$packdir" is not a pack directory
+    exit 1
+endif
+
+touch "$logfile"
+
+set diri = 1
+set dirn = $#argv ; @ dirn --
+while ( $diri <= $dirn )
+    set dir = "$argv[$diri]"
+    echo Packing "$dir" into "$packdir" | tee -a "$logfile"
+    # check number
+    set a = `find "$packdir" -name "Sample ${number}[0-9][0-9]" -print`
+    while ( $#a != 0 ) 
+	@ number ++
+        set a = `find "$packdir" -name "Sample ${number}[0-9][0-9]" -print`
+    end
+    # set files = `find "$dir" -prune -name "Sample [0-9][0-9]" -print`
+    set files = "$dir"/"Sample "[0-9][0-9]{,.[0-9]}
+
+    set filei = 1
+    while ( $filei <= $#files )
+	set file = "$files[$filei]"
+	set newfile = `echo "$file" | sed 's/.*Sample /Sample '${number}'/'`
+	echo "$file -> $packdir/$newfile" | tee -a "$logfile"
+	mv "$file" "$packdir"/"$newfile"
+	@ filei ++
+    end
+
+    # remove directory, but only if no files left
+    # >100 disk blocks is arbitrary, but should trap any valid ABI files
+    set big_files = `find "$dir" -size +100 -print`
+    if ( $#big_files == 0 ) then
+	echo Removing directory "$dir" | tee -a "$logfile"
+	/bin/rm -r "$dir"
+    else
+	echo Not removing directory "$dir" - large files present | tee -a "$logfile"
+    endif
+
+    @ diri ++
+end
+

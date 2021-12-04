@@ -1,0 +1,40 @@
+#
+# Makefile for abi - Alpha version
+#
+
+#
+# Programs made by this makefile
+#
+PROGS = getABISampleName
+
+#
+# Where the wild things are
+#
+SRC = .
+
+#
+# Alpha
+#
+CC = cc
+CFLAGS = -g -std1 -ieee_with_inexact -I$(SRC)/../ted
+LD = cc
+LDFLAGS = -g -non_shared
+
+#
+# Make the programs
+#
+getABISampleName: getABISampleName.o
+	$(LD) $(LDFLAGS) -o getABISampleName getABISampleName.o
+
+
+#
+# Special dependencies
+#
+
+%.o : $(SRC)/%.c
+	$(CC) $(CFLAGS) -c $<
+
+all: $(PROGS)
+
+clean:
+	/bin/rm -f $(PROGS) *.o *~

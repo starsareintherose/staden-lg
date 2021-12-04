@@ -1,0 +1,394 @@
+C     author Rodger Staden
+C     22-oct-1992 introduced mask
+C     8-jul-1992 allowed words as short as 2 letters
+C     16-mar-1990 removed escape after bpause
+C      5-4 90 changed getdev to redir (see redir)
+C     22-6-90 Added work for use by makeds (it had its own array
+C     but it was too small.)
+C     14-11-90 replaced radio by radion
+C     13-04-91 removed initial CLEARV
+      SUBROUTINE FMAIN()
+      PARAMETER ( MAXSEQ = 1000,
+     +            MAXWRD = 8,
+     +            IDM    = 5,
+     +            MAXDEV = 7,
+     +            MAXDIC = (IDM-1)**MAXWRD,
+     +            MAXLIS = 100,
+     +            MAXCHR = 20000,
+     +            MINMEN = -3,
+     +            MAXMEN = 33,
+     +            MAXMAS = 25)
+      CHARACTER SEQ(MAXCHR)
+      CHARACTER*60 FILNAM,HELPF,POINTF,FILMAR
+      PARAMETER ( HELPF = 'MEPHELP',
+     +            POINTF = 'MEPHPNT',
+     +            FILMAR = 'MEPMARG')
+      INTEGER SEQN(MAXCHR),DW(MAXDIC),DEVNOS(MAXDEV),DS(MAXDIC)
+      INTEGER LENSEQ(MAXSEQ),DM(MAXDIC),DT(MAXDIC),DH(MAXDIC)
+      INTEGER TEMPC(MAXLIS),TEMPP(MAXLIS),TEMPI(MAXLIS),TEMPN(MAXLIS)
+      INTEGER HELPS(0:MAXMEN),HELPE(0:MAXMEN),WT(4,MAXWRD)
+      INTEGER MARGB(MAXMEN),MARGT(MAXMEN),WORK(MAXCHR)
+      REAL COMP(5)
+      PARAMETER (MAXPRM = 27)
+      CHARACTER PROMPT(3)*(MAXPRM)
+      LOGICAL MASK(MAXMAS)
+      CALL INTHLP('mep', MAXMEN)
+      CALL UNITNO(KBIN,KBOUT,DEVNOS,MAXDEV)
+      CALL OPENGR(DEVNOS(7))
+      CALL INITLU(IDM)
+      WRITE(KBOUT,*)' MEP (Motif exploration program) V2.0 Oct 1992'
+      WRITE(KBOUT,*)' Author Rodger Staden'
+      IGORT = 0
+      IDEV = KBOUT
+      IDEVH = DEVNOS(3)
+      IDEVO = DEVNOS(5)
+      CALL SETHLP(HELPS,HELPE,0,MAXMEN,POINTF,IDEVH,KBOUT)
+C   GET SCREEN AND MARGIN SIZES
+      CALL GETMRG(ISXMAX,ISYMAX,MARGL,MARGR,MARGB,MARGT,
+     +MAXMEN,DEVNOS(2),FILMAR)
+      CALL INITGR(KBIN,KBOUT,HELPS(0),HELPE(0),HELPF,IDEVH)
+1     CONTINUE
+      CALL RSEQ(DEVNOS(1),DEVNOS(2),FILNAM,SEQ,MAXCHR,MAXSEQ,LENSEQ,
+     +NFILE,LMAX,KBIN,KBOUT,HELPS(3),HELPE(3),HELPF,IDEVH,IOK)
+      IF(IOK.NE.0) STOP
+      CALL CONNUM(SEQ,SEQN,LENSEQ(NFILE))
+      I1 = 1
+      I2 = LMAX
+      XMIN = I1
+      XMAX = I2
+      YMIN = 1
+      YMAX = NFILE - 1
+      CALL GETCOM(SEQN,LENSEQ(NFILE),COMP)
+      ICOMP = 1
+      KCOMP = 0
+      LENGTH = 6
+      LMASK = LENGTH
+      MAXPOS = (IDM-1)**LENGTH
+      NFUZ = 1
+      IDICW = 1
+      IDICM = 0
+      IDICH = 0
+      IDICS = 1
+      DO 2 I=1,LMASK
+        MASK(I) = .TRUE.
+ 2    CONTINUE
+10    CONTINUE
+      CALL VT100M
+      CALL BPAUSE(KBIN,KBOUT,IOK)
+C      IF(IOK.NE.0) GO TO 9999
+      CALL MENU(NOPT,KOPT,MOPT,MAXMEN,MINMEN,KBIN,KBOUT,
+     +HELPS,HELPE,HELPF,IDEVH)
+      IF(NOPT.EQ.2) GO TO 9999
+      IF(NOPT.EQ.3)GO TO 1
+C
+C   help
+C
+      IF(NOPT.EQ.1) THEN
+        CALL HELP(HELPS,HELPE,0,MAXMEN,HELPF,IDEVH,
+     +  KBIN,KBOUT)
+        GO TO 10
+      END IF
+      IF(NOPT.EQ.4)THEN
+        MN = 1
+        MX = LMAX
+        CALL GETINT(MN,MX,I1,'Start position',
+     +  IVAL,KBIN,KBOUT,HELPS(NOPT),HELPE(NOPT),HELPF,IDEVH,IOK)
+        IF(IOK.NE.0) GO TO 10
+        I1 = IVAL
+        MN = I1 + LENGTH - 1
+        MX = LMAX
+        CALL GETINT(MN,MX,I2,'End position',
+     +  IVAL,KBIN,KBOUT,HELPS(NOPT),HELPE(NOPT),HELPF,IDEVH,IOK)
+        IF(IOK.NE.0) GO TO 10
+        I2 = IVAL
+        IDICW = 1
+        IDICM = 0
+        IDICH = 0
+        IDICS = 1
+       GO TO 10
+      END IF
+      IF(NOPT.EQ.5) THEN
+        LINLEN = 50
+        CALL LISTN(SEQ,MAXCHR,LENSEQ,NFILE,LMAX,LINLEN,I1,I2,
+     +  IDEV,KBOUT)
+      END IF
+      IF(NOPT.EQ.6)THEN
+        CALL TTEXT(DEVNOS(4),FILNAM,KBIN,KBOUT,
+     +  HELPS(NOPT),HELPE(NOPT),HELPF,IDEVH)
+        GO TO 10
+      END IF
+      IF(NOPT.EQ.7)THEN
+C   GET DISK OUTPUT FILE ON UNIT DEVNOS(2) IF REQUIRED
+        CALL REDIR(IDEV,DEVNOS(6),DEVNOS(7),IGORT,FILNAM,KBIN,KBOUT,
+     +  HELPS(NOPT),HELPE(NOPT),HELPF,IDEVH)
+        GO TO 10
+      END IF
+      IF(NOPT.EQ.33)THEN
+        CALL HAIRPN(SEQ,MAXCHR,LENSEQ,NFILE,LMAX,
+     +  DW,DM,DT,LMAX,
+     +  MARGL,MARGR,MARGB(NOPT),MARGT(NOPT),ISXMAX,ISYMAX,
+     +  KBOUT,KBIN,KBOUT,
+     +  HELPS(NOPT),HELPE(NOPT),HELPF,IDEVH)
+        IDICW = 1
+        IDICH = 0
+        IDICM = 0
+        GO TO 10
+      END IF
+      IF(NOPT.EQ.17)THEN
+C  PLOT
+        IB = 1
+        PROMPT(1) = 'Plot match positions'
+        PROMPT(2) = 'Plot histogram of matches'
+        CALL RADION('Select plot mode',PROMPT,2,IB,
+     +  HELPS(NOPT),HELPE(NOPT),HELPF,IDEVH,KBIN,KBOUT)
+        IF(IB.LT.1) GO TO 10
+        IF(IB.EQ.1) THEN
+          CALL PLOTP(SEQ,MAXCHR,LENSEQ,NFILE,DT,LMAX,KBIN,KBOUT,
+     +    MARGL,MARGR,MARGB(NOPT),MARGT(NOPT),ISXMAX,ISYMAX,
+     +    I1,I2,IDEV,
+     +    HELPS(NOPT),HELPE(NOPT),HELPF,IDEVH)
+        ELSE
+          CALL PLOTH(SEQ,MAXCHR,LENSEQ,NFILE,DT,LMAX,KBIN,KBOUT,
+     +    MARGL,MARGR,MARGB(NOPT),MARGT(NOPT),ISXMAX,ISYMAX,I1,I2,
+     +    HELPS(NOPT),HELPE(NOPT),HELPF,IDEVH)
+        END IF
+        GO TO 10
+      END IF
+C   XHAIRS
+      IF(NOPT.EQ.13)THEN
+      CALL CLEARV
+      CALL XHAIRS(XMAX,XMIN,YMAX,YMIN,MARGL,MARGR,
+     +MARGB(NOPT),MARGT(NOPT),
+     +ISXMAX,ISYMAX,IHX,IHY,N,KBOUT)
+      GO TO 10
+      END IF
+C   RULER
+      IF(NOPT.EQ.12)THEN
+           WRITE(KBOUT,*)' Horizontal scale'
+           ISH1=XMIN
+           ISH2=XMAX
+           CALL RULER(ISH1,ISH2,MARGL,MARGR,MARGB(NOPT),MARGT(NOPT),
+     +               ISXMAX,ISYMAX,KBIN,KBOUT,1,
+     +          HELPS(NOPT),HELPE(NOPT),HELPF,DEVNOS(3))
+           WRITE(KBOUT,*)' Vertical scale'
+           ISV1=YMIN
+           ISV2=YMAX
+           CALL RULER(ISV1,ISV2,MARGL,MARGR,MARGB(NOPT),MARGT(NOPT),
+     +               ISXMAX,ISYMAX,KBIN,KBOUT,2,
+     +          HELPS(NOPT),HELPE(NOPT),HELPF,DEVNOS(3))
+           GO TO 10
+      END IF
+C   CLEAR GRAPHICS
+      IF(NOPT.EQ.10)THEN
+      CALL CLEARG
+      GO TO 10
+      END IF
+C   KLEAR TEXT
+      IF(NOPT.EQ.11)THEN
+      CALL CLEARV
+      GO TO 10
+      END IF
+C  CHANGE MARGINS
+      IF(NOPT.EQ.14)THEN
+        CALL MARGC(ISXMAX,ISYMAX,MARGL,MARGR,MARGB,MARGT,
+     +  HELPS(NOPT),HELPE(NOPT),MAXMEN,HELPF,IDEVH,KBIN,KBOUT)
+        GO TO 10
+      END IF
+C  LABEL
+      IF(NOPT.EQ.15)THEN
+      CALL LABLER(KBIN,KBOUT,ISXMAX,ISYMAX,
+     +HELPS(NOPT),HELPE(NOPT),HELPF,DEVNOS(3))
+      GO TO 10
+      END IF
+      IF(NOPT.EQ.20)THEN
+C        MN = 2
+C        MX = MAXWRD
+C        CALL GETINT(MN,MX,LENGTH,'Word length',
+C     +  IVAL,KBIN,KBOUT,HELPS(NOPT),HELPE(NOPT),HELPF,IDEVH,IOK)
+C        IF(IOK.NE.0) GO TO 10
+C        LENGTH = IVAL
+C
+C  DEFINE A MASK
+C
+        WRITE(KBOUT,*)'Define word as a mask'
+        LMASK = MAXMAS
+        LENGTH = MAXWRD
+        CALL GMASK(KBIN,KBOUT,MASK,LMASK,LENGTH,
+     +    HELPS(NOPT),HELPE(NOPT),HELPF,IDEVH)
+        MAXPOS = (IDM-1)**LENGTH
+        IDICS = 1
+        IDICW = 1
+        IDICM = 0
+        IDICH = 0
+      ELSE IF (NOPT.EQ.22) THEN
+        CALL SHOWST(NFUZ,I1,I2,KCOMP,ICOMP,IDICW,IDICS,
+     +  IDICM,IDICH,MASK,LMASK,KBOUT)
+      ELSE IF (NOPT.EQ.21)THEN
+        MN = 0
+        MX = 2
+        CALL GETINT(MN,MX,NFUZ,'Number of mismatches',
+     +  IVAL,KBIN,KBOUT,HELPS(NOPT),HELPE(NOPT),HELPF,IDEVH,IOK)
+        IF(IOK.NE.0) GO TO 10
+        NFUZ = IVAL
+        IDICW = 1
+        IDICM = 0
+        IDICH = 0
+      ELSE IF (NOPT.EQ.18)THEN
+        IB = KCOMP + 1
+        PROMPT(1) = 'Search input strand'
+        PROMPT(2) = 'Search complementary strand'
+        PROMPT(3) = 'Search both strands'
+        CALL RADION('Select search mode',PROMPT,3,IB,
+     +  HELPS(NOPT),HELPE(NOPT),HELPF,IDEVH,KBIN,KBOUT)
+        IF(IB.LT.1) GO TO 10
+        KCOMP = IB - 1
+        CALL TCOMP(COMP,KCOMP)
+      ELSE IF (NOPT.EQ.19) THEN
+        CALL GETCM(COMP,KBIN,KBOUT,SEQN,LENSEQ(NFILE),ICOMP,
+     +  HELPS(NOPT),HELPE(NOPT),HELPF,IDEVH)
+      ELSE IF (NOPT.EQ.23)THEN
+C
+C  MAKE DW
+C
+C       GENERATE THE DICTIONARY FOR THIS WORD LENGTH
+        CALL FILLI(DW,MAXPOS,0)
+        WRITE(KBOUT,*)'Making Dw'
+        CALL MAKEDW(SEQN,MAXCHR,DW,DT,MAXPOS,LENSEQ,
+     +    MAXSEQ,NFILE,LENGTH,KCOMP,I1,I2,MASK,LMASK)
+        IDICW = 0
+      ELSE IF (NOPT.EQ.24) THEN
+C
+C  MAKE DS
+C
+        WRITE(KBOUT,*)'Making Ds'
+        CALL FILLI(DS,MAXPOS,0)
+        CALL MAKEDS(SEQN,MAXCHR,DS,DT,MAXPOS,LENSEQ,
+     +    MAXSEQ,NFILE,LENGTH,KCOMP,I1,I2,WORK,MASK,LMASK)
+        IDICS = 0
+      ELSE IF (NOPT.EQ.25) THEN
+C
+C  MAKE DM FROM DW
+C
+        IF(IDICW.NE.0) THEN
+          WRITE(KBOUT,*)'Please make Dw'
+        ELSE
+          WRITE(KBOUT,*)'Making Dm from Dw with ',NFUZ,' mismatch' 
+          CALL MAKEDM(DW,DM,LENGTH,NFUZ,MAXPOS)
+          IDICM = 1
+          IDICH = 0
+        END IF
+      ELSE IF (NOPT.EQ.26) THEN
+C
+C  MAKE DM FROM DS
+C
+        IF(IDICS.NE.0) THEN
+          WRITE(KBOUT,*)'Please make Ds'
+        ELSE
+          WRITE(KBOUT,*)'Making Dm from Ds with ',NFUZ,' mismatch' 
+          CALL MAKEDM(DS,DM,LENGTH,NFUZ,MAXPOS)
+          IDICM = 2
+          IDICH = 0
+        END IF
+      ELSE IF (NOPT.EQ.27)THEN
+C
+C  MAKE DH
+C
+        IF(IDICM.EQ.0)THEN
+          WRITE(KBOUT,*)'Please make dictionary'
+        ELSE
+          IF(IDICM.NE.0)THEN
+            WRITE(KBOUT,*)'Making Dh'
+            CALL MAKEDH(DH,DM,LENGTH,NFUZ,MAXPOS)
+            IDICH = IDICM
+          END IF
+        END IF
+      ELSE IF (NOPT.EQ.28)THEN
+        IF(IDICM.EQ.0) THEN
+          WRITE(KBOUT,*)'Please make dictionary'
+        ELSE IF (IDICM.EQ.1) THEN
+           CALL EXAMDM(DM,DW,
+     +     MAXPOS,LENGTH,KBIN,KBOUT,WT,NFUZ,IOK,COMP,NFILE,IDEV,
+     +     TEMPC,TEMPI,TEMPP,TEMPN,MAXLIS,MASK,LMASK)
+        ELSE IF (IDICM.EQ.2) THEN
+           CALL EXAMDM(DM,DS,
+     +     MAXPOS,LENGTH,KBIN,KBOUT,WT,NFUZ,IOK,COMP,NFILE,IDEV,
+     +     TEMPC,TEMPI,TEMPP,TEMPN,MAXLIS,MASK,LMASK)
+        END IF
+      ELSE IF (NOPT.EQ.29)THEN
+        IF(IDICH.EQ.0) THEN
+          WRITE(KBOUT,*)'Please make dictionary'
+        ELSE IF (IDICH.EQ.1) THEN
+           CALL EXAMDM(DH,DW,
+     +     MAXPOS,LENGTH,KBIN,KBOUT,WT,NFUZ,IOK,COMP,NFILE,IDEV,
+     +     TEMPC,TEMPI,TEMPP,TEMPN,MAXLIS,MASK,LMASK)
+        ELSE IF (IDICH.EQ.2) THEN
+           CALL EXAMDM(DH,DS,
+     +     MAXPOS,LENGTH,KBIN,KBOUT,WT,NFUZ,IOK,COMP,NFILE,IDEV,
+     +     TEMPC,TEMPI,TEMPP,TEMPN,MAXLIS,MASK,LMASK)
+        END IF
+      ELSE IF (NOPT.EQ.30)THEN
+        IF(IDICM.EQ.0) THEN
+          WRITE(KBOUT,*)'Please make dictionary'
+        ELSE IF (IDICM.EQ.1) THEN
+           CALL EXAMDW(DM,DW,
+     +     MAXPOS,LENGTH,KBIN,KBOUT,WT,NFUZ,IOK,COMP,NFILE,IDEV,
+     +     TEMPC,TEMPI,TEMPP,TEMPN,MAXLIS,MASK,LMASK)
+        ELSE IF (IDICM.EQ.2) THEN
+           CALL EXAMDW(DM,DS,
+     +     MAXPOS,LENGTH,KBIN,KBOUT,WT,NFUZ,IOK,COMP,NFILE,IDEV,
+     +     TEMPC,TEMPI,TEMPP,TEMPN,MAXLIS,MASK,LMASK)
+        END IF
+      ELSE IF (NOPT.EQ.31)THEN
+        IF(IDICH.EQ.0) THEN
+          WRITE(KBOUT,*)'Please make dictionary'
+        ELSE IF (IDICH.EQ.1) THEN
+           CALL EXAMDW(DH,DW,
+     +     MAXPOS,LENGTH,KBIN,KBOUT,WT,NFUZ,IOK,COMP,NFILE,IDEV,
+     +     TEMPC,TEMPI,TEMPP,TEMPN,MAXLIS,MASK,LMASK)
+        ELSE IF (IDICH.EQ.2) THEN
+           CALL EXAMDW(DH,DS,
+     +     MAXPOS,LENGTH,KBIN,KBOUT,WT,NFUZ,IOK,COMP,NFILE,IDEV,
+     +     TEMPC,TEMPI,TEMPP,TEMPN,MAXLIS,MASK,LMASK)
+        END IF
+      ELSE IF (NOPT.EQ.32) THEN
+        CALL DICIO(KBIN,KBOUT,IOPT,IHELPS,IHELPE,HELPF,IDEVH)
+        IF(IOPT.EQ.1) THEN
+          CALL WDIC(IDEVO,FILNAM,DW,MAXPOS,KBIN,KBOUT,IOK,
+     +    HELPS(NOPT),HELPE(NOPT),HELPF,IDEVH)
+        ELSE IF(IOPT.EQ.2) THEN
+          CALL WDIC(IDEVO,FILNAM,DS,MAXPOS,KBIN,KBOUT,IOK,
+     +    HELPS(NOPT),HELPE(NOPT),HELPF,IDEVH)
+        ELSE IF(IOPT.EQ.3) THEN
+          CALL WDIC(IDEVO,FILNAM,DM,MAXPOS,KBIN,KBOUT,IOK,
+     +    HELPS(NOPT),HELPE(NOPT),HELPF,IDEVH)
+        ELSE IF(IOPT.EQ.4) THEN
+          CALL WDIC(IDEVO,FILNAM,DH,MAXPOS,KBIN,KBOUT,IOK,
+     +    HELPS(NOPT),HELPE(NOPT),HELPF,IDEVH)
+        ELSE IF(IOPT.EQ.5) THEN
+          CALL RDIC(IDEVO,FILNAM,DW,MAXPOS,KBIN,KBOUT,IOK,
+     +    HELPS(NOPT),HELPE(NOPT),HELPF,IDEVH)
+          IF(IOK.EQ.0)IDICW = 0
+C          IDICM = 1
+C          IDICH = 1
+        ELSE IF(IOPT.EQ.6) THEN
+          CALL RDIC(IDEVO,FILNAM,DS,MAXPOS,KBIN,KBOUT,IOK,
+     +    HELPS(NOPT),HELPE(NOPT),HELPF,IDEVH)
+          IF(IOK.EQ.0)IDICS = 0
+C          IDICH = 1
+        ELSE IF(IOPT.EQ.7) THEN
+          WRITE(KBOUT,*)'Assuming from Dw'
+          CALL RDIC(IDEVO,FILNAM,DM,MAXPOS,KBIN,KBOUT,IOK,
+     +    HELPS(NOPT),HELPE(NOPT),HELPF,IDEVH)
+          IF(IOK.EQ.0)IDICM = 1
+        ELSE IF(IOPT.EQ.8) THEN
+          WRITE(KBOUT,*)'Assuming from Dw'
+          CALL RDIC(IDEVO,FILNAM,DH,MAXPOS,KBIN,KBOUT,IOK,
+     +    HELPS(NOPT),HELPE(NOPT),HELPF,IDEVH)
+          IF(IOK.EQ.0)IDICH = 1
+        END IF
+      END IF
+      GO TO 10
+9999  CONTINUE
+      CALL VT100M
+      CALL SHUTD
+      END

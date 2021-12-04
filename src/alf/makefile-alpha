@@ -1,0 +1,43 @@
+#
+# Makefile for alf - Alpha version
+#
+
+#
+# Programs made by this makefile
+#
+PROGS = alfsplit
+
+#
+# Where the wild things are
+#
+SRC = .
+
+#
+# Alpha
+#
+CC = cc
+CFLAGS = -g -std1 -ieee_with_inexact -I$(SRC)/../ted
+LD = cc
+LDFLAGS = -g -non_shared
+
+
+#
+# Make the programs
+#
+alfsplit: alfsplit.o
+	$(LD) $(LDFLAGS) -o alfsplit alfsplit.o $(LIBS)
+
+2rs: 2rs.o
+	$(LD) $(LDFLAGS) -o 2rs 2rs.o $(LIBS)
+
+
+#
+# Special dependencies
+#
+all: $(PROGS)
+
+clean:
+	/bin/rm -f $(PROGS) *.o *~
+
+%.o : $(SRC)/%.c
+	$(CC) $(CFLAGS) -c $<

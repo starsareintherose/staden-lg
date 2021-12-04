@@ -1,0 +1,20 @@
+#
+# Database of sequencing clone cloning and priming sites
+#
+#    <clone> <clone-site> <forward-primer-site> <reverse-primer-site>
+#
+# NOTES:
+#    clone-site is defined as the base position of the 3' end
+#    of the cloning site
+#
+# Example:
+#
+# Our sequencing vector is M13mp18, our cloning site is SmaI and
+# we are using the -20 forward sequencing primer and the -21
+# reverse sequencing primer. With respect to the seqeunce file
+# $SQUIRREL/seqs/M13mp18.seq we would have:
+#
+# M13mp18 6249 41 -24
+#
+M13mp18 6249 41 -24
+pBS     2305 46 -79

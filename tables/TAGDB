@@ -1,0 +1,60 @@
+#
+# This is a tag database for xdap
+#
+# The syntax in BNF is:
+#
+#    <tag_db>      ::= <tag> <tag_db> | <empty>
+#    <tag>         ::= <identifier> : <option_list> \n | <identifier> \n
+#    <option_list> ::= <option> : <option_list> | <option_list>
+#    <option>      ::= <option_name> = <string>
+#
+# Lines starting with a # are comments and are ignored.
+# Newlines can be escaped over by placing a back slash at the end of the line
+#
+# options        description                  default value
+#   id="string"    identifier for searching     1st 4 characters of identifier
+#   fg=colour      foreground colour            fg for window
+#   bg=colour      background colour            bf for window
+#   dt="string"    default text for tag         none
+#
+# examples:
+#   comment:fg=blue:dt="?"
+#
+
+# For general comments
+comment: \
+	id="COMM": \
+	fg=blue: \
+	dt="?"
+
+# For marking oligos
+oligo: \
+	id="OLIG": \
+	bg=yellow: \
+
+# For marking compressions
+compression: \
+	id="COMP": \
+	bg=red: \
+
+# For marking stops
+stop: \
+	id="STOP": \
+	fg=white: \
+	bg=blue: \
+
+# For marking repeats
+repeat: \
+	id="REPT": \
+	bg=green2: \
+
+# For marking cosmid vector
+"cosmid vector" : \
+	id="CVEC" : \
+	bg=cyan
+
+# For marking ALU sequences
+"Alu segment" : \
+	id="ALUS" : \
+	bg=green
+

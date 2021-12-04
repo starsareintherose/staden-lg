@@ -1,0 +1,69 @@
+#! /bin/csh -f
+#
+# script to make a brief index for the embl newdata library
+#
+
+echo "embltitle.script Version 1.0"
+echo ""
+
+set RM = "/bin/rm -f"
+set SORT = sort
+
+#
+#
+#
+
+embltitle1 bb.dat bb.list
+if ( $status ) goto abort
+embltitle1 fun.dat fun.list
+if ( $status ) goto abort
+embltitle1 inv.dat inv.list
+if ( $status ) goto abort
+embltitle1 mam.dat mam.list
+if ( $status ) goto abort
+embltitle1 org.dat org.list
+if ( $status ) goto abort
+embltitle1 patent.dat patent.list
+if ( $status ) goto abort
+embltitle1 phg.dat phg.list
+if ( $status ) goto abort
+embltitle1 pln.dat pln.list
+if ( $status ) goto abort
+embltitle1 pri.dat pri.list
+if ( $status ) goto abort
+embltitle1 pro.dat pro.list
+if ( $status ) goto abort
+embltitle1 rod.dat rod.list
+if ( $status ) goto abort
+embltitle1 syn.dat syn.list
+if ( $status ) goto abort
+embltitle1 una.dat una.list
+if ( $status ) goto abort
+embltitle1 vrl.dat vrl.list
+if ( $status ) goto abort
+embltitle1 vrt.dat vrt.list
+if ( $status ) goto abort
+
+
+# sort on entry name
+${SORT} bb.list fun.list inv.list mam.list org.list patent.list phg.list pln.list pri.list pro.list rod.list syn.list una.list vrl.list vrt.list >! title.sorted
+if ( $status ) goto abort
+${RM} bb.list fun.list inv.list mam.list org.list patent.list phg.list pln.list pri.list pro.list rod.list syn.list una.list vrl.list vrt.list
+
+
+# generate index
+title2 title.sorted brief.idx
+if ( $status ) goto abort
+${RM} title.sorted
+
+echo "Completion successful"
+echo ""
+
+exit 0
+
+#
+# Abort
+#
+abort:
+echo "embltitle.script: aborting due to serious error"
+exit 2

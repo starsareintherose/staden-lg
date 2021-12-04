@@ -1,0 +1,156 @@
+#
+# indexseqlibs - DEC Ultrix (mips) fork
+#
+
+#
+# Programs need making
+#
+PROGS = \
+	addnl \
+	genbentryname1 \
+	entryname2 \
+	access4 \
+	access2 \
+	genbaccess1 \
+	title2 \
+	genbtitle1 \
+	emblentryname1 \
+	emblaccess1 \
+	embltitle1 \
+	pirentryname1 \
+	piraccess1 \
+	piraccess2 \
+	pirtitle1 \
+	pirtitle2 \
+	excludewords \
+	emblfreetext \
+	genbfreetext \
+	pirfreetext \
+	freetext2 \
+	freetext4 \
+	emblauthor \
+	genbauthor \
+	pirauthor \
+	hitNtrg \
+	division
+
+#
+# Where the wild things are
+#
+SRC = .
+
+#
+# DEC
+#
+CC = c89
+CFLAGS = -g -std -w0
+
+#
+# Shared objects
+#
+OBJS = \
+	cdromheader.o \
+	mach-io.o
+
+#
+# Dependencies for programs
+#
+cdromheader.o: $(SRC)/cdromheader.c
+	$(CC) $(CFLAGS) -c $(SRC)/cdromheader.c
+
+mach-io.o: $(SRC)/mach-io.c
+	$(CC) $(CFLAGS) -c $(SRC)/mach-io.c
+
+addnl : $(SRC)/addnl.c
+	$(CC) $(CFLAGS) -o $@ $(SRC)/addnl.c
+
+genbentryname1 : $(SRC)/genbentryname1.c
+	$(CC) $(CFLAGS) -o $@ $(SRC)/genbentryname1.c
+
+entryname2 : $(SRC)/entryname2.c $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $(SRC)/entryname2.c $(OBJS)
+
+access4 : $(SRC)/access4.c $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $(SRC)/access4.c $(OBJS)
+
+access2 : $(SRC)/access2.c
+	$(CC) $(CFLAGS) -o $@ $(SRC)/access2.c
+
+genbaccess1 : $(SRC)/genbaccess1.c
+	$(CC) $(CFLAGS) -o $@ $(SRC)/genbaccess1.c
+
+title2 : $(SRC)/title2.c $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $(SRC)/title2.c $(OBJS)
+
+genbtitle1 : $(SRC)/genbtitle1.c
+	$(CC) $(CFLAGS) -o $@ $(SRC)/genbtitle1.c
+
+emblentryname1 : $(SRC)/emblentryname1.c
+	$(CC) $(CFLAGS) -o $@ $(SRC)/emblentryname1.c
+
+emblaccess1 : $(SRC)/emblaccess1.c
+	$(CC) $(CFLAGS) -o $@ $(SRC)/emblaccess1.c
+
+embltitle1 : $(SRC)/embltitle1.c
+	$(CC) $(CFLAGS) -o $@ $(SRC)/embltitle1.c
+
+pirentryname1 : $(SRC)/pirentryname1.c
+	$(CC) $(CFLAGS) -o $@ $(SRC)/pirentryname1.c
+
+piraccess1 : $(SRC)/piraccess1.c
+	$(CC) $(CFLAGS) -o $@ $(SRC)/piraccess1.c
+
+piraccess2 : $(SRC)/piraccess2.c
+	$(CC) $(CFLAGS) -o $@ $(SRC)/piraccess2.c
+
+pirtitle1 : $(SRC)/pirtitle1.c
+	$(CC) $(CFLAGS) -o $@ $(SRC)/pirtitle1.c
+
+pirtitle2 : $(SRC)/pirtitle2.c
+	$(CC) $(CFLAGS) -o $@ $(SRC)/pirtitle2.c
+
+excludewords : $(SRC)/excludewords.c
+	$(CC) $(CFLAGS) -o $@ $(SRC)/excludewords.c
+
+emblfreetext : $(SRC)/freetext.c
+	$(CC) $(CFLAGS) -o $@ -DEMBL $(SRC)/freetext.c
+
+genbfreetext : $(SRC)/freetext.c
+	$(CC) $(CFLAGS) -o $@ -DGENBANK $(SRC)/freetext.c
+
+pirfreetext : $(SRC)/freetext.c
+	$(CC) $(CFLAGS) -o $@ -DPIR $(SRC)/freetext.c
+
+freetext2 : $(SRC)/freetext2.c
+	$(CC) $(CFLAGS) -o $@ $(SRC)/freetext2.c
+
+freetext4 : $(SRC)/freetext4.c $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $(SRC)/freetext4.c $(OBJS)
+
+emblauthor : $(SRC)/author.c
+	$(CC) $(CFLAGS) -o $@ -DEMBL $(SRC)/author.c
+
+pirauthor : $(SRC)/author.c
+	$(CC) $(CFLAGS) -o $@ -DPIR $(SRC)/author.c
+
+genbauthor : $(SRC)/author.c
+	$(CC) $(CFLAGS) -o $@ -DGENBANK $(SRC)/author.c
+
+hitNtrg : $(SRC)/hitNtrg.c $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $(SRC)/hitNtrg.c $(OBJS)
+
+division : $(SRC)/division.c $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $(SRC)/division.c $(OBJS)
+
+
+
+
+#
+# Special dependencies
+#
+all : $(PROGS)
+
+clean :
+	/bin/rm -f $(PROGS) *.o *~
+
+

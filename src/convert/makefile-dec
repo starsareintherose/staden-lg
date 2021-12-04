@@ -1,0 +1,48 @@
+#
+# Makefile for convert (DEC Ultrix version)
+# *** requires gnu make ***
+#
+
+SRC = .
+MISCSRC=$(SRC)/../Misc
+MISCBIN=$(MISCSRC)
+
+CC = c89
+CFLAGS = -g -std -w0 -I$(MISCSRC)
+# -static is only necessary for gcc 2.1
+LDFLAGS =
+LIBS = $(MISCBIN)/misc.a
+
+#
+# Programs made by this makefile
+#
+PROGS = convert
+
+all : $(PROGS)
+
+#
+# Where the wild things are
+#
+SRC = ..
+
+OBJS = \
+	list.o \
+	main.o \
+	dapIO.o \
+	dapDB.o \
+	bapIO.o \
+	bapDB.o \
+	process.o \
+	flat_sd.o
+
+convert: $(OBJS)
+	$(CC) $(CFLAGS) -o convert $(OBJS) $(LIBS) $(LDFLAGS)
+#
+# Special dependencies
+#
+%.o:$(SRC)/%.c
+	$(CC) $(CFLAGS) -c $<
+
+
+clean :
+	/bin/rm -f $(PROGS) $(OBJS) *~

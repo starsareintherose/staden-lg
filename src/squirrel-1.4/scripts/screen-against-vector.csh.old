@@ -1,0 +1,77 @@
+#! /bin/csh -f
+#
+# screen-against-vector
+#
+#   Screen files against vector sequence
+#
+# Usage:
+#   screen-against-vector vector_file in_fofn out_fofn
+#
+# NOTE:
+#   This script uses xdap, which as yet cannot handle the experiment
+#   file format. Eventually, vepe will be modified to do the same task.
+#
+
+onintr abort
+if (! $?SQUIRREL_LOG) setenv SQUIRREL_LOG /dev/null
+
+#
+# Check usage
+#
+if ( $#argv != 3 ) then
+	echo Usage: screen-against-vector vector_file in_fofn out_fofn
+	exit 2
+endif
+
+if ( ! -f $1 ) then
+	echo screen-against-vector: vector file $1 does not exist
+	exit 1
+endif
+
+if ( ! -f $2 ) then
+	echo screen-against-vector: file of file names $2 does not exist
+	exit 1
+endif
+
+if ( -e $3 ) then
+	echo screen-against-vector: output file of file names $3 already exists
+	exit 1
+endif
+
+
+#
+# Set up for dap/screen against vector
+#
+set VECTOR_SCORE = 20
+setenv VECTOR_FILE $1
+
+dap << EOF
+3
+!
+
+18
+y
+$2
+$3
+VECTOR_FILE
+$VECTOR_SCORE
+
+!
+EOF
+
+#
+# Check exit status
+#
+if ( $status ) then
+	echo screen-against-vector: Error running dap/screen against vector
+	exit 1
+endif
+
+exit 0
+
+abort:
+#
+# interruption not normal exit
+#
+
+exit 1

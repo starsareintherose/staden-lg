@@ -1,0 +1,190 @@
+		Release Notes for Staden Package 1992.3
+		---------------------------------------
+
+
+	Installation guide
+	------------------
+
+The file doc/install.PS contain installation instructions.
+
+
+	Manual for the Staden Package
+	-----------------------------
+
+There is now a 135 page manual on the Staden Package. It is currently
+being distributed on a Word4 document on a Macintosh floppy disk.
+
+
+	Feedback and bug reports
+	------------------------
+
+We welcome comments and suggestions on all aspects of the package and are
+best contacted by email: rs@uk.ac.cam.mrc-lmb and sd@uk.ac.cam.mrc-lmb.
+All abnormal terminations are bugs and we would like to be told of them
+so they can be fixed. We recommend that you request an update at least once
+a year as the package is evolving very rapidly.
+
+Note due to popular demand we have decided to release new routines earlier 
+than in the past so please report bugs. The documentation for additions may
+be sparser than before, or non-existent, but if there is something with which 
+you need help, email us.
+
+
+	Changes this release
+	--------------------
+
+
+	The assembly programs bap and xbap heve several new functions:
+	1. Find single stranded regions and try to fill them with "hidden"
+	data from the adjacent readings.
+	2. Find single stranded regions (includes ends of contigs) and 
+	select primers and templates for double stranding them (joining
+	them).
+	3. Pre assembly screening for readings to find those that align
+	best. Optionally the hidden data can also be included in the
+	comparison (part of assembly function).
+	4. Find pairs of readings taken from opposite ends of the same
+	template (ie forward and reverse read pairs). List or plot their
+	positions.
+	5. A new function to check that readings have been assembled into
+	the correct positions. It aligns the hidden (previously termed "unused")
+	parts of readings with the consensus they overlap to see how well
+	they align. Poor alignments are reported.
+	6. During assembly each reading is now allowed to match up to 100
+	different places.
+
+	It might be guessed from the above that we are trying to improve our
+	ability to deal with the assembly of human data. Hence, also the next
+	addition.
+
+	A new experimental program (rep) for screening readings for Alu
+	sequences prior to assembly. The Alu containing segments are tagged
+	so they can be seen in the contig editor. A library of Alu sequences
+	is included in /tables/alus. The program is quite slow as it compares
+	each reading in both orientations with all of the Alu sequences (126
+	of them) in order to find the best match. Only time and more data will
+	tell how sensitive it is, and whether the current default score 0f 0.6
+	is "correct". BEWARE rep modifies the original reading files to include
+	the tag information. The only information is in /help/alu.help
+
+	A new program for extracting sets of sequences and their annotations
+	from the sequence libraries (lip). The only information is in
+	/help/lip.help
+
+	Changes to the xterm userinterface. These routines have been completely
+	rewritten. One addition is that now ?? in response to a question will
+	allow the user to get help on any function in a program. help is also
+	improved in the x version.
+
+
+	Changes last release
+	--------------------
+
+
+	DAP, XDAP have been replaced by BAP and XBAP (see below)
+
+	A new function for examining repeats has been added to NIP
+
+	A new repeat search has been added to SIP
+
+	Some outputs have been changed to produce FASTA format files
+	instead of PIR.
+
+	MEP now allows searches for motifs in which any 8 out of a string
+	of 20 can be switched on.
+
+	The manual has been updated.
+
+        Keyword and author searches on sequence libraries
+
+	All programs that use the libraries can now perform author
+and keyword searches on all libraries (only nip did so before).
+
+	Postscript output
+
+	All graphics can now be saved to disk in postscript form by
+use of a sub-option in "Redirect output".
+	
+
+
+	Sequence assembly
+
+BAP, XBAP replace DAP and XDAP. A program to convert DAP databases to BAP
+databases (convert) is included. BAP databases can contain up to 8000 readings
+and a consensus of 500,000 bases. A minor edit and recompilation will allow
+up to 99,999 readings. The space is used more efficiently now as the databases
+grow as the number of readings increases. Reading names can be 16 characters
+in length. In addition:
+
+1) Assembly is 4 times as fast as in the DAP.
+
+2) Find internal joins is 5 times as fast and now brings up the join editor
+with the two contigs in the correct orientation and aligned.
+
+3) The assembly routines align pads better, plus a new automatic function can
+also be used to align them prior to editing.
+
+4) The contig editor has been greatly speeded up and its functionality
+has been enhanced.
+
+5) A routine for selecting oligos for primer walking is included. 
+
+6) A new routine allows batches of readings to be removed from a database. 
+
+7) We have also included routines for making SCF files, for getting the 
+sequence from SCF files, and one for marking the poor quality data in 
+readings. See the manual.
+
+	Sequence library formats
+
+	The standard sequence library indexing method is now that used on the
+EMBL CD-ROM. The libraries (EMBL nucleotide and SWISSPROT protein) can be
+left on the CD-ROM or copied to disk. We include in the package programs
+for creating this type of index for EMBL updates, PIR in codata format,
+NRL3D and GenBank. If the indexes are created all programs can read all
+these libraries. Programs and scripts for this task are contained in the
+directory indexseqlibs.
+	The keyword and author searches are particularly fast and the
+keyword index is based on ALL text in the files - not just the keywords.
+
+	Feature table formats
+
+	The programs now use the new feature table format common to EMBL
+and GenBank, but retain the old format for SWISSPROT which has not yet
+changed. 
+
+	For details of the above see file SequenceLibraries.
+
+	Pattern searches
+
+	Pipl and Nipl now have the facility to find only the best scoring
+match for each sequence. The prompt is "? report all matches", so typing
+only return means all matches will be shown and typing n means only the
+highest scoring will be reported. It is particularly useful when employed
+to create alignments. The corresponding help file has not been updated.
+Also to incorporate long unix file names the pattern files no longer include
+the annotation "filename".
+
+
+	Nip
+
+	Option 38 in nip "translate and list" has been removed as the the
+more flexible routines of option 39 incorporate all its functionality. Many
+options that relate to feature tables have been modified but their help files
+are not yet up to date.
+
+
+        Vep
+
+	A program (vep) for automatic excising of vector (either
+sequencing vector or cosmid vector) sequences from readings is now
+included in the package.
+
+
+
+
+	Rodger Staden, Simon Dear, James Bonfield
+
+  
+
+

@@ -1,0 +1,168 @@
+Trace Editor Help
+-----------------
+
+The ted trace editor is a prototype to allow the display and editing
+of traces from sequencing machines, and the simple editing of plain
+sequences. It runs under the X window system. It provides simultaneous
+display of traces and bases. The editing allows individual bases to be
+removed and new ones added, and also a range of bases at either end to
+be cutoff. Currently, only ABI result files and plain sequences are
+accepted.
+
+Only one trace can be edited at a time.
+
+
+Invocation
+----------
+
+ted can be run from the command line by simply typing:
+
+    ted
+
+It will come up with no sequence initially displayed. If provided with
+any arguments it does not understand, or invalid combinations of
+arguments, ted will exit with a message indicating its intended usage.
+ted accepts the standard X arguments allowing, for example, background
+colour or geometry to be specified. ted can accept an argument
+specifying an initial file to display. The key for this is the format
+of the file, for example:
+
+    ted -ABI {ABI format filename}
+    ted -plain {plain format filename}
+
+The file is then displayed at 50% magnification, with the caret 
+initially positioned at the first base.
+
+When an initial file is given, a base number of interest and/or a
+magnification can also be given, for example:
+
+    ted -ABI {ABI format file} -baseNum 280 -mag 30
+
+or the bottom strand may be specified:
+ 
+    ted -ABI {ABI format file} -baseNum 280 -mag 30 -bottom 1
+	or
+    ted -ABI {ABI format file} -bottom 1
+
+or a string of nucleotides on which the center the window:
+	
+    ted -ABI {ABI format file} -astring 1
+	or
+    ted -ABI {ABI format file} -astring 1 -mag 30 -bottom 1
+
+Options can be specified in any order.
+
+An output filename can be specified in a similar manner:
+
+    ted -ABI inputfilename -output outputfilename
+
+The default output filename is inputfilename.seq
+
+If you are running the program on a remote machine, you must
+specify a display parameter:
+
+    ted -display machine_name:0.2
+
+You can also specify the size of the opening window or
+other screen parameters by the following:
+
+    ted  -geometry [{width}][x{height}][{+-}{xoff}[{+-}{yoff}]]
+	   [-fg {color}] [-bg {color}] [-bd {color}] [-bw {pixels}]
+
+Displays
+--------
+
+When running, ted displays the name of the file it is currently
+operating on (if any) and the original number of bases.
+
+A so-called viewport presents four different synchronised views of
+part of the trace. The top one indicates the sequence indices - the
+first digit of the number if positioned over the base to which that 
+number corresponds.  Below this is a list of the bases as originally
+found in the file (this is the interpretation of the trace as made by
+the sequencing machine). Below this is the list of bases as edited by
+the user --- initially, if this file has not been edited in the past,
+this is identical to the list of original bases.  However, if in a 
+previous session the user has edited this sequence, the edited
+version of the sequence will appear in the edit window. 
+The final display is of the traces produced by the sequencing
+machine for the four respective bases.
+
+Two controls allow the view presented to be adjusted: both are
+horizontal sliders or scrollbars. The first affects the magnification
+at which the trace is viewed. The minimum magnification is such that
+the whole of the trace is visible within the viewport; when a trace is
+first input, this is the magnification used. The maximum magnification
+is such that bases are spaced out with several characters of space
+between them --- this should allow more than enough room for base
+insertions to be clearly visible. The second scrollbar is immediately
+above the viewport and allows the user to select which part of the
+trace is viewed. Both the sliders work in a similar way: the middle
+mouse button can be used to drag the thumb to any desired position,
+the left and right mouse buttons can be clicked within the scrollbar
+to indicate that paging up or down is desired. In the case of the
+viewport scrollbar, the amount of paging is determined by how far up
+the scrollbar the pointer is.
+
+The whole ted window can be expanded and contracted (to an extent) by
+dragging the "grow-region" provided by whatever window manager is
+running. The viewport takes up all of this change in size.
+
+Controls
+--------
+
+ted has four buttons. "Quit" exits the program after first checking
+whether there is a sequence which has been edited and not saved.
+
+"Help" pops up this window which has a scrollbar on the left allowing
+all the text to be viewed.
+
+"Input" presents a dialogue which asks for the format and name of a
+file to be processed. The bases and (if this is not a plain format
+file) traces are read in and displayed for editing. The only
+conversion performed on bases is from 'N' to '-'.
+
+"Output" presents a dialogue which asks for a filename into which the
+edited and clipped bases can be saved. The default value can be set
+on the command line using the "-output" keyword. No conversion of bases
+is performed on output.
+
+ted operates in one of three editing modes, one of which is selected
+from three "radio buttons". The currently selected mode is
+highlighted.
+
+Editing
+-------
+
+In "Edit sequence" mode, the (lower) list of editable bases can be
+edited in much the same way as a text editor operates. A "caret" which
+is visible in the display of edited bases can be moved left and right
+with the cursor keys (these are sometimes called arrow keys and often
+appear on numeric keypads). It can also be positioned by clicking any
+button while the pointer is pointing into either of the list of bases
+or the traces. The DELETE key deletes the base immediately to the left
+of the caret. Any printing character can be inserted to the right of
+the caret by simply typing it. Inserted characters are placed halfway
+between their neighbours, or if a space is left by the deletion of a
+base originally there, its position is used. A base can thus be
+changed by deleting it and entering the new base.
+
+Note that in the current version of ted the caret is not constrained
+to remain within the viewed part of the display and that editing can
+still continue while it is thus invisible. Such editing would probably
+only occur by accident.
+
+ted provides a facility to define a cutoff at either end of the trace.
+A number of the leftmost bases (corresponding to the vector) and the
+rightmost bases (corresponding to the point where the data become
+unreliable) can be defined by setting the editor into "Adjust left
+cutoff" or "Adjust right cutoff" mode. In either of these modes, the
+pointer and mouse buttons can be used to indicate the cutoff point,
+and the cursor keys can be used to adjust this leftwards or
+rightwards. Initially, the cutoff regions are both empty. The cutoff
+regions are clearly indicated on the list of edited bases display and
+on the traces display by being drawn with a dimmed background.
+
+When the sequence is written out, the list of edited bases, with both
+cutoff regions removed, is written. The output contains newlines
+for convenient formatting and always ends with one.

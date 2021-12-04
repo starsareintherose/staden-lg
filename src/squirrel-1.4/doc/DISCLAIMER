@@ -1,0 +1,17 @@
+DISCLAIMER
+
+Squirrel was written by Simon Dear (MRC Laboratory of Molecular
+Biology) as a tool to automate the processing of data on the C.elegans
+sequencing project. It has been used extensively since May 1992.
+
+The software is not generally applicable to other sequencing projects
+without extensive modification. We would like to encourage other
+groups to build similar systems based on our version of squirrel. You
+are free to use and modify the squirrel software as you see fit. We do
+not accept any responsibility for the software as it is distributed or
+after it has been modified by you.
+
+
+
+
+						sd@mrc-lmb.cam.ac.uk

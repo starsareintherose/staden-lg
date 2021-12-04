@@ -1,0 +1,259 @@
+			    SQUIRREL v1.3
+			  System Management
+
+			      Simon Dear
+			     29 June 1992
+
+
+0. Introduction
+---------------
+
+Squirrel is a complicated script that gathers together information
+about an experiment and then assembles the processed sequences into a
+user's database. The philosophy behind squirrel is that there should
+be minimal user interaction. In actuality, all that need be entered is
+little more than the name of directory containing data to be
+processed.
+
+Ease of use for the user often means extra work for someone else. With
+squirrel this is no exception. Squirrel requires the maintenance of
+several small files. This document describes these files and the
+procedure for keeping them updated.
+
+Squirrel needs to gather additional information about:
+
+  a) subclone libraries
+  b) vectors used to clone each cosmid
+  c) sequencing vector clone sites
+  d) files containing vector sequence
+  e) user's databases
+
+For a sequencing project the data on (b)-(d) will be fairly static and
+quite small. Data on (a) will be frequently updated as new libraries
+are going to be continually created. Data on (e) will be updated
+occasionally; every time new databases are started.
+
+For C-Shell programming simplicity and uniformity the data is
+encapsulated in simple awk programs.
+
+We sometimes need to look up information which is a generalisation
+about a specific example. For example, we may be want data on a
+subclone e06b11 where data is held for all subclones starting e06. The
+pattern matching abilities of awk are ideal for this.
+
+We also sometime need to determine information about a specific
+example, where it is not possible to make general inferences using
+simple rules.  An example is data on (b), which reflects the
+changing strategies during genome mapping. Building this data into an
+awk program is a very simple task. See Appendix 1.
+
+However, is it not desirable to maintain awk programs. Small typing
+mistakes can result in a program with severe errors.  For (a), and
+(c)-(e) it is more convenient to enter the data into a text file, and
+have the awk program automatically created from it using the UNIX make
+facility. In the case of (b), there is no escaping having an awk
+program. It is therefore fortunate that this data will not
+substantially change during the lifetime of the sequencing project.
+
+The text files for (a)-(e) can be found in the directory
+
+	~wormpub/BioSW/squirrel/tables
+
+During the rest of this document it is assumed that the person
+performing the updates is logged in as user wormpub and that they have
+changed to this directory.
+
+
+
+
+1. Updating information on subclone libraries
+---------------------------------------------
+
+The information on subclone libraries can be updated in two ways.
+
+First, the file ``subclones'' can be modified using an editor. It is
+important that information is entered in exactly the right format. The
+fields of this file are:
+
+    <microtitre-dish> <cosmid> <insert-size> <fragmentation-method> ...
+    <sequencing-vector> <comments...>
+
+An example:
+    e50 F54C8 1000..2000 shear M13mp18
+
+Alternatively the program update_subclones can be used. It provides
+sensible default values for all the fields and checks that the
+data specified is valid. The program can be run by any user from any
+directory. It assumes that the environment variable SUBCLONES holds
+the full path name of the file ``subclones''.
+
+Here is an example of an update of the subclone file using
+update_subclones. Default values are given in square brackets.
+Responding with a question mark ('?') at any time provides information
+of what is expected.
+
+
+    Maintain subclone database
+
+    Database=/nfs/al/hgmp0/wormpub/BioSW/staden/tables/subclones
+
+    Microtitre dish [e50] ?
+    Cosmid [F54C8] ?
+    Method of fragmentation [shear] ?
+    Vector [M13mp18] ?
+    Size range [1000..2000] ?
+    Comment #1 [] ?
+
+    Here are the values you entered:
+
+    Microtitre dish number: e50
+    Cosmid:                 F54C8
+    Fragmentation method:   shear
+    Vector:                 M13mp18
+    Size range:             1000..2000
+
+    Are these values correct [Yes] ?
+
+
+Once the file has been updated it is important to remake the
+awk program required by squirrel. To do this, type:
+
+	make all
+
+
+
+
+2. Updating information on vectors used to clone each cosmid
+------------------------------------------------------------
+
+Information on which vectors are used for each cosmid can be found in
+the file ``clone_types.awk''. This information is be updated using an
+editor, though it is unlikely that it will change much through the
+course of the sequencing project. The data is only encapsulated in an
+awk program; there is no text file. It is important to update this file
+correctly and to ensure that no errors are introduced into the awk
+program. The program can be tested for errors by typing something
+like:
+
+	echo TEST | awk -f clone_types.awk
+
+
+
+
+3. Updating information on sequencing vector clone sites
+--------------------------------------------------------
+
+Information on sequencing vector clone sites is held in the file
+``seqclone-sites'', and is updated by manually editing the text file.
+The format of the data is:
+
+	<clone> <clone-site> <forward-primer-site> <reverse-primer-site>
+
+An example:
+	pBS     2305 46 -79
+
+The positions relate to the sequence held in the file specified in the
+``vector-seqfiles'' files. The clone-site is defined as the base
+position of the 3' end of the cloning site The primer sites are positions
+relative to this.
+
+To make the awk program required by squirrel, type:
+	make all
+
+It is important that this information is correct and that the sequence in
+the sequence file is in the correct orientation. Otherwise, the vector
+will not be successfully removed from sequence processed by squirrel.
+
+
+
+
+
+4. Updating information on files containing vector sequence
+-----------------------------------------------------------
+
+Information of the files containing vector sequence is help in the file
+``vector-seqfiles'', and is updated by manually editing the text file.
+The format is:
+
+	<vector> <file-name>
+
+An example:
+	pBS     /nfs/al/pubseq/pubseq/inhouse/sun-nematode/squirrel/seqs/blue.vep
+
+To make the awk program required by squirrel, type:
+	make all
+
+Note that the file name includes the full path name. All working versions
+of sequence files required by squirrel are kept in the $SQUIRREL/seqs
+directory.
+
+
+
+
+5. Updating information on user's databases
+-------------------------------------------
+
+User's databases must be registered with squirrel by including an
+entry for the project in the file ``databases''. The format is:
+
+	<cosmid> <directory> <name> <version> <database_type> <owner>
+
+An example:
+	C38C10 C38C10 C38C10 0 bap kt
+
+The lookup file is remade by typing:
+	make all
+
+The directory is relative to the owner's home directory. The database type
+is currently one of "dap" or "bap". So the database for kt's cosmid C38C10
+is ~kt/C38C10/C38C10.??0.
+
+
+A1. Vectors used to clone each cosmid
+-------------------------------------
+
+#clone_types.awk
+#
+# Determine Clone types from Clone names
+#
+# 3 February 1992, Simon Dear
+#
+# Assumes that there is one clone name per line.
+# Outputs to stdout clone vector.
+#
+# Data in this program has been taken from "Clone types in the genome map
+# of Caenorhabditis elegans" courtesy by John Sulston. This needs
+# revision.
+#
+# Possible usage:
+#	 set clone-type = `echo $clone | awk -f clone-types.awk`
+#
+/^A/		{ print "Lambda"; next; }
+/^ZL/		{ print "Lambda"; next; }
+/^YSL/		{ print "Lambda"; next; }
+/^[BCDERM]/	{ print "pJB8"; next; }
+/^ZC/		{ print "pJB8"; next; }
+/^K/		{ print "LoristB"; next; }
+/^T/		{ print "Lorist2"; next; }
+/^W/		{ print "Lorist4"; next; }
+/^F/		{ print "Lorist6"; next; }
+/^ZK/		{
+			num = substr($1,3) + 0.0;
+			if (num <   15) { print "unknown"; next; }
+			if (num <=  56) { print "Lorist6"; next; }
+			if (num <= 130) { print "Lorist2"; next; }
+			if (num <= 164) { print "Lorist6"; next; }
+			if (num <= 177) { print "Lorist2"; next; }
+			if (num <= 192) { print "Lorist6"; next; }
+			if (num <= 344) { print "Lorist2"; next; }
+			if (num <= 354) { print "Lorist6"; next; }
+			if (num <= 514) { print "Lorist2"; next; }
+			if (num <= 552) { print "Lorist6"; next; }
+			if (num <= 596) { print "Lorist2"; next; }
+			if (num <= 616) { print "Lorist?"; next; }
+			if (num <= 626) { print "Lorist2"; next; }
+			if (num <= 692) { print "Lorist6"; next; }
+			if (num <= 756) { print "Lorist2"; next; }
+			if (num >= 757) { print "Lorist6"; next; }
+		}
+/^Y/		{ print "pYAC4"; next; }

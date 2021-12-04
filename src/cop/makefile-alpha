@@ -1,0 +1,114 @@
+#
+# Makefile for COP (Check Out Project) - Alpha version
+#
+
+#
+# Programs made by this makefile
+#
+PROGS = cop cop-bap
+
+#
+# Where the wild things are
+#
+SRC = .
+TEDSRC = $(SRC)/../ted
+MISCSRC = $(SRC)/../Misc
+MISCBIN = $(MISCSRC)/alpha-binaries
+CONVERTSRC = $(SRC)/../convert
+INCLUDES = -I$(SRC) -I$(TEDSRC) -I$(MISCSRC) -I$(CONVERTSRC)
+
+#
+# Alpha
+#
+CC = cc
+CFLAGS = -g -std1 -ieee_with_inexact $(INCLUDES)
+LD = cc
+LDFLAGS = -g -non_shared
+LIBFLAGS = 
+
+#
+# Main and miscellaneous routines
+#
+COPOBJ = \
+	cop.o
+
+COPBAPOBJ = \
+	cop-bap.o
+
+LIBS = \
+	$(MISCBIN)/misc.a
+
+#
+# For reading in xdap database
+#
+XDAPIO = \
+	dapIO.o
+
+XBAPIO = \
+	bapIO.o
+
+#
+# For reading in trace files
+#
+TRACES = \
+	getSeq.o \
+	seqIOABI.o \
+	seqIOALF.o \
+	seqIOSCF.o \
+	seqIOPlain.o \
+	opp.o \
+	seq.o \
+	fpoint.o\
+	mach-io.o
+
+#
+# For aligning sequences
+#
+ALIGN = \
+	llin.o
+
+#
+# The whole lot
+#
+OBJ = \
+	$(COPOBJ) \
+	$(XDAPIO) \
+	$(TRACES) \
+	$(ALIGN)
+
+OBJBAP = \
+	$(COPBAPOBJ) \
+	$(XBAPIO) \
+	$(TRACES) \
+	$(ALIGN)
+
+
+#
+# Cop
+#
+cop : $(OBJ)
+	$(LD) $(LDFLAGS) -o cop $(OBJ) $(LIBS) $(LIBFLAGS)
+
+cop-bap : $(OBJBAP)
+	$(LD) $(LDFLAGS) -o cop-bap $(OBJBAP) $(LIBS) $(LIBFLAGS)
+
+
+
+#
+# Special dependencies
+#
+
+all: $(PROGS)
+
+clean:
+	/bin/rm -f $(OBJ) $(PROGS) *~
+
+cop-bap.o: $(SRC)/cop.c
+	$(CC) -DBAP_VERSION $(CFLAGS) -o cop-bap.o -c $(SRC)/cop.c
+
+%.o: $(SRC)/%.c
+	$(CC) $(CFLAGS) -c $<
+
+%.o: $(TEDSRC)/%.c
+	$(CC) $(CFLAGS) -c $<
+

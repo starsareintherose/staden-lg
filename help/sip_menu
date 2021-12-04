@@ -1,0 +1,78 @@
+-1 0 22 2 T General
+-1 0 22 2 X General
+-2 0 51 2 T Screen control
+-2 0 72 2 X Screen
+-3 0 101 2 T Set parameters
+-3 0 101 2 X Set parameters
+-4 0 126 2 T Comparison
+-4 0 126 2 X Comparison
+0 -1 144 208 T SIP
+0 -1 144 208 X SIP
+1 0 12690 39 T Help
+1 0 12690 39 X Help
+2 0 13755 3 T Quit
+2 0 13755 3 X Quit
+3 1 13828 220 T Read a new sequence
+3 1 13828 220 X Read a new sequence
+4 1 23656 10 T Define active region
+4 1 23656 10 X Define active region
+5 1 24191 16 T List a sequence
+5 1 24191 16 X List a sequence
+6 1 25001 4 T List a text file
+6 1 25001 4 X List a text file
+7 1 25143 12 T Direct output to disk
+7 1 25143 12 X Direct output to disk
+8 1 25627 4 T Write active region to disk
+8 1 25627 4 X Write active region to disk
+9 1 25764 5 T Edit the sequences
+9 1 25764 5 X Edit the sequences
+10 2 25944 3 T Clear graphics
+10 2 25944 3 X Clear graphics
+11 2 26021 3 T Clear text
+11 2 26021 3 X Clear text
+12 2 26089 15 T Draw a ruler
+12 2 26089 15 X Draw a ruler
+13 2 26869 54 T Use cross hair
+13 2 26869 54 X Use cross hair
+14 2 28754 29 T Reposition plots
+14 2 28754 29 X Reposition plots
+15 2 30429 13 T Label a diagram
+15 2 30429 13 X Label a diagram
+16 2 31213 7 T Display a map
+16 2 31213 7 X Display a map
+17 4 31596 19 T Apply identities algorithm
+17 4 31596 19 X Apply identities algorithm
+18 4 32260 81 T Apply proportional algorithm
+18 4 32260 81 X Apply proportional algorithm
+19 4 36686 42 T List matching spans
+19 4 36686 42 X List matching spans
+20 3 37569 16 T Set span length
+20 3 37569 16 X Set span length
+21 3 38560 13 T Set proportional score
+21 3 38560 13 X Set proportional score
+22 3 39251 6 T Set identities score
+22 3 39251 6 X Set identities score
+23 3 39544 79 T Calculate expected scores
+23 3 39544 79 X Calculate expected scores
+24 3 43148 90 T Calculate observed scores
+24 3 43148 90 X Calculate observed scores
+25 3 46152 26 T Show current parameter settings
+25 3 46152 26 X Show current parameter settings
+27 2 46802 5 T Draw a /
+27 2 46802 5 X Draw a /
+26 4 46991 57 T Quick scan
+26 4 46991 57 X Quick scan
+28 4 49883 90 T Align sequences
+28 4 49883 90 X Align sequences
+29 1 55133 4 T Complement the sequences
+29 1 55133 4 X Complement the sequences
+30 3 55256 9 T Switch main diagonal
+30 3 55256 9 X Switch main diagonal
+31 3 55755 8 T Switch identities
+31 3 55755 8 X Switch identities
+32 3 56202 17 T change score matrix
+32 3 56202 17 X change score matrix
+33 3 56884 16 T Set number of sd's for Quickscan
+33 3 56884 16 X Set number of sd's for Quickscan
+34 3 57767 13 T Set gap penalities
+34 3 57767 13 X Set gap penalities

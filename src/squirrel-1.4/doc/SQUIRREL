@@ -1,0 +1,281 @@
+SQUIRREL
+----------------------------------------------------------------------
+
+    squirrel n. small bushy-tailed tree-living rodent; (fig) one
+    who hoards objects of small value
+
+
+
+Squirrel performs all operations on samples in a results folder:
+quality clipping, vector removal and assembly.
+
+Usage:
+	squirrel machine_letter date
+
+
+
+Phase 0: Start up
+
+Determines the pass number. Squirrel allows several passes on the same
+Results folder.
+
+
+Phase 1: Determining samples to be processed (ABI)
+
+Creates a session file which maps each available sample to its
+experiment name (sample name). An example of the session file appears
+at the end.
+
+
+Phase 2: Edit the session file
+
+The user can edit the session file, to correct experiment names, and
+to selectively omit entries from further processing
+
+FROM HERE ON, the process is automatic and requires no user
+intervention.
+
+Phase 2a: Check the edited experiment file for consistency
+
+
+Phase 3: Create experiment files for each entry in the session file. (ABI)
+
+Only sequencing machine (ABI) specific fields are added to the new file.
+In addition, the trace file is converted to our local (SCF) format.
+
+
+Phase 4: Embellish the experiment files.
+
+Non machine specific attributions.  Starting from the experiment name,
+it is possible to determine all information about a specific
+experiment file.  A series of lookup tables is used (see end).
+
+	experiment-name -> (cosmid,insert-size,frag-method,seq-vector)
+	eg c72a11.s1 -> (C40H1,1000..2000,shear,M13mp18)
+
+	experiment-name -> direction-of-read
+	eg c72a11.s1 -> forwards
+
+	cosmid -> cloning-vector
+	eg C40H1 -> pJB8
+
+	seq-vector -> (clone-site,forward-primer-site,reverse-primer-site)
+	eg M13mp18 -> (6249,41,-24)
+
+	vector -> vector-file
+	eg pJB8 -> /nfs/westmorland/home/BioSW/staden/userdata/pjb8.vep
+	eg M13mp18 -> /nfs/westmorland/home/BioSW/staden/userdata/m13mp18.vec
+
+The sequence is extracted from the trace (SCF) file, and clipped.
+Clipping is now done by examining the traces, using LaDeana's quality
+measures. As a fallback mechanism, the old method based on base content
+is still used, but only when it gives more conservative values.
+
+[Old method is:
+
+To the right of base number 200 and to the left of base 100 everything
+is considered good quality upto where there are 2 uncertainties in a
+5 base window. The right hand end is ALWAYS knocked back 50 bases, and
+never is set greater than base number 450.
+]
+
+
+Phase 5: Quality checking.
+
+Each experiment file is checked for quality. Sequences that, after
+quality clipping, are shorter that 100 bases or have greater than 4%
+uncertainties are failed. Traces that fail LaDeana's overall quality
+check will fail here as the sequence will have zero length.
+
+
+Phase 6: Vector removal
+
+There are two passes. First to remove sequencing vector, and second to
+remove cloning vector. The program "vepe" uses information about vector
+and vector sequence files embedded in the experiment file.
+
+
+Phase 7: Transfer files to project directory
+
+Trace files are directly copied. Experiment files are converted to the
+current sequence file format used by the assembly program. If they
+have been failed for any reason (completely vector, poor quality) they
+are placed in the subdirectoy "Failures". Also, the experiment files are
+retained and stored in the subdirectory "Expfiles". Experiments that
+already exist are abandoned.
+
+
+Phase 8: Assemble the sequences
+
+THe current database is temporarily copied to a working version ('X'), into
+which the sequences are assembled. If the assembly completes without
+error, the current version is updated.
+
+
+Phase 10: Reporting
+
+A report is produced detailing the history of each experiment file.
+Copies the report are left in subdirectory "Logs" of the project
+directory.
+Each experiment is given a processing status, which is one of:
+
+       OK - the experiment ended up in the database
+ Rejected - tried to assembly the experiment but failed
+   Failed - the experiment was not considered suitable for assembly
+            (too short, too poor quality, completely vector, etc)
+Abandoned - not processed this time because something went wrong
+	    (missing entries in tables, experiment already exists, etc)
+Discarded - no information was obtainably for this experiment
+            (no sequence or trace data)
+
+
+
+Phase 9: Tidying up
+
+All samples that were not abandoned are removed from the transfer
+directory.
+
+
+
+Example session file
+--------------------
+
+# SQUIRREL Version 1.1
+#
+# Processing /home/sd/Mac-files-sd/Results A 4_10_92.2
+# Project TESTDB
+# Started at Wed Apr 15 13:04:58 BST 1992
+# Pass 1
+#
+# You may...
+#  + delete lines you don't wish to be processed
+#  + change the experiment name
+# But DON'T...
+#  - create additional lines
+#  - introduce white space
+#
+Sample 01:c68a1.s1
+Sample 02:c68a2.s1
+Sample 03:c68a3.s1
+Sample 04:c68a4.s1
+Sample 05:c68a5.s1
+Sample 06:c68a6.s1
+Sample 07:c68a7.s1
+Sample 08:c68a8.s1
+Sample 09:c68a9.s1
+Sample 10:c68a10.s1
+Sample 11:c68a11.s1
+Sample 12:c68a12.s1
+Sample 13:c68b1.s1
+Sample 14:c68b2.s1
+Sample 15:c68b3.s1
+Sample 16:c68b4.s1
+Sample 17:c68b5.s1
+Sample 18:c68b6.s1
+Sample 19:c68b7.s1
+Sample 20:c68b8.s1
+Sample 21:c68b9.s1
+Sample 22:c68b10.s1
+Sample 23:c68b11.s1
+Sample 24:c68b12.s1
+Sample 25:c68c1.s1
+Sample 26:c68c2.s1
+Sample 27:c68c3.s1
+Sample 28:c68c4.s1
+Sample 29:c68c5.s1
+Sample 30:c68c6.s1
+Sample 31:c68c7.s1
+Sample 32:c68c8.s1
+Sample 33:c68c9.s1
+Sample 34:c68c10.s1
+Sample 35:c68c11.s1
+Sample 36:c68c12.s1
+
+
+Example Lookup tables
+---------------------
+
+experiment-name -> (cosmid,insert-size,frag-method,seq-vector)
+
+c40 K01F9 1000..2000 shear M13mp18
+c41 K01F9 1000..2000 shear M13mp18
+c42 F31H8 1000..2000 shear M13mp18 (Cosmid+=ZC84)
+c43 C18H2 1000..2000 shear M13mp18
+c44 K01B6 1000..2000 shear M13mp18
+c45 ZK512 9000..14000 shear pUC118
+c46 K01B6 1000..2000 shear M13mp18
+c47 M01A8 1000..2000 shear M13mp18
+c48 ZK512 9000..14000 shear pUC118
+c49 ZK507 6000..9000 shear pUC118
+c50 M01A8 1000..2000 shear M13mp18
+
+
+seq-vector -> (clone-site,forward-primer-site,reverse-primer-site)
+
+M13mp18 6249 41 -24
+pBS     2305 46 -79
+
+
+vector -> vector-file
+
+Lambda /nfs/westmorland/home/BioSW/staden/userdata/lambda.seq
+Lorist2 /nfs/westmorland/home/BioSW/staden/userdata/lorist2.vep
+Lorist6 /nfs/westmorland/home/BioSW/staden/userdata/lorist6.vep
+M13mp18 /nfs/westmorland/home/BioSW/staden/userdata/m13mp18.vec
+M13mp7 /nfs/westmorland/home/BioSW/staden/userdata/m13mp7.seq
+pBS /nfs/westmorland/home/BioSW/staden/userdata/blue.vep
+pJB8 /nfs/westmorland/home/BioSW/staden/userdata/pjb8.vep
+pUC18 /nfs/westmorland/home/BioSW/staden/userdata/puc18.vec
+
+
+For simplicity of use, these are converted to awk programs. The
+mapping of (cosmid -> cloning-vector) only exists in its awk form, and
+is not included here.
+
+
+
+Example Report
+--------------
+
+# SQUIRREL Version 1.1
+# Processing /home/sd/Mac-files-sd/Results A 4_10_92.2
+# Project TESTDB
+# Started at Wed Apr 15 18:35:01 BST 1992
+# Pass 4
+#
+Sample 01:  c68a1.s1   Failed    Trace quality
+Sample 02:  c68a2.s1   OK        Assembled
+Sample 03:  c68a3.s1   Failed    Trace quality
+Sample 04:  c68a4.s1   Failed    Trace quality
+Sample 05:  c68a5.s1   Failed    Trace quality
+Sample 06:  c68a6.s1   Failed    Trace quality
+Sample 07:  c68a7.s1   Failed    Completely cloning vector
+Sample 08:  c68a8.s1   OK        Assembled
+Sample 09:  c68a9.s1   OK        Assembled
+Sample 10:  c68a10.s1  Failed    Trace quality
+Sample 11:  c68a11.s1  OK        Assembled
+Sample 12:  c68a12.s1  OK        Assembled
+Sample 13:  c68b1.s1   OK        Assembled
+Sample 14:  c68b2.s1   OK        Assembled
+Sample 15:  c68b3.s1   Failed    Completely cloning vector
+Sample 16:  c68b4.s1   OK        Assembled
+Sample 17:  c68b5.s1   Failed    Trace quality
+Sample 18:  c68b6.s1   Rejected  Did not assemble : failed to assemble and not entered
+Sample 19:  c68b7.s1   Failed    Completely sequencing vector
+Sample 20:  c68b8.s1   OK        Assembled
+Sample 21:  c68b9.s1   OK        Assembled
+Sample 22:  c68b10.s1  Failed    Trace quality
+Sample 23:  c68b11.s1  OK        Assembled
+Sample 24:  c68b12.s1  OK        Assembled
+Sample 25:  c68c1.s1   Failed    Trace quality
+Sample 26:  c68c2.s1   OK        Assembled
+Sample 27:  c68c3.s1   Failed    Completely cloning vector
+Sample 28:  c68c4.s1   Failed    Trace quality
+Sample 29:  c68c5.s1   OK        Assembled
+Sample 30:  c68c6.s1   Failed    Completely cloning vector
+Sample 31:  c68c7.s1   OK        Assembled
+Sample 32:  c68c8.s1   Failed    Completely cloning vector
+Sample 33:  c68c9.s1   OK        Assembled
+Sample 34:  c68c10.s1  Failed    Trace quality
+Sample 35:  c68c11.s1  Failed    Trace quality
+Sample 36:  c68c12.s1  Failed    Completely sequencing vector

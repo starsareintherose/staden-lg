@@ -1,0 +1,41 @@
+#! /bin/csh -f
+#
+# script to make a brief index for the embl newdata library
+#
+
+echo "embltitle.script Version 1.0"
+echo ""
+
+set RM = "/bin/rm -f"
+set SORT = sort
+
+#
+# LIBFILE is the name youve given to the library file
+#
+set LIBFILE = emseq.all
+
+# create title list
+embltitle1 $LIBFILE title.list
+if ( $status ) goto abort
+
+# sort on entry name
+${SORT} title.list >! title.sorted
+if ( $status ) goto abort
+${RM} title.list
+
+# generate index
+title2 title.sorted brief.idx
+if ( $status ) goto abort
+${RM} title.sorted
+
+echo "Completion successful"
+echo ""
+
+exit 0
+
+#
+# Abort
+#
+abort:
+echo "embltitle.script: aborting due to serious error"
+exit 2

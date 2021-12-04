@@ -1,0 +1,72 @@
+#! /bin/csh -f
+#
+# script to make an accession number index for the genbank library
+#
+# NOTE only active for primate file
+#
+
+echo "genbaccession.script Version 1.1"
+echo ""
+
+#set RM = "/bin/rm -f"
+set RM = "echo /bin/rm -f"
+set SORT = "sort -T tmp"
+
+#
+# 
+#
+
+genbaccess1 gbpri.seq gbpri.list
+if ( $status ) goto abort
+genbaccess1 gbrod.seq gbrod.list
+if ( $status ) goto abort
+genbaccess1 gbmam.seq gbmam.list
+if ( $status ) goto abort
+genbaccess1 gbvrt.seq gbvrt.list
+if ( $status ) goto abort
+genbaccess1 gbinv.seq gbinv.list
+if ( $status ) goto abort
+genbaccess1 gbpln.seq gbpln.list
+if ( $status ) goto abort
+genbaccess1 gborg.seq gborg.list
+if ( $status ) goto abort
+genbaccess1 gbbct.seq gbbct.list
+if ( $status ) goto abort
+genbaccess1 gbrna.seq gbrna.list
+if ( $status ) goto abort
+genbaccess1 gbvrl.seq gbvrl.list
+if ( $status ) goto abort
+genbaccess1 gbphg.seq gbphg.list
+if ( $status ) goto abort
+genbaccess1 gbsyn.seq gbsyn.list
+if ( $status ) goto abort
+genbaccess1 gbuna.seq gbuna.list
+if ( $status ) goto abort
+
+${SORT} gbpri.list gbrod.list gbmam.list gbvrt.list gbinv.list gbpln.list gborg.list gbbct.list gbrna.list gbvrl.list gbphg.list gbsyn.list gbuna.list >! access.sorted
+if ( $status ) goto abort
+${RM} gbpri.list gbrod.list gbmam.list gbvrt.list gbinv.list gbpln.list gborg.list gbbct.list gbrna.list gbvrl.list gbphg.list gbsyn.list gbuna.list 
+
+access2 access.sorted access.entry
+if ( $status ) goto abort
+${RM} access.sorted
+
+${SORT} -b +1 access.entry >! access.sorted2
+if ( $status ) goto abort
+${RM} access.entry
+
+access4 access.sorted2 acnum.trg acnum.hit
+if ( $status ) goto abort
+${RM} access.sorted2
+
+echo "Completion successful"
+echo ""
+
+exit 0
+
+#
+# Abort
+#
+abort:
+echo "genbaccession.script: aborting due to serious error"
+exit 2

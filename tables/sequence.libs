@@ -1,0 +1,8 @@
+A EMBLFILES EMBL 34 nucleotide library March 93! in cdrom format
+A EMBLUFILES EMBL 34 updates library March 93! in cdrom format
+A SWISSFILES SWISSPROT 24 protein library March 93! in cdrom format
+B PIRFILES PIR 36 protein library March 93!
+B NRL3DFILES NRL3D 59 From Brookhaven protein library March 92!
+C GENBFILES GenBank 72!
+! format is library type, space, name of library description file, prompt
+! any text following a ! symbol is treated as comment

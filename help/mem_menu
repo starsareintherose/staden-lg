@@ -1,0 +1,32 @@
+0 1 15 184 B MEP
+1 1 9304 37 B Help
+2 1 10465 2 B Quit
+3 1 10531 14 B Read a new sequence.
+4 1 10932 6 B Define active region
+5 1 11250 31 B List a sequence.
+6 1 12393 3 B List a text file.
+7 1 12525 12 B Direct output to disk
+10 1 12996 2 B Clear graphics
+11 1 13065 2 B Clear text
+12 1 13126 12 B Draw a ruler.
+13 1 13871 12 B Use crosshair.
+14 1 14459 34 B Reposition plots
+15 1 16611 12 B Label a diagram
+16 1 17394 12 B Display a map.
+17 1 18154 31 B Search for strings
+18 1 19507 3 B Set strand
+19 1 19672 6 B Set composition
+20 1 20013 3 B Set word length
+21 1 20131 3 B Set number of mismatches
+22 1 20256 14 B Show settings
+23 1 20718 3 B Make dictionary Dw
+24 1 20890 3 B Make dictionary Ds
+25 1 21055 7 B Make dictionary Dm from Dw
+26 1 21505 7 B Make dictionary Dm from Ds
+27 1 21955 5 B Make dictionary Dh from Dm
+28 1 22245 55 B Examine dictionary Dm
+29 1 24148 70 B Examine dictionary Dh
+30 1 26410 25 B Examine words in Dm
+31 1 27437 33 B Examine words in Dh
+32 1 28701 7 B Save or restore a dictionary
+33 1 29106 46 B Find inverted repeats

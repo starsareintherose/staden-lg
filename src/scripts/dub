@@ -1,0 +1,93 @@
+#!/bin/sh
+
+# looks for any block of 10 which has more than 6 bases which have
+# yet to be double stranded
+
+case $# in
+  1) ;;
+  *)echo dub reads an output file created by the Examine quality;
+echo option inside of xdap and outputs a list of which portions of;
+echo the sequence have yet to be double stranded and on which strand;
+echo 'USAGE: dub examine_quality_output_file ' 1>&2; exit 2;;
+esac
+
+
+awk 'BEGIN{start_file=0; start_num=0; prev1=0; prev2=0; prev3=0; prev4=0;
+		totnum12=0; totnum34=0; totnum1=0; totnum2=0; prevprev1=0; prevprev2=0; printf("REGIONS YET TO BE DOUBLE STRANDED FOR: %s\n\n","'$1'");}
+{
+
+# right now Bob does not care about information about type 3 and 4 
+
+
+# look for a number 10 to indicate the beginning of quality information
+	if (NF>0) {
+# 		if column 1 has 10 characters in it then this is
+#		most likely a line with quality information in it
+	  if (length($1)>8) {
+# go through each block of 10 counting the number of problems for
+# each row of quality counts
+	    for (j=1; j<=NF; j++) {
+		prevprev1=prev1; prevprev2=prev2;
+		prev1=num1; prev2=num2; prev3=num3; prev4=num4;
+# num12 and num34 are counts for each block of 10 so reset them
+# each time
+		num1=0;num2=0;num3=0;num4=0;num0=0;
+		for (i=0; i<=length($j); i++) {
+# for codes 1 and 2 you need the other strand
+  		  if (substr($j,i,1)=="1") num1++;
+		  if (substr($j,i,1)=="2") num2++;
+# for codes 3 and 4 you need both strands to resolve the disagreement
+#  		  if (substr($j,i,1)=="3" || substr($j,i,1)=="4") num34++;
+	        }
+#if any block of 10 has more than 6 total non-zeros then it is
+#a problem area
+		if (num1+num2>=6) {
+# only reset start_num if you have not already started a region of
+# problem areas
+   		   end_num=count+10*(j-1);
+	           if (start_num==0) {
+			start_num=count+10*(j-1)-9;
+# if that previous block before a problem area had more then 4 problems then go
+# ahead and move the start point to the beginning of that previous block
+	         	if (prev1+prev2>=4) start_num-=10;
+			if (prevprev1+prevprev2>=4) start_num-=10;
+		   }
+		   else {
+			totnum12+=num1+num2; 
+#			totnum34+=num34;
+			totnum1+=num1;
+			totnum2+=num2;
+		   }
+
+		}
+		else {
+# if the 3s and 4s make up more than half of the problems then tell the
+# user they need to pick up both strands
+
+	if (end_num!=0 && start_num!=0) {
+#use totnum1+totnum0 here becuase if it is mostly 0s and 1s then
+#you want to just see the plus strand  you do not need it to tell
+#you both strands
+#		   if (totnum1_totnum0>=(end_num-start_num)/2) printf("Needs plus strand from:  %10d to %10d\n",start_num,end_num);
+#		   else if (totnum2+totnum0>(end_num-start_num)/2) printf("Needs minus strand from: %10d to %10d\n",start_num,end_num);
+		   if (totnum1>totnum2) printf("Needs plus strand from:  %10d to %10d\n",start_num,end_num);
+		   else if (totnum2>totnum1) printf("Needs minus strand from: %10d to %10d\n",start_num,end_num);
+		else if (totnum12>6)
+		  printf("Needs one strand from:   %10d to %10d\n",start_num,end_num);
+        }
+		start_num=0;
+		end_num=0;
+		totnum0=0;
+		totnum1=0;
+		totnum2=0;
+		totnum12=0;
+		totnum34=0;
+		}
+	     }
+	  }
+	  else 
+	   count=$1;
+# 		count is the sequence indices indicator
+	  }
+}
+END{}' <$1 | sort +1 

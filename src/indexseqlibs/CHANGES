@@ -1,0 +1,153 @@
+Wed Feb 17 11:30:28 GMT 1993
+----------------------------
+freetext.c
+  PIR 35.0. Changes to format
+	One field identifier has changed in the PIR-International
+	databases. All "#Title" tags for submitted citations have been
+	converted to the new tag "#Description" which will not be
+	standardized. This information may be considered free text.
+  Changed code to reflect this.
+
+access4.c
+  The record size stored in acnum.hit header was 18. It should be
+  4.
+
+piraccession.script
+emblaccession.script
+genbaccession.script
+  The name of the accession number index files are now acnum.hit and
+  acnum.trg.
+
+
+Thu Jan 21 15:32:26 GMT 1993
+----------------------------
+genbentryname1.c
+pirentryname1.c
+  These programs now give the offset of the FIRST base in the
+  sequence. The entryname index previously being created was not
+  in accordance with the standard specification. This change
+  corresponds to changes to programs in the Staden package,
+  which are included in release 1993.0 of the package.
+
+
+Thu Jan 21 15:29:56 GMT 1993
+----------------------------
+genbentryname1.c
+  The sequence offsets created in the entryname index were
+  calculated wrongly. With the use with the Staden package
+  it caused the first line of the entry to be omitted.
+
+
+genbaccession.script
+genbauthor.script
+genbdivision.script
+genbentryname.script
+genbfreetext.script
+genbtitle.script
+  Genbank has 13 divisions
+
+division.c
+genbdivision.script
+pirdivision.script
+  Routines and scripts to create division lookup files.
+
+
+Thu Jul 16 17:27:43 BST 1992
+----------------------------
+freetext.c
+  Look for words in "OG" (EMBL/SWISSPROT) and "GN" (SWISSPROT)
+  lines.
+
+
+Tue Jun 16 16:56:09 BST 1992
+----------------------------
+
+freetext4.c
+hitNtrg.c
+  Creation of author and freetext indexes was in error. Each
+  occurrance of author/word in the final sorted list was being written
+  to the target file, rather than just once as it should have been.
+  This bug did not affect the functionality but only the performance
+  of the Staden programs that use the indexes.
+
+
+
+Wed May 20 10:43:56 BST 1992
+----------------------------
+
+title2.c
+entryname2.c
+  In the embl updates it is possible that an entry appears more
+  than once. These programs have been modified so that they ignore
+  all but the first occurrence of the entry name, so that the brief
+  and entryname index have the correct number of entries. This is
+  not a clean solution, as words, authors, and accession numbers
+  for the more recent entry won't appear in the annotation of the
+  entry.
+
+
+
+Wed May 13 17:22:09 BST 1992
+----------------------------
+
+author.c
+hitNtrg.c
+emblauthor.script
+pirauthor.script
+genbauthor.script
+swissauthor.script
+  Programs and scripts to create the new author indexes have been
+  written. They are based closely on the freetext index. The program
+  hitNtrg.c is almost identical to freetext4.c but takes the string
+  length to be written to the target file from the command line.
+  It is possible to write the accession number creation routines
+  in the same fashion.
+
+
+
+Wed Apr  1 16:33:11 BST 1992
+----------------------------
+
+freetext4.c Version 1.1
+  Words that were longer than target file field width were not being
+  truncated, thus corrupting the index. Fixed.
+
+
+embltitle1.c Version 1.1
+pirtitle1.c Version 1.1
+pirtitle2.c Version 1.1
+genbtitle1.c Version 1.1
+  From some sources, the sequence libraries end each line with a
+  carriage return followed by a new line character. The programs
+  were changed to filter out non-printable characters in the title
+  lines.
+
+Wed Apr  1 18:48:12 BST 1992
+----------------------------
+
+genbaccession.script Version 1.1
+piraccession.script Version 1.1
+  The second sort in these scripts was in error, causing the file
+  access.sorted2 to in fact no be sorted on accession number.  The
+  command "${SORT} +1 +0..." should have been "${SORT} -b +1...".
+
+
+Wed Apr 22 1992
+---------------
+
+freetext.c Version 1.1
+  The line offset for PIR should be 16 not 15. This would only affect
+  libraries where the 10th character of the entry name is significant
+  and excluding it would result in a different sort order.
+
+author.c Version 1.0
+  A new program for extracting author names from sequence libraries.
+  We have yet to see the EMBL CR-ROM author indexes, so this program
+  may change. No scripts written yet. Subsequence processing of output
+  file will include:
+	1) Sorting on entry name, removing duplicate entry-name/author
+	entries. (sort -u ...)
+	2) Assigning entry numbers, using freetext2.c
+	3) Sorting on author name. (sort -b +1 ...)
+	4) Creation of indexes with program similar to freetext4 (differing
+	only by the fact that the target string will be a different size.)

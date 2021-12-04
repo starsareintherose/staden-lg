@@ -1,0 +1,165 @@
+Scripts and programs to create indexes for various sequence libraries
+---------------------------------------------------------------------
+
+We have written a suite of scripts for creating title, entry name,
+freetext and accession number indexes for EMBL, GenBank, PIR and
+SwissProt sequence libraries in EMBL CD-ROM format. Each script calls a
+series of programs and system command which extract, sort and process
+the data before the indexes are made. The first step of each script is
+to gather the data.  This program will be particular to the format of
+the sequence library.  All other programs in the script will be common
+to all formats.
+
+Below are the steps for in creating each index or pair of indexes. The
+programs particular to the step is given in parentheses.  Between
+steps the format of the intermediate files are given, and in parentheses
+the generic name of the file. For the format of the index file please
+refer to the EMBL CD-ROM format specification.
+
+
+Creating Accession Number Indexes
+---------------------------------
+
+Scripts:
+	emblaccession.script
+	genbaccession.script
+	piraccession.script
+	swissaccession.script
+
+Step 1: Gather entry name and accession number information
+(emblaccess1, genbaccess1, piraccess1)
+
+	"%10s %10s\n" entry_name accession_no			(*.list)
+
+Step 2: Sort on entry name
+
+	"%10s %10s\n" entry_name accession_no			(access.sorted)
+
+Step 3: Assign entry numbers (access2)
+
+	"%10s %10s %10d\n" entry_name accession_no entry_no 	(access.entry)
+
+Step 4: Sort on accession number
+
+	"%10s %10s %10d\n" entry_name accession_no entry_no 	(access.sorted2)
+
+Step 5: Create indexes (access4)
+
+	(acnum.hit, acnum.trg)
+
+
+
+Creating Title/Brief Directory Index
+------------------------------------
+
+Scripts:
+	embltitle.script
+	genbtitle.script
+	pirtitle.script
+	swisstitle.script
+
+Step 1: Gather entry name, accession number, sequence length and title
+information (embltitle1, genbtitle1, pirtitle1)
+
+	"%10s %10s %10d %80s\n" entry_name acc_no seq_len title (*.list)
+
+Step 2: Sort on entry name
+
+	"%10s %10s %10d %80s\n" entry_name acc_no seq_len title (title.sorted)
+
+Step 3: Generate index (title2)
+
+	(brief.idx)
+
+
+
+Creating Free Text Index
+------------------------
+
+Scripts:
+	emblfreetext.script
+	genbfreetext.script
+	pirfreetext.script
+	swissfreetext.script
+
+Step 1: Gather entry names and free text (emblfreetext, genbfreetext,
+pirfreetext)
+
+	"%10s %s\n" entry_name word (*.list)
+
+Step 2: Sort on word
+Step 3: Remove duplicate word/entry name entries
+Step 4: Remove stopwords (excludewords)
+Step 5: Sort on entry name
+
+	"%10s %s\n" entry_name word (freetext.sorted)
+
+Step 6: Assign entry numbers (freetext2)
+
+	"%10s %10d %s\n" entry_name entry_no word (freetext.entry)
+
+Step 7: Sort on word
+
+	"%10s %10d %s\n" entry_name entry_no word (freetext.sorted2)
+
+Step 8: Create indexes (freetext4)
+
+	(freetext.hit, freetext.trg)
+
+
+
+Creating Entry Name Index
+-------------------------
+
+Scripts:
+	emblentryname.script
+	genbentryname.script
+	pirentryname.script
+	swissentryname.script
+
+Step 1: Gather entry names, annotation offsets, sequence offsets and
+divisions (emblentryname1, genbentryname1, pirentryname1)
+
+	"%10s %10d %10d %5d" entry_name ann_offset seq_offset division (*.list)
+
+Step 2: Sort on entry names
+
+	"%10s %10d %10d %5d" entry_name ann_offset seq_offset division (entry.sorted)
+
+Step 3: Create index (entryname2)
+
+	(entryname.idx)
+	
+
+
+Creating Author Index
+------------------------
+NOTE: this is similar to free text index creation
+
+Scripts:
+	emblauthor.script
+	genbauthor.script
+	pirauthor.script
+	swissauthor.script
+
+Step 1: Gather entry names and authors (emblauthor, genbauthor,
+pirauthor)
+
+	"%10s %s\n" entry_name author (*.list)
+
+Step 2: Sort on entry name, removing duplicate entries
+
+	"%10s %s\n" entry_name author (author.sorted)
+
+Step 6: Assign entry numbers (freetext2)
+
+	"%10s %10d %s\n" entry_name entry_no author (author.entry)
+
+Step 7: Sort on author
+
+	"%10s %10d %s\n" entry_name entry_no author (author.sorted2)
+
+Step 8: Create indexes (hitNtrg)
+
+	(author.hit, author.trg)
+

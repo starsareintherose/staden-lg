@@ -1,0 +1,30 @@
+Processing and printing LaTeX sources
+-------------------------------------
+
+Given a source file src.tex, run LaTeX to generate the bibliographic
+references:
+
+	latex src
+
+Now run BibTeX to search the bibliography for them:
+
+	bibtex src
+
+Now run LaTeX twice, first to pick up the references, second to bind
+forward references:
+
+	latex src
+	latex src
+
+This will have generated a src.dvi output file. Now we convert this
+to PostScript:
+
+	dvi2ps src.dvi >src.ps
+
+Now we can print this out:
+
+	lpr src.ps
+
+Most of the above is only necessay if you are building something from
+scratch, but it's best to go through it anyway until you fully
+understand how LaTeX works.

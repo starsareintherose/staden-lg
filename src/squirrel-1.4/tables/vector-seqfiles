@@ -1,0 +1,14 @@
+# database for mapping of vector to sequence file
+#
+# Format:
+#        <vector> <file-name>
+#
+Lambda  lambda.seq
+Lorist2 lorist2.vep
+Lorist6 lorist6.vep
+LoristB loristB.seq
+M13mp18 m13mp18.vec
+M13mp7  m13mp7.seq
+pBS     blue.vep
+pJB8    pjb8.vep
+pUC18   puc18.vec

@@ -1,0 +1,84 @@
+-1 0 23 2 T General
+-1 0 23 2 X General
+-2 0 53 2 T Screen control
+-2 0 53 2 X Screen control
+-3 0 89 2 T Statistical analysis
+-3 0 89 2 X Statistical analysis
+-1 0 112 2 T General
+-1 0 112 2 X General
+-2 0 142 2 T Screen control
+-2 0 142 2 X Screen control
+-3 0 178 2 T Statistical analysis
+-3 0 178 2 X Statistical analysis
+0 -1 198 2 T NIPF
+0 -1 198 2 X NIPF
+1 1 217 2 T Help
+1 1 217 2 X Help
+2 1 236 2 T Quit
+2 1 236 2 X Quit
+3 1 268 2 T Read new sequence
+3 1 268 2 X Read new sequence
+4 1 305 2 T Redefine active region
+4 1 305 2 X Redefine active region
+5 1 337 2 T List the sequence
+5 1 337 2 X List the sequence
+6 1 368 2 T List a text file
+6 1 368 2 X List a text file
+7 1 404 2 T Direct output to disk
+7 1 404 2 X Direct output to disk
+8 1 448 2 T Write active sequence to disk
+8 1 448 2 X Write active sequence to disk
+9 1 481 2 T List a translation
+9 1 481 2 X List a translation
+32 1 525 2 T List showing base differences
+32 1 525 2 X List showing base differences
+37 1 564 2 T List showing translation
+37 1 564 2 X List showing translation
+33 1 614 2 T List showing amino acid differences
+33 1 614 2 X List showing amino acid differences
+10 2 643 2 T Clear graphics
+10 2 643 2 X Clear graphics
+11 2 668 2 T Clear text
+11 2 668 2 X Clear text
+12 2 695 2 T Draw a ruler
+12 2 695 2 X Draw a ruler
+13 2 724 2 T Use cross hair
+13 2 724 2 X Use cross hair
+14 2 752 2 T Reset margins
+14 2 752 2 X Reset margins
+15 2 780 2 T Label diagram
+15 2 780 2 X Label diagram
+16 2 808 2 T Display a map
+16 2 808 2 X Display a map
+17 3 842 2 T Set comparison mode
+17 3 842 2 X Set comparison mode
+18 3 870 2 T Set sort mode
+18 3 870 2 X Set sort mode
+21 3 903 2 T Count base changes
+21 3 903 2 X Count base changes
+22 3 937 2 T Count codon changes
+22 3 937 2 X Count codon changes
+23 3 972 2 T Count genetic events
+23 3 972 2 X Count genetic events
+24 3 1013 2 T Show table of base changes
+24 3 1013 2 X Show table of base changes
+36 3 1064 2 T Show table of expressed base changes
+36 3 1064 2 X Show table of expressed base changes
+39 3 1112 2 T Show table of silent base changes
+39 3 1112 2 X Show table of silent base changes
+38 3 1149 2 T Estimate mutation rate
+38 3 1149 2 X Estimate mutation rate
+25 3 1181 2 T Plot base changes
+25 3 1181 2 X Plot base changes
+26 3 1227 2 T Plot expressed changes per base
+26 3 1227 2 X Plot expressed changes per base
+27 3 1270 2 T Plot silent changes per base
+27 3 1270 2 X Plot silent changes per base
+28 3 1317 2 T Count expressed changes per base
+28 3 1317 2 X Count expressed changes per base
+29 3 1361 2 T Count silent changes per base
+29 3 1361 2 X Count silent changes per base
+30 3 1401 2 T Count changed amino acids
+30 3 1401 2 X Count changed amino acids
+31 3 1443 2 T Plot amino acid variability
+31 3 1443 2 X Plot amino acid variability

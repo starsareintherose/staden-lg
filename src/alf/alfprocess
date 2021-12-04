@@ -1,0 +1,78 @@
+#! /bin/csh -f
+# alfprocess
+# shell script to process a batch of alf data
+# from abiprocess
+#
+# It assumes that raw data is in ~/alf_e/'Results'$date
+# where date is in the form {yr}{month}{day}{letter}: eg: 910227a
+# for february 27, 1991, run "a"
+# thus in addition to the date, the run letter accounts for more than one
+# run a day:
+# 910227a  for first run of day
+# 910227b  for second run of day, etc.
+# 
+# It then runs alfsplit on that file producing separate files
+# for each clone in the format {clonename}ALF (eg a02b9.s2ALF)
+# get the file names that alfsplit outputs
+# For clone names it is essential that a real clone name has no spaces
+#   unnamed clones are ignored when the file names are gotten
+# 
+# It then invokes ted on each one of these files
+# (ie. ted -ALF $oldname -output $newname -raw $newname"RES")
+
+# FoFfile is the file of filenames
+
+if ( $#argv < 1) then
+	echo "Usage: alfprocess <date> (Example: alfprocess 910228a)" 
+	echo "       alfprocess presumes that data are in ~/alf_e/Results<date>"
+	echo "       (eg. ~/alf_e/Results910228a)"
+	echo
+	exit
+endif
+
+if ( ! -d $HOME/alf_e/Results${1} ) then
+	echo "Directory ~/alf_e/Results${1} doesn't exist"
+	echo "Check if date is correct and that the directory been created"
+	echo "Then run alfprocess again"
+	exit
+endif
+
+if ( $#DISPLAY == 0 ) then
+	echo "Must be running under X windows for alfprocess to run"
+	exit
+endif
+
+##descriptiong
+echo "Running alfprocess: looking for directory ~/alf_e/Results${1}"
+echo "Will run alfsplit on ${1}.alf, process clones through ted, and then"
+echo "backup directory to tape.  The accepted clones will be transferred"
+echo "to your project directory as well as the file of file names"
+
+cd $HOME/alf_e/"Results"${1}
+
+set FoFfile = ${1}fn
+set clones = `alfsplit ${1}.alf | awk '/^Clone/&& $4 ~ /-/ {print $3;}' `
+echo Clones: $clones
+
+if (-e $FoFfile) then
+	echo "Warning, file of filenames already exists ($FoFfile)"
+	echo "Press return to continue, Ctrl-c to exit"
+	$<
+endif
+	
+foreach clonename ( $clones )
+	set alfsplitname = $clonename"ALF"
+	echo -n "Processing clone: $clonename"
+	ted -ALF $clonename"ALF" -output $clonename -raw $clonename"ALF"
+	if ( ! -e $clonename ) then
+		echo " failed"
+		mv $clonename"ALF" $clonename"ALF.fld"
+	else
+		echo " accepted"
+		echo $clonename >> $FoFfile 
+	endif
+end
+
+rsh cele /usr/local/bin/alfbackup.sh $cwd ${1} 
+
+

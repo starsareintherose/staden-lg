@@ -1,0 +1,22 @@
+#! /bin/csh -f
+set FORMAT = ~wormpub/BioSW/staden/tables/format.awk
+set SUBCLONEDB = subclones
+if (-e subclones) then
+	set SUBCLONEDB = subclones
+else
+	if ($?SUBCLONES) then
+		set SUBCLONEDB = $SUBCLONES
+		if (! -e $SUBCLONEDB) then 
+			echo "Cannot open file $SUBCLONEDB"
+			exit 1
+		endif
+	else
+		echo "Cannot open file"
+		exit 1
+	endif
+endif
+
+echo "Printing $SUBCLONEDB on lp"
+
+awk -f $FORMAT $SUBCLONEDB | tbl | ptroff -Plp
+exit 0

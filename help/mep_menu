@@ -1,0 +1,68 @@
+-1 0 22 2 T General
+-1 0 22 2 X General
+-2 0 51 2 T Screen control
+-2 0 72 2 X Screen
+-3 0 106 2 T Dictionary analysis
+-3 0 106 2 X Dictionary analysis
+0 -1 124 185 T MEP
+0 -1 124 185 X MEP
+1 0 9423 38 T Help
+2 0 10594 3 T Quit
+3 1 10667 14 T Read a new sequence
+3 1 10667 14 X Read a new sequence
+4 1 11069 7 T Define active region
+4 1 11069 7 X Define active region
+5 1 11396 32 T List a sequence
+5 1 11396 32 X List a sequence
+6 1 12548 4 T List a text file
+6 1 12548 4 X List a text file
+7 1 12690 12 T Direct output to disk
+7 1 12690 12 X Direct output to disk
+10 2 13162 3 T Clear graphics
+10 2 13162 3 X Clear graphics
+11 2 13239 3 T Clear text
+11 2 13239 3 X Clear text
+12 2 13307 13 T Draw a ruler
+12 2 13307 13 X Draw a ruler
+13 2 14053 13 T Use crosshair
+13 2 14053 13 X Use crosshair
+14 2 14643 35 T Reposition plots
+14 2 14643 35 X Reposition plots
+15 2 16797 13 T Label a diagram
+15 2 16797 13 X Label a diagram
+16 2 17589 13 T Display a map
+16 2 17589 13 X Display a map
+17 1 18384 32 T Search for strings
+17 1 18384 32 X Search for strings
+18 3 19739 4 T Set strand
+18 3 19739 4 X Set strand
+19 3 19906 7 T Set composition
+19 3 19906 7 X Set composition
+20 3 20249 4 T Set word length
+20 3 20249 4 X Set word length
+21 3 20374 4 T Set number of mismatches
+21 3 20374 4 X Set number of mismatches
+22 3 20501 15 T Show settings
+22 3 20501 15 X Show settings
+23 3 20965 5 T Make dictionary Dw
+23 3 20965 5 X Make dictionary Dw
+24 3 21152 4 T Make dictionary Ds
+24 3 21152 4 X Make dictionary Ds
+25 3 21326 8 T Make dictionary Dm from Dw
+25 3 21326 8 X Make dictionary Dm from Dw
+26 3 21787 8 T Make dictionary Dm from Ds
+26 3 21787 8 X Make dictionary Dm from Ds
+27 3 22248 6 T Make dictionary Dh from Dm
+27 3 22248 6 X Make dictionary Dh from Dm
+28 3 22551 56 T Examine fuzzy dictionary Dm
+28 3 22551 56 X Examine fuzzy dictionary Dm
+29 3 24462 71 T Examine fuzzy dictionary Dh
+29 3 24462 71 X Examine fuzzy dictionary Dh
+30 3 26726 26 T Examine words in Dm
+30 3 26726 26 X Examine words in Dm
+31 3 27755 34 T Examine words in Dh
+31 3 27755 34 X Examine words in Dh
+32 3 29021 8 T Save or restore a dictionary
+32 3 29021 8 X Save or restore a dictionary
+33 1 29428 45 T Find inverted repeats
+33 1 29428 45 X Find inverted repeats

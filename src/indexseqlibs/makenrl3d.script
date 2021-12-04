@@ -1,0 +1,49 @@
+#! /bin/csh -f
+#
+# script to make entryname and brief indexes for nrl3d
+#
+
+echo "makenrl3d.script Version 1.0"
+echo ""
+
+set RM = "/bin/rm -f"
+set SORT = sort
+
+#
+# LIBFILE is the name youve given to the library file
+#
+set LIBFILE = nrl3d.dat
+
+pirentryname1 $LIBFILE entry.list 1
+if ( $status ) goto abort
+
+${SORT} entry.list >! entry.sorted
+if ( $status ) goto abort
+${RM} entry.list
+
+entryname2 entry.sorted nrl3d.idx
+if ( $status ) goto abort
+${RM} entry.sorted
+
+pirtitle2 $LIBFILE title.list
+if ( $status ) goto abort
+
+${SORT} title.list >! title.sorted
+if ( $status ) goto abort
+${RM} title.list
+
+title2 title.sorted nrl3dbrief.idx
+if ( $status ) goto abort
+${RM} title.sorted
+
+echo "Completion successful"
+echo ""
+
+exit 0
+
+#
+# Abort
+#
+abort:
+echo "makenrl3d.script: aborting due to serious error"
+exit 2

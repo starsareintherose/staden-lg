@@ -1,0 +1,33 @@
+		     1001 Ways to Make COP Better
+				   
+			      Simon Dear
+			   3 December 1991
+				   
+
+1. Incorporate quality considerations.
+Certain problems can slip through the detetion net. An example are
+overcalled bases in the consensus. Currently the whole raw data read
+is used, and overcalling will agree with the consensus. Overcalled
+runs of bases are very symptomatic of poor trace quality. If these
+could be detected and excluded from the coverage map, the problem
+would be detected.
+
+2. Running the program on contigs and regions of contigs.
+Cop could then be run on partially completed project databases.
+
+3. Provide explanations as to why a region is problematic.
+Maybe this isn't worth the effort to implement, but would be useful.
+
+4. Take into account strandedness.
+This would help detect regions where the coverage by good quality
+traces is poor.
+
+5. Interface to contig editor.
+The contig editor could center on and highlight regions where problems
+exist, speeding up the process.
+
+6. Consensus coverage.
+Currently if 10 good readings disagree with a region and just 1
+mediocre reading agrees, no problem is detected.
+
+7-1001. Make it detect 995 times as many problems.

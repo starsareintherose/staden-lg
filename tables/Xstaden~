@@ -1,0 +1,111 @@
+! Default resources for staden applications
+! -----------------------------------------
+
+
+! Dialogue shell
+! --------------
+Xstaden*font: 7x13bold
+Xstaden.Dialgue.allowShellResize: False
+Xstaden.Dialogue.width:	    563
+Xstaden.Dialogue.height:    190
+Xstaden.Dialogue.dialogueForm*translations: #override \n\
+	<Key>Return: CRAction()
+! The default chaining for all children is Top,Top,Left,Left
+Xstaden.Dialogue.dialogueForm*top:    chainTop
+Xstaden.Dialogue.dialogueForm*bottom: chainTop
+Xstaden.Dialogue.dialogueForm*left:   chainLeft
+Xstaden.Dialogue.dialogueForm*right:  chainLeft
+! currFile
+Xstaden.Dialogue.dialogueForm.currFile.label: Current file:
+Xstaden.Dialogue.dialogueForm.currFile.borderWidth: 0
+Xstaden.Dialogue.dialogueForm.currFile.resizable: True
+! currFunc
+Xstaden.Dialogue.dialogueForm.currFunc.label: Current function:
+Xstaden.Dialogue.dialogueForm.currFunc.borderWidth: 0
+Xstaden.Dialogue.dialogueForm.currFunc.resizable: True
+! quit
+Xstaden.Dialogue.dialogueForm.quit.label: Quit application
+Xstaden.Dialogue.dialogueForm.quit.foreground:  red
+Xstaden.Dialogue.dialogueForm.quit.borderColor: red
+
+! null
+Xstaden.Dialogue.dialogueForm.null.borderWidth: 0
+Xstaden.Dialogue.dialogueForm.null.label: Working ... 
+
+! nChoice
+Xstaden.Dialogue.dialogueForm.nChoice.resizable: True
+! nChoice buttons
+Xstaden.Dialogue.dialogueForm.nChoice.buttons.resizable: True
+Xstaden.Dialogue.dialogueForm.nChoice.buttons.orientation: horizontal
+! nChoice OK
+Xstaden.Dialogue.dialogueForm.nChoice.OK.borderWidth: 3
+
+! getopt
+Xstaden.Dialogue.dialogueForm.getopt.width: 540
+! getopt execlabel
+Xstaden.Dialogue.dialogueForm.getopt.execlabel.label: Select a function to:
+Xstaden.Dialogue.dialogueForm.getopt.execlabel.borderWidth: 0
+! getopt execcommand
+Xstaden.Dialogue.dialogueForm.getopt.execcommand.label: Execute with dialogue
+Xstaden.Dialogue.dialogueForm.getopt.execcommand.resizable: True
+! getopt menubar
+Xstaden.Dialogue.dialogueForm.getopt.menubar.width:	530
+Xstaden.Dialogue.dialogueForm.getopt.menubar.height:	25
+
+! getstring
+Xstaden.Dialogue.dialogueForm.getstring.resizable: True
+Xstaden.Dialogue.dialogueForm.getstring.label:
+Xstaden.Dialogue.dialogueForm.getstring.value:
+! getstring label
+Xstaden.Dialogue.dialogueForm.getstring.label.resizable: True
+! getstring value
+Xstaden.Dialogue.dialogueForm.getstring.value.width: 350
+! getstring OK
+Xstaden.Dialogue.dialogueForm.getstring.OK.borderWidth: 3
+
+! yesno
+Xstaden.Dialogue.dialogueForm.yesno.resizable: True
+! yesno label
+Xstaden.Dialogue.dialogueForm.yesno.lab.label:
+Xstaden.Dialogue.dialogueForm.yesno.lab.borderWidth: 0
+Xstaden.Dialogue.dialogueForm.yesno.lab.resizable: True
+Xstaden.Dialogue.dialogueForm.yesno.YES.borderWidth: 3
+
+
+! Help shell
+! ----------
+Xstaden.Help.width:     563
+Xstaden.Help.minWidth:  550
+Xstaden.Help.height:    400
+Xstaden.Help.minHeight: 150
+Xstaden.Help*top:    chainTop
+Xstaden.Help*bottom: chainTop
+Xstaden.Help*left:   chainLeft
+Xstaden.Help*right:  chainLeft
+! currDisp
+Xstaden.Help.helpForm.currDisp.resizable: True
+Xstaden.Help.helpForm.currDisp.borderWidth: 0
+! rmHelp
+Xstaden.Help.helpForm.rmHelp.label: Remove help
+! button
+Xstaden.Help.helpForm.button.label: List of topics
+! topicsViewport
+Xstaden.Help.helpForm.topicsViewport.allowVert: True
+Xstaden.Help.helpForm.topicsViewport.bottom: chainBottom
+Xstaden.Help.helpForm.topicsViewport.right:  chainRight
+Xstaden.Help.helpForm.topicsViewport.topicsList.defaultColumns: 1
+!Xstaden.Help.helpForm.topicsViewporttopicsList.forceColumns:   2
+! text
+Xstaden.Help.helpForm.text.editType: edit
+Xstaden.Help.helpForm.text.scrollVertical: always
+Xstaden.Help.helpForm.text.bottom: chainBottom
+Xstaden.Help.helpForm.text.right:  chainRight
+
+
+! Output shell
+! ------------
+Xstaden.Graphics.graph.width:  563
+Xstaden.Graphics.graph.height: 400
+Xstaden.Output.text.width:     563
+Xstaden.Output.text.height:    100
+

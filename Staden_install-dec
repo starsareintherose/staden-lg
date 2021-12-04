@@ -1,0 +1,453 @@
+#! /bin/csh -f
+#
+# staden_install - version 2.4
+#
+#	This is a prototype installation program.
+#
+# 9 March 1992
+#	Modified for installation on Sun, Alliant, etc
+#	No longer install 2rs
+#
+# 20 November 1992
+#	Now includes convert, cop, frog, getMCH and scf
+#
+# 25 November 1992
+#	SGI supported
+# 
+# 19 May 1993
+#	DEC Alpha, Solaris supported
+# 
+# Written by sd@uk.ac.cam.mrc-lmb
+#
+
+# prelim
+set prog = $0 ; set prog = $prog:t
+
+# Machines supported: al sun dec sgi alpha solaris
+#set MACHINE = `echo $prog | sed 's/.*-//'`
+set MACHINE = dec
+
+# For local (MRC-LMB) setup only
+#set LOCAL = `echo $prog | awk '/local/{print "YES";exit;}{print "NO";}'`
+set LOCAL = NO
+
+
+echo ""
+echo -n "Staden Package installation procedure - "
+switch (${MACHINE})
+	case "al":
+		echo "Alliant FX/2800 Concentrix version"
+		set MAKE = "make -sk"
+		breaksw
+	case "sun":
+		echo "SunOS version"
+		set MAKE = "make -sk"
+		breaksw
+	case "dec":
+		echo "DEC Ultrix (mips) version"
+		set MAKE = "gmake -sk"
+		breaksw
+	case "sgi":
+		echo "Silicon Graphics Iris version"
+		set MAKE = "gmake -sk"
+		breaksw
+	case "alpha":
+		echo "DEC Alpha OSF/1 version"
+		set MAKE = "gmake -sk"
+		breaksw
+	case "solaris":
+		echo "Solaris version"
+		set MAKE = "make -sk"
+		breaksw
+	default:
+		echo "Panic. Unknown version"
+		exit 1
+endsw
+echo ""
+echo "* starting initialization...please wait."
+echo ""
+
+# Binary fork of source directory
+if ($LOCAL == "YES") then
+    set DIR_BINARIES = ${MACHINE}-binaries
+    set DIR_PROGS = ${MACHINE}-bin
+else
+    set DIR_BINARIES = .
+    set DIR_PROGS = bin
+    set MAKE = "$MAKE -f makefile-${MACHINE}"
+endif
+
+init:
+# Set useful shell variables
+set YES="YES";
+set NO="NO"
+
+# set/unset some .cshrc envs.
+unset noclobber
+set noglob
+
+# set interrupt trap
+onintr end_failure
+
+# Make dir command
+set MKDIR = "mkdir"
+
+# Copy command
+set CP = "cp -p"
+
+# Install command
+#set INSTALL = "install"
+#set INSTALL = "mv"
+set INSTALL = "cp"
+
+# Set up default responses
+set DEF_STADEN_ROOT = `pwd`
+
+set DEF_REQ_NONX = "$YES"
+set DEF_REQ_X = "$YES"
+set DEF_REQ_TED = "$YES"
+set DEF_REQ_MISC = "$YES"
+
+# directories
+set DIR_SRC = $DEF_STADEN_ROOT/src
+set DIR_BIN = $DEF_STADEN_ROOT/$DIR_PROGS
+set DIR_MISC = $DIR_SRC/Misc
+set DIR_STADEN = $DIR_SRC/staden
+set DIR_TED = $DIR_SRC/ted
+set DIR_ABI = $DIR_SRC/abi
+set DIR_ALF = $DIR_SRC/alf
+set DIR_BAP = $DIR_SRC/bap
+set DIR_OSP = $DIR_SRC/bap/osp-bits
+set DIR_CONVERT = $DIR_SRC/convert
+set DIR_COP = $DIR_SRC/cop
+set DIR_FROG = $DIR_SRC/frog
+set DIR_GETMCH = $DIR_SRC/getMCH
+set DIR_SCF = $DIR_SRC/scf
+
+
+main:
+
+	
+preamble:
+	echo ""
+	echo ""
+	echo "* Please answer the following questions."
+	echo "  Default answers to questions are given in square brackets."
+	echo "  If you require help at any stage respond with a ? to the question."
+	echo ""
+
+ask_staden_root:
+	set ANS_STADEN_ROOT = $DEF_STADEN_ROOT
+
+ask_require_nonx_progs: 
+	echo -n "Compile all the non-X programs in the Staden Package [$DEF_REQ_NONX]? "
+	set ANS_REQ_NONX = $<
+	if ("$ANS_REQ_NONX" == "?") then
+		echo "* If you do not have X windows on your system you will require"
+		echo "  these.  However, you will require Tektronics terminal emulation."
+		echo "  If you do not require all of the non-X programs, you should abort"
+		echo "  and manually make the ones you require."
+		echo ""
+		goto ask_require_nonx_progs
+	else if ("$ANS_REQ_NONX" != "") then
+		if ("$ANS_REQ_NONX" =~ [yY]*) then
+			set ANS_REQ_NONX=$YES
+		else if ("$ANS_REQ_NONX" =~ [nN]*) then
+			set ANS_REQ_NONX=$NO
+		else
+			goto ask_require_nonx_progs
+		endif
+	else
+		set ANS_REQ_NONX=$DEF_REQ_NONX
+	endif
+
+ask_require_x_progs:
+	echo -n "Compile all the X programs in the Staden Package [$DEF_REQ_X]? "
+	set ANS_REQ_X = $<
+	if ("$ANS_REQ_X" == "?") then
+		echo "* These are the programs that require X windows."
+		echo "  If you do not require all of the X programs, you should abort"
+		echo "  and manually make the ones you require."
+
+		echo ""
+		goto ask_require_x_progs
+	else if ("$ANS_REQ_X" != "") then
+		if ("$ANS_REQ_X" =~ [yY]*) then
+			set ANS_REQ_X=$YES
+		else if ("$ANS_REQ_X" =~ [nN]*) then
+			set ANS_REQ_X=$NO
+		else
+			goto ask_require_nonx_progs
+		endif
+	else
+		set ANS_REQ_X=$DEF_REQ_X
+	endif
+
+
+ask_require_ted:
+	echo -n "Compile the trace editing program ted [$DEF_REQ_TED]? "
+	set ANS_REQ_TED = $<
+	if ("$ANS_REQ_TED" == "?") then
+		echo "* This is the trace editor program.  It allows you to look at"
+		echo "  traces obtained from automated fluorescent sequencing machines."
+		echo ""
+		goto ask_require_ted
+	else if ("$ANS_REQ_TED" != "") then
+		if ("$ANS_REQ_TED" =~ [yY]*) then
+			set ANS_REQ_TED=$YES
+		else if ("$ANS_REQ_TED" =~ [nN]*) then
+			set ANS_REQ_TED=$NO
+		else
+			goto ask_require_ted
+		endif
+	else
+		set ANS_REQ_TED=$DEF_REQ_TED
+	endif
+
+
+
+ask_require_misc:
+	echo -n "Compile other programs [$DEF_REQ_MISC]? "
+	set ANS_REQ_MISC = $<
+	if ("$ANS_REQ_MISC" == "?") then
+		echo "* Other programs include:"
+		echo "    alfsplit"
+		echo "    getABISampleName"
+		echo ""
+		goto ask_require_misc
+	else if ("$ANS_REQ_MISC" != "") then
+		if ("$ANS_REQ_MISC" =~ [yY]*) then
+			set ANS_REQ_MISC=$YES
+		else if ("$ANS_REQ_MISC" =~ [nN]*) then
+			set ANS_REQ_MISC=$NO
+		else
+			goto ask_require_misc
+		endif
+	else
+		set ANS_REQ_MISC=$DEF_REQ_MISC
+	endif
+
+
+
+time_taken_warning:
+	echo ""
+	echo "The installation procedure is now ready to start."
+	echo ""
+	echo "**** Warning:"
+	echo "    The installation will take considerable time to complete.  If you"
+	echo "    are installing the whole Staden Package from scratch it could"
+	echo "    take as long as an hour for all exectuables to be compiled and"
+	echo "    installed."
+	echo ""
+
+ask_goahead:
+	echo -n "Proceed with the installation [YES]? " 
+	set ANSWER=$<
+	if ("$ANSWER" == "?") then
+		echo "* Final confirmation to proceed with the installation.  Answer"
+		echo "  YES to proceed; otherwise, answer NO to abort the installation."
+		echo ""
+		goto ask_goahead
+	else if ("$ANSWER" != "") then
+		if ("$ANSWER" =~ [nN]*) then
+			goto chickens_exit
+		else if ("$ANSWER" !~ [yY]*) then
+			goto ask_goahead
+		endif
+	endif
+
+installation_proper:
+
+# make binaries directory if it doesn't exist
+
+	if (! -d $DIR_BIN) then
+		$MKDIR $DIR_BIN
+	endif
+
+	if ("$ANS_REQ_MISC" == "$YES" || "$ANS_REQ_X" == "$YES" || "$ANS_REQ_NONX" == "$YES" ) then
+		echo ""
+		echo "+ Compiling miscellaneous library"
+
+		pushd $DIR_MISC > /dev/null
+
+		cd $DIR_BINARIES
+	        $MAKE all
+
+		popd > /dev/null
+
+	endif
+
+        if ("$ANS_REQ_NONX" == "$YES") then
+		echo ""
+		echo "+ Installing non X programs"
+
+		pushd $DIR_STADEN > /dev/null
+		cd $DIR_BINARIES
+	        $MAKE nprogs lprogs
+                $INSTALL mep $DIR_BIN
+		$INSTALL nip $DIR_BIN
+		$INSTALL pip $DIR_BIN
+		$INSTALL sap $DIR_BIN
+		$INSTALL sapf $DIR_BIN
+		$INSTALL sip $DIR_BIN
+		$INSTALL splitp1 $DIR_BIN
+		$INSTALL splitp2 $DIR_BIN
+		$INSTALL splitp3 $DIR_BIN
+		$INSTALL sethelp $DIR_BIN
+		$INSTALL gip $DIR_BIN
+		$INSTALL nipl $DIR_BIN
+		$INSTALL pipl $DIR_BIN
+		$INSTALL sipl $DIR_BIN
+		$INSTALL dap $DIR_BIN
+		$INSTALL nipf $DIR_BIN
+		$INSTALL vep $DIR_BIN
+		$INSTALL rep $DIR_BIN
+		$INSTALL lip $DIR_BIN
+		#$INSTALL convert_project $DIR_BIN
+		popd > /dev/null
+
+		pushd $DIR_OSP > /dev/null
+		cd $DIR_BINARIES
+		$MAKE
+		popd > /dev/null		
+
+		pushd $DIR_BAP > /dev/null
+		cd $DIR_BINARIES
+	        $MAKE bap
+                $INSTALL bap $DIR_BIN
+		popd > /dev/null
+
+	endif
+
+	if ("$ANS_REQ_TED" == "$YES") then
+		echo ""
+		echo "+ Installing Trace editor"
+
+		pushd $DIR_TED > /dev/null
+		cd $DIR_BINARIES
+                $MAKE ted
+		$INSTALL ted $DIR_BIN
+		popd > /dev/null
+	endif
+
+	if ("$ANS_REQ_X" == "$YES") then
+		echo ""
+		echo "+ Installing X programs"
+
+		pushd $DIR_STADEN > /dev/null
+		cd $DIR_BINARIES
+                $MAKE xprogs
+		$INSTALL xmep $DIR_BIN
+		$INSTALL xnip $DIR_BIN
+		$INSTALL xpip $DIR_BIN
+		$INSTALL xsap $DIR_BIN
+		$INSTALL xsip $DIR_BIN
+		$INSTALL xdap $DIR_BIN
+		popd > /dev/null
+
+		pushd $DIR_OSP > /dev/null
+		cd $DIR_BINARIES
+		$MAKE
+		popd > /dev/null		
+
+		pushd $DIR_BAP > /dev/null
+		cd $DIR_BINARIES
+	        $MAKE xbap
+                $INSTALL xbap $DIR_BIN
+		popd > /dev/null
+
+
+	endif
+
+	if ("$ANS_REQ_MISC" == "$YES") then
+		echo ""
+		echo "+ Installing miscellaneous programs"
+
+		pushd $DIR_ABI > /dev/null
+		cd $DIR_BINARIES
+                $MAKE all
+		$INSTALL getABISampleName $DIR_BIN
+		popd > /dev/null
+
+		pushd $DIR_ALF > /dev/null
+		cd $DIR_BINARIES
+                $MAKE alfsplit
+		$INSTALL alfsplit $DIR_BIN
+		popd > /dev/null
+
+		pushd $DIR_CONVERT > /dev/null
+		cd $DIR_BINARIES
+                $MAKE convert
+		$INSTALL convert $DIR_BIN
+		popd > /dev/null
+
+		pushd $DIR_COP > /dev/null
+		cd $DIR_BINARIES
+                $MAKE all
+		$INSTALL cop $DIR_BIN
+		$INSTALL cop-bap $DIR_BIN
+		popd > /dev/null
+
+		pushd $DIR_FROG > /dev/null
+		cd $DIR_BINARIES
+                $MAKE frog
+		$INSTALL frog $DIR_BIN
+		popd > /dev/null
+
+		pushd $DIR_GETMCH > /dev/null
+		cd $DIR_BINARIES
+                $MAKE trace2seq
+		$INSTALL trace2seq $DIR_BIN
+		popd > /dev/null
+
+		pushd $DIR_SCF > /dev/null
+		cd $DIR_BINARIES
+                $MAKE makeSCF
+		$INSTALL makeSCF $DIR_BIN
+		popd > /dev/null
+
+
+
+	endif
+
+
+installation_done:
+	echo ""
+	echo "+ Installation completed"
+	echo ""
+
+	echo "  Some further initialisation is required in order to use the"
+	echo "  package.  csh users should insert the following in their .login"
+	echo "  files:"
+	echo "  "
+	echo "  	setenv STADENROOT $ANS_STADEN_ROOT"
+	echo '  	source $STADENROOT/staden.login'
+	echo "  "
+	echo "  Users of the Bourne shell, sh, should insert the following in"
+	echo "  their .profile:"
+	echo "  "
+	echo "  	STADENROOT=$ANS_STADEN_ROOT"
+	echo "  	export STADENROOT"
+	echo '  	. $STADENROOT/staden.profile'
+	echo "  "
+	echo "  These initialisations will alter the shell's search path so that"
+	echo "  it can find the programs in the STADEN Package"
+	echo "  "
+
+normal_exit:
+	exit 0
+
+chickens_exit:
+	echo ""
+	echo "+ Installation cancelled"
+	echo ""
+
+	exit 0
+
+end_failure:
+	unset noglob
+	echo ""
+	echo "Aborted STADEN Package installation on `date`" 
+	echo ""
+	exit 1
+

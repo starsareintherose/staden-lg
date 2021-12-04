@@ -1,0 +1,40 @@
+C  ROUTINE TO TRANSLATE PROSITE DATABASE
+      SUBROUTINE FMAIN()
+      PARAMETER (MAXSTR = 80, MAXDEV = 3)
+      INTEGER DEVNOS(MAXDEV)
+      CHARACTER AMOS*(MAXSTR)
+      CHARACTER*40 PATNAM,HELPF,FILNAM
+      CALL UNITNO(KBIN,KBOUT,DEVNOS,MAXDEV)
+      WRITE(KBOUT,*)'SPLITP2 splits prosite.doc into one file per entry'
+      IDEV1 = DEVNOS(1)
+      IDEV2 = DEVNOS(2)
+      FILNAM = ' '
+      CALL OPENF1(DEVNOS(1),FILNAM,0,IOK,KBIN,KBOUT,
+     +'Prosite library file',
+     +IHELPS,IHELPE,HELPF,DEVNOS(3))
+      IF(IOK.NE.0) STOP
+      IPAT = 0
+5     CONTINUE
+      READ(IDEV1,1000,ERR=200,END=100)AMOS
+1000  FORMAT(A)
+      IF(AMOS(1:5).EQ.'{PDOC') THEN
+        IPAT = IPAT + 1
+        NAMLEN = INDEX(AMOS(1:),'}') - 1
+        PATNAM = AMOS(2:NAMLEN)//'.DOC'
+1005    FORMAT(' ',A)
+      CALL OPENRS(IDEV2,PATNAM,IOK,LRECL,1)
+      IF(IOK.NE.0) WRITE(*,*)'SCREAM, FILE OPENING'
+1009    FORMAT(' ',A)
+        WRITE(IDEV2,1009,ERR=200)AMOS
+      END IF
+6       CONTINUE
+        READ(IDEV1,1000,ERR=200,END=100)AMOS
+        WRITE(IDEV2,1009,ERR=200)AMOS
+        IF(AMOS(1:4).NE.'{END') GO TO 6
+        GO TO 5
+100     CONTINUE
+      WRITE(KBOUT,*)IPAT,' files created. Normal termination'
+      STOP
+200   CONTINUE
+      WRITE(KBOUT,*)IPAT,' files created. Abnormal termination'
+      END

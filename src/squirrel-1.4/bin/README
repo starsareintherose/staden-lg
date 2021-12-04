@@ -1,0 +1,29 @@
+dir: $SQUIRREL/bin/				
+date: Thu May 06 14:18:51 BST 1993
+
+
+The following programs must be installed in this directory:
+
+expGetSeq	
+	For extracting the sequence and trace clipping information from
+	trace files.
+	Sources in $STADENROOT/src/expGetSeq/
+
+
+vepe		
+	For excising vector from a sequence in experiment file format.
+	Sources in $STADENROOT/src/vepe/
+
+
+getABISampleName
+	For retrieving the ABI Sample Name from an ABI trace file.
+	Sources in $STADENROOT/src/abi/
+
+
+makeSCF	
+	For converting a trace file to SCF format.
+	Sources in $STADENROOT/src/scf/
+
+update_subclones
+	For updating the $SQUIRREL/tables/subclones database
+	Sources in $STADENROOT/src/update_subclones/

@@ -1,0 +1,47 @@
+#! /bin/csh -f
+
+onintr abort
+
+set A = $SQUIRREL/report/a.awk
+set B = $SQUIRREL/report/b.awk
+set C = $SQUIRREL/report/c.awk
+
+if ( ! -d Logs ) then
+    echo "No nut hoards for squirrel report"
+    exit 1
+endif
+
+#
+# Temp files
+#
+set S_all = /tmp/S_all.$$
+set S_oks = /tmp/S_oks.$$
+set S_lens = /tmp/S_lens.$$
+
+#
+# Remove temporary files
+#
+/bin/rm -f $S_all $S_oks $S_lens
+
+# Distill information from several passes
+awk -f $A Logs/log* | sort | awk -f $B | sed 's/[^:]*:[^:]*: *//' > $S_all
+
+# Main report
+awk -f $C $S_all
+
+# Determine average lengths
+awk '$2=="OK" {print $1;}' $S_all > $S_oks
+touch $S_lens
+foreach files ( `cat $S_oks` )
+    if (-e $files) head -1 $files | awk '{print substr($0,14,6);}' >> $S_lens
+end
+echo ""
+echo  "AVERAGE READING LENGTH OF ASSEMBLED READS ---->" `awk '{s += $1;} END {print s/NR,"(" NR ")"; }' $S_lens`
+
+abort:
+#
+# Remove temporary files
+#
+/bin/rm -f $S_all $S_oks $S_lens
+
+exit 0

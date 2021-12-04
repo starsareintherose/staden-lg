@@ -1,0 +1,43 @@
+#! /bin/csh -f
+# alftransfer
+# shell script to process a batch of alf data
+# this takes a date and creates a Results<date> directory in
+# ~/alf_e/ if it doesn't already exist then copies data there
+# and runs alfprocess (1) on it
+# It does not assume that raw data is in ~/alf_e/'Results'$date
+# where date is in the form {yr}{month}{day}{letter}: eg: 910227a
+# for february 27, 1991, run "a"
+# thus in addition to the date, the run letter accounts for more than one
+# run a day:
+# 910227a  for first run of day
+# 910227b  for second run of day, etc.
+
+
+if ( $#argv < 1) then
+	echo "alftransfer--a script to transfer alf files into your
+	echo "		   results directory"
+	echo 
+	echo "Usage: alfprocess2 <date>"
+	echo "       alfprocess moves data to  ~/alf_e/Results<date>"
+	echo "       creating the directory if necessary"
+	echo "Example:  alfprocess 910228a"
+	echo "          creates  ~/alf_e/Results910228a and moves"
+	echo "		910228a.alf to that directory"
+	exit
+endif
+
+if ( -e ${1}.alf ) then
+	if ( $cwd != $HOME/alf_e/Results${1} ) then 
+		if ( ! -d $HOME/alf_e/Results${1} ) then
+			echo "Results directory did not exist, making $HOME/alf_e/Results${1}"
+			mkdir $HOME/alf_e/Results${1}
+		endif
+		cp -i ${1}.alf $HOME/alf_e/Results${1}
+	endif
+endif
+
+cd $HOME/alf_e/Results${1}
+echo "Copying complete, now invoking alfprocess"
+alfprocess {$1}
+
+

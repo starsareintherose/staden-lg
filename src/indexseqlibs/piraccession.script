@@ -1,0 +1,53 @@
+#! /bin/csh -f
+#
+# script to make an accession number index for the pir library in codata format
+#
+
+echo "piraccession.script Version 1.1"
+echo ""
+
+set RM = "/bin/rm -f"
+set SORT = sort
+
+#
+# LIBFILE is the name you've given to the library file
+#
+set LIBFILE1 = pir1.dat
+set LIBFILE2 = pir2.dat
+set LIBFILE3 = pir3.dat
+
+piraccess1 $LIBFILE1 pir1.list
+if ( $status ) goto abort
+piraccess1 $LIBFILE2 pir2.list
+if ( $status ) goto abort
+piraccess2 $LIBFILE3 pir3.list
+if ( $status ) goto abort
+
+${SORT} pir1.list pir2.list pir3.list >! access.sorted
+if ( $status ) goto abort
+${RM} pir1.list pir2.list pir3.list
+
+
+access2 access.sorted access.entry
+if ( $status ) goto abort
+${RM} access.sorted
+
+${SORT} -b +1 access.entry >! access.sorted2
+if ( $status ) goto abort
+${RM} access.entry
+
+access4 access.sorted2 acnum.trg acnum.hit
+if ( $status ) goto abort
+${RM} access.sorted2
+
+echo "Completion successful"
+echo ""
+
+exit 0
+
+#
+# Abort
+#
+abort:
+echo "piraccession.script: aborting due to serious error"
+exit 2

@@ -1,0 +1,22 @@
+mRNA WTS FOR EUKARYOTES SARGAN,GREGORY,BUTTERWORTH FEBS LET 147 133-136 1982
+P  -7 -6 -5 -4 -3 -2 -1  1  2  3
+  102102102102102102102102102102
+T  19 24 31 12  0 18  5  0102  0
+C  20 15 32 65  5 42 52  0  0  0
+A  50 27 27 19 86 36 34102  0  0
+G   6 29 12  6 11  6 11  0  0102
+VIRAL ONLY
+P  -7 -6 -5 -4 -3 -2 -1  1  2  3
+   41 41 41 41 41 41 41 41 41 41
+T  14 12 16  4  2 13  9  0 41  0
+C   7  3 13 17  7  9 14  0  0  0
+A  15 10  6 10 27 15  9 41  0  0
+G   5 16  6 10  5  4  9  0  0 41
+This paper puts forward the hypothesis that there is an interaction between
+some mRNA leader sequences and a highly conserved structure in the 18S rRNA
+of eukaryotic ribosomes. The attempt to substantiate the hypothesis includes
+a table of base frequencies for sequences immediately 5' to start codons.
+They examined 102 sequences and I have used the base frequencies they found
+as a weight matrix for searching for eukaryotic gene starts. I don't yet 
+know how good this method is. The viral sequences were found to be slightly
+different but the separate table shown here is not used in the program.

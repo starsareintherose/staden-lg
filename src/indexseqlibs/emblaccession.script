@@ -1,0 +1,79 @@
+#! /bin/csh -f
+#
+# script to make an accession number index for the embl library newdata file
+#
+
+echo "emblaccession.script Version 1.0"
+echo ""
+
+set RM = "/bin/rm -f"
+set SORT = sort
+
+#
+# LIBFILE is what you've called the sequence library
+#
+
+# get entry names and accession numbers
+emblaccess1 bb.dat bb.list
+if ( $status ) goto abort
+emblaccess1 fun.dat fun.list
+if ( $status ) goto abort
+emblaccess1 inv.dat inv.list
+if ( $status ) goto abort
+emblaccess1 mam.dat mam.list
+if ( $status ) goto abort
+emblaccess1 org.dat org.list
+if ( $status ) goto abort
+emblaccess1 patent.dat patent.list
+if ( $status ) goto abort
+emblaccess1 phg.dat phg.list
+if ( $status ) goto abort
+emblaccess1 pln.dat pln.list
+if ( $status ) goto abort
+emblaccess1 pri.dat pri.list
+if ( $status ) goto abort
+emblaccess1 pro.dat pro.list
+if ( $status ) goto abort
+emblaccess1 rod.dat rod.list
+if ( $status ) goto abort
+emblaccess1 syn.dat syn.list
+if ( $status ) goto abort
+emblaccess1 una.dat una.list
+if ( $status ) goto abort
+emblaccess1 vrl.dat vrl.list
+if ( $status ) goto abort
+emblaccess1 vrt.dat vrt.list
+if ( $status ) goto abort
+
+
+# sort on entry name
+${SORT} bb.list fun.list inv.list mam.list org.list patent.list phg.list pln.list pri.list pro.list rod.list syn.list una.list vrl.list vrt.list >! access.sorted
+if ( $status ) goto abort
+${RM} bb.list fun.list inv.list mam.list org.list patent.list phg.list pln.list pri.list pro.list rod.list syn.list una.list vrl.list vrt.list
+
+# assign entry numbers to entry names
+access2 access.sorted access.entry
+if ( $status ) goto abort
+${RM} access.sorted
+
+# sort on accession numbers
+${SORT} -b +1 access.entry >! access.sorted2
+if ( $status ) goto abort
+${RM} access.entry
+
+# create index files
+access4 access.sorted2 acnum.trg acnum.hit
+if ( $status ) goto abort
+${RM} access.sorted2
+
+echo "Completion successful"
+echo ""
+
+exit 0
+
+#
+# Abort
+#
+abort:
+echo "emblaccession.script: aborting due to serious error"
+exit 2

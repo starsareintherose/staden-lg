@@ -1,0 +1,51 @@
+#! /bin/csh -f
+#
+# stealdata (front end)
+#
+#    Borrow data and files from a neighbouring cosmid database
+#
+#
+# Change log:
+#
+#   v1.8 Front and back end version
+#
+
+onintr abort
+
+#
+# set defaults here
+#
+# NOTE: "other" refers to the project you want to pinch data off
+# NOTE: db_type and other_db_type must be either "dap" or "bap"
+#
+set project = F54G8
+set version = 0
+set db_type = dap
+set other_dir = ~kt/ZC84
+set other_project = ZC84
+set other_version = 0
+set other_db_type = bap
+
+#
+# available operations are:
+#     r = report useful readings (response mailed)
+#     s = "r" + copy useful sequences only
+#     a = "r" + copy useful sequences AND traces
+#     l = "r" + copy useful sequences and LINK traces
+# default = "r"
+#
+set operation = "s"
+
+
+
+#****************************************************
+# MAKE NO CHANGES BELOW THIS LINE
+#****************************************************
+FE-stealdata.csh $project $version $db_type $other_project $other_dir $other_version $other_db_type $operation
+if ( $status ) then
+abort:
+	echo stealdata abnormally terminated
+	exit 1
+endif
+
+exit 0

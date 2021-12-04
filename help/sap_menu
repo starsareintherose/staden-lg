@@ -1,0 +1,76 @@
+-1 0 21 2 T General
+-1 0 21 2 X General
+-2 0 50 2 T Screen control
+-2 0 71 2 X Screen
+-3 0 98 2 T Modification
+-3 0 98 2 X Modification
+0 -1 116 379 T SAP
+0 -1 116 379 X SAP
+17 1 19213 18 T Screen against restriction enzymes
+17 1 19213 18 X Screen against restriction enzymes
+18 1 20256 22 T Screen against vector
+18 1 20256 22 X Screen against vector
+20 2 21583 113 T Auto assemble
+20 2 21583 113 X Auto assemble
+28 1 27744 42 T Highlight disagreements
+28 1 27744 42 X Highlight disagreements
+32 3 30106 22 T Extract gel readings
+32 3 30106 22 X Extract gel readings
+1 0 31209 3 T Help
+1 0 31209 3 X Help
+2 0 31277 5 T Help
+2 0 31277 5 X Help
+3 1 31470 175 T Open a database
+3 1 31470 175 X Open a database
+4 3 40550 64 T Edit
+4 3 40550 64 X Edit
+9 3 43796 40 T Screen edit
+9 3 43796 40 X Screen edit
+5 1 45923 45 T Display a contig
+5 1 45923 45 X Display a contig
+6 1 48409 6 T List a text file
+6 1 48409 6 X List a text file
+8 1 48667 94 T Calculate a consensus
+8 1 48667 94 X Calculate a consensus
+25 1 53186 41 T Show relationships
+25 1 53186 41 X Show relationships
+21 3 55121 99 T Enter new gel reading
+21 3 55121 99 X Enter new gel reading
+23 3 60131 11 T Complement a contig
+23 3 60131 11 X Complement a contig
+22 3 60644 70 T Join contigs
+22 3 60644 70 X Join contigs
+24 1 64235 11 T Copy the database
+24 1 64235 11 X Copy the database
+19 1 64781 41 T Check database
+19 1 64781 41 X Check database
+29 1 66799 82 T Examine quality
+29 1 66799 82 X Examine quality
+26 3 70617 92 T Alter relationships
+26 3 70617 92 X Alter relationships
+27 1 75377 17 T Set display parameters
+27 1 75377 17 X Set display parameters
+30 3 76245 48 T Auto edit a contig
+30 3 76245 48 X Auto edit a contig
+10 2 78721 3 T Clear graphics
+10 2 78721 3 X Clear graphics
+11 2 78786 3 T Clear text
+11 2 78786 3 X Clear text
+12 2 78851 12 T Draw a ruler.
+12 2 78851 12 X Draw a ruler.
+14 2 79585 38 T Reposition plots
+14 2 79585 38 X Reposition plots
+15 2 81933 28 T Label a diagram
+15 2 81933 28 X Label a diagram
+16 2 83039 27 T Display a map.
+16 2 83039 27 X Display a map.
+7 1 84014 12 T Redirect output
+7 1 84014 12 X Redirect output
+13 2 84485 41 T Use crosshair
+13 2 84485 41 X Use crosshair
+33 2 86611 11 T Plot single contig
+33 2 86611 11 X Plot single contig
+34 2 87312 9 T Plot all contigs
+34 2 87312 9 X Plot all contigs
+31 3 87884 9 T Type in gel readings
+31 3 87884 9 X Type in gel readings
