@@ -3,9 +3,9 @@
 
 # This makefile generates the following staden programs which
 # run under xterm (normal, `N') and those which run directly under X.
-NPROGS=      mep  nip   pip   bap  sap  sip   splitp1 splitp2 splitp3 sethelp convert_project
-LPROGS=           nipl  pip             sipl
-XPROGS=     xmep xnip  xpip  xbap xsap xsip
+NPROGS=      mep  nip   bap  sap  sip   splitp1 splitp2 splitp3 sethelp
+LPROGS=           nipl     
+XPROGS=     xmep xnip  xbap xsap xsip
 PROGS= $(NPROGS) $(LPROGS) $(XPROGS)
 
 
@@ -43,7 +43,7 @@ INCLUDES= -I$(SRC) -I$(STADENSRC) -I$(TEDSRC) -I$(OSPSRC) -I$(MISCSRC)
 CC= cc
 CFLAGS= -g $(INCLUDES)
 F77= gfortran
-FFLAGS= -g -C
+FFLAGS= -g -fdec -std=legacy -C
 
 #FLIBS= -lfor -lUfor  -lots -lFutil
 FLIBS = -lm -lutil  
@@ -53,7 +53,7 @@ XLFLAGS= $(XLIBS) $(FLIBS)
 
 LD = gfortran
 XLD = cc
-LDFLAGS = -g
+LDFLAGS = -g -fdec -std=legacy
 
 #
 # Avoid compilation of objects in remote directories
@@ -76,7 +76,7 @@ SEQLIB=\
 #
 CCORE=\
 	$(STADENBIN)/postscript.o\
-	$(STADENBIN)/Graph.o\
+	$(TEDBIN)/Graph.o\
 	$(STADENBIN)/plotLog.o\
 	$(STADENBIN)/help.o\
 	$(STADENBIN)/dialogues.o\
@@ -101,7 +101,7 @@ COBJS2=\
 #
 COMMONOBJSB=\
 	$(STADENBIN)/fmain.o\
-	$(STADENBIN)/seeme-dec.o\
+	$(STADENBIN)/seeme-aix.o\
 	$(STADENBIN)/nxspec.o\
 	$(STADENBIN)/userface.o\
 	$(STADENBIN)/userfacecom.o\
@@ -118,13 +118,13 @@ SCOMMONOBJS=\
 	$(COMMONOBJSB)
 
 XCOMMONOBJS=\
-	$(STADENBIN)/seeme-dec.o\
+	$(STADENBIN)/seeme-aix.o\
 	$(STADENBIN)/xspec.o\
 	$(STADENBIN)/subs89.a\
 	$(COBJS)
 
 XCOMMONOBJS2=\
-	$(STADENBIN)/seeme-dec.o\
+	$(STADENBIN)/seeme-aix.o\
 	$(STADENBIN)/xspec.o\
 	$(STADENBIN)/subs89.a\
 	$(COBJS2)
@@ -562,9 +562,9 @@ splitp3: $(SPLITP3OBJS)
 #	rm -r $$TMPDIR
 
 
-%.a: $(SRC)/%.f
-	$(F77) $(FFLAGS) -c *.f; 
-	ar rcv $$BINDIR/$@ *.o; 
+#%.a: $(SRC)/%.f
+#	$(F77) $(FFLAGS) -c *.f; 
+#	ar rcv $$BINDIR/$@ *.o; 
 
 
 
