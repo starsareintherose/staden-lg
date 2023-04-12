@@ -162,7 +162,8 @@ C  so tell the user
                 JRECL=1
                 OPEN(UNIT=IDEV,FILE=FILNAM,STATUS='OLD',
      +               READONLY,
-     +               RECORDTYPE='STREAM',ERR=100)
+C     +               RECORDTYPE='STREAM',
+     +               ERR=100)
       END IF
       IOK=0
       RETURN
