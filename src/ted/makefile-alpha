@@ -33,13 +33,14 @@ SRC = .
 #
 # Compiler - debug on
 #
-CC= cc
+CC= gfortran
 INCLUDES = -I$(SRC)
-CFLAGS= -g -std1 -ieee_with_inexact $(SWITCHES) $(INCLUDES)
-LIBS= -lXaw -lXt -lXmu -lXext -lX11 -ldnet_stub
+CFLAGS= -g $(SWITCHES) $(INCLUDES)
+LIBS= -lXaw -lXt -lXmu -lXext -lX11 
+#-ldnet_stub
 #
-LD= cc
-LDFLAGS= -g -non_shared
+LD= gfortran
+LDFLAGS= -g 
 
 #
 # Object files

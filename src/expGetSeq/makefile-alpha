@@ -42,9 +42,9 @@ INCLUDES = -I/usr/include/mit -I$(SRC) -I$(TEDSRC)
 # Compiler - debug on
 #
 CC= cc
-CFLAGS= -g -ieee_with_inexact $(SWITCHES) $(INCLUDES)
+CFLAGS= -g  $(SWITCHES) $(INCLUDES)
 LD= cc
-LDFLAGS= -g -non_shared
+LDFLAGS= -g
 
 
 #

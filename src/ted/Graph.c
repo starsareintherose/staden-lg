@@ -1,4 +1,3 @@
-#include <X11/copyright.h>
 
 /* $XConsortium: Graph.c,v 1.2 88/10/25 17:40:25 swick Exp $ */
 /* Copyright	Massachusetts Institute of Technology	1987, 1988 */

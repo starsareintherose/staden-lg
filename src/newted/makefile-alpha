@@ -42,11 +42,11 @@ SRC = .
 #
 CC= cc
 INCLUDES = -I$(SRC)
-CFLAGS= -g -std1 -ieee_with_inexact $(SWITCHES) $(INCLUDES)
-LIBS= -lXaw -lXt -lXmu -lXext -lX11 -ldnet_stub
+CFLAGS= -g  $(SWITCHES) $(INCLUDES)
+LIBS= -lXaw -lXt -lXmu -lXext -lX11 
 #
 LD= cc
-LDFLAGS= -g -non_shared
+LDFLAGS= -g 
 
 #
 # Object files

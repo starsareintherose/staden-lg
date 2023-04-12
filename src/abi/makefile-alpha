@@ -16,9 +16,9 @@ SRC = .
 # Alpha
 #
 CC = cc
-CFLAGS = -g -std1 -ieee_with_inexact -I$(SRC)/../ted
+CFLAGS = -g -I$(SRC)/../ted
 LD = cc
-LDFLAGS = -g -non_shared
+LDFLAGS = -g
 
 #
 # Make the programs
