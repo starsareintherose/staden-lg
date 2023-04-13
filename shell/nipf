@@ -1,0 +1,2 @@
+#!/bin/bash
+env STADTABL=/usr/share/staden-lg/tables STADUSER=/usr/share/staden-lg/userdata STADHELP=/usr/share/staden-lg/help HELPNIP=/usr/share/staden-lg/help/dap_help NIPHELP=/usr/share/staden-lg/help/NIP.HLP NIPHPNT=/usr/share/staden-lg/help/NIP.PNT NIPMARG=/usr/share/staden-lg/help/NIP.MRG TAGDB=/usr/share/staden-lg/tables/TAGDB /usr/share/staden-lg/bin/nipf

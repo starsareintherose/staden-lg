@@ -1,0 +1,2 @@
+#!/bin/bash
+env STADTABL=/usr/share/staden-lg/tables STADUSER=/usr/share/staden-lg/userdata STADHELP=/usr/share/staden-lg/help HELPSAP=/usr/share/staden-lg/help/dap_help SAPHELP=/usr/share/staden-lg/help/SAP.HLP SAPHPNT=/usr/share/staden-lg/help/SAP.PNT SAPMARG=/usr/share/staden-lg/help/SAP.MRG TAGDB=/usr/share/staden-lg/tables/TAGDB /usr/share/staden-lg/bin/xsap
