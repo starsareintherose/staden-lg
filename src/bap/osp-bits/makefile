@@ -23,7 +23,7 @@ VERSION = SUBVERSION
 # Compiler - debug on
 #
 CC= cc
-CFLAGS= -g -non_shared -std1 -ieee_with_inexact -D$(VERSION)
+CFLAGS= -g -D$(VERSION)
 
 
 #
