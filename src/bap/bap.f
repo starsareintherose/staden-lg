@@ -93,8 +93,9 @@ C     DBAUTO
       CALL OPENGR(DEVNOS(10))
       WRITE(KBOUT,1000)
 1000  FORMAT(
-     +' BAP (Development assembly program) V12.1 May 1993',/,
-     +' Copyright: MRC Laboratory of Molecular Biology')
+     +' BAP (Development assembly program) V12.1.1 2023',/,
+     +' Copyright: 1993 MRC Laboratory of Molecular Biology',/,
+     +' Copyleft: 2023 GPL')
       IGORT = 0
       IDEV = KBOUT
 C   GET SCREEN AND MARGIN SIZES
