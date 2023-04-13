@@ -2,6 +2,7 @@
 # indexseqlibs - Alpha version
 #
 
+all: $(PROGS)
 
 #
 # Programs need making

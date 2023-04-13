@@ -6,7 +6,7 @@
 # Programs made by this makefile
 #
 PROGS = cop cop-bap
-
+all: $(PROGS)
 #
 # Where the wild things are
 #

@@ -5,7 +5,8 @@
 #
 # Programs made by this makefile
 #
-PROGS = getABISampleName
+PROGS = getABISampleName 2rs
+all: $(PROGS)
 
 #
 # Where the wild things are
@@ -26,6 +27,8 @@ LDFLAGS = -g
 getABISampleName: getABISampleName.o
 	$(LD) $(LDFLAGS) -o getABISampleName getABISampleName.o
 
+2rs: 2rs.o
+	$(LD) $(LDFLAGS) -o 2rs 2rs.o
 
 #
 # Special dependencies

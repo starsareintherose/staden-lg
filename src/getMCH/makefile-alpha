@@ -23,7 +23,7 @@
 # Programs made by this makefile
 #
 PROGS = getMCH trace2seq
-
+all: $(PROGS)
 #
 # Where the wild things are
 #

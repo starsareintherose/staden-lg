@@ -13,7 +13,7 @@ static FILE *out;
 
 static int line_comp(char *ex, char *in, int l)
 /*
-** Compare exclude line with inline
+** Compare exclude line with cinline
 */
 {
     return strncmp(ex,in+11,l);
@@ -28,13 +28,13 @@ static void process()
 */
 {
     char exline[MAXLINE];
-    char inline[MAXLINE];
+    char cinline[MAXLINE];
     char *exok, *inok;
     int compare;
 
 
     exok = fgets(exline,MAXLINE,ex);
-    inok = fgets(inline,MAXLINE,in);
+    inok = fgets(cinline,MAXLINE,in);
 
     while (exok && inok) {
 
@@ -43,15 +43,15 @@ static void process()
 	if (compare < 0)
 	    exok = fgets(exline,MAXLINE,ex);
 	else if (compare > 0) {
-	    fprintf(out,"%s",inline);
-	    inok = fgets(inline,MAXLINE,in);
+	    fprintf(out,"%s",cinline);
+	    inok = fgets(cinline,MAXLINE,in);
 	} else
-	    inok = fgets(inline,MAXLINE,in);
+	    inok = fgets(cinline,MAXLINE,in);
 
     }
 
-    while (inok = fgets(inline,MAXLINE,in))
-	fprintf(out,"%s",inline);
+    while (inok = fgets(cinline,MAXLINE,in))
+	fprintf(out,"%s",cinline);
 
 }
 
