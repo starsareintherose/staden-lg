@@ -4,7 +4,9 @@ STADEN Last Generation
 
 ## Introduction
 
-[logo](./desktop/staden-lg.svg)
+<div  align="center"> 
+<img src="./desktop/staden-lg.png" width = "300" alt="logo" align=center />
+</div>
 
 This pkg is a fork of STADEN 1993 v12.1. Currently, I fixed the bug for compiling, but not completely.
 
