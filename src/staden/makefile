@@ -19,25 +19,27 @@ PROGS= $(NPROGS) $(LPROGS) $(XPROGS)
 SRC=.
 TEDSRC=$(SRC)/../ted
 MISCSRC=$(SRC)/../Misc
-MISCBIN=$(MISCSRC)/alpha-binaries
+MISCBIN=$(MISCSRC)
 INCLUDES= -I$(SRC) -I$(TEDSRC) -I$(MISCSRC)
 
 #
 # Compilers and flags
 #
 CC= cc
-CFLAGS= -g -std1 -ieee_with_inexact $(INCLUDES)
-F77= f77
-FFLAGS= -g -C
+CFLAGS= -g $(INCLUDES)
+F77= gfortran
+FFLAGS= -g -fdec -std=legacy -L/usr/lib -lgfortran -C
 
-FLIBS= -lfor -lutil -lUfor -lots -lFutil -lm -lfor -lutil -lUfor -lots -lFutil
-XLIBS= -lXaw -lXt -lXmu -lXext -lX11 -ldnet_stub
+FLIBS = -lutil -lm
+#FLIBS= -lfor -lutil -lUfor -lots -lFutil -lm
+XLIBS= -lXaw -lXt -lXmu -lXext -lX11  
 LFLAGS= $(FLIBS)
 XLFLAGS= $(FLIBS) $(XLIBS) 
 
-LD = f77
-CLD = cc
-LDFLAGS = -g -non_shared # Comment out for faster linking when debugging
+LD = gfortran
+CLD = gfortran
+#CLD = cc
+LDFLAGS = -g # Comment out for faster linking when debugging
 
 
 
@@ -78,7 +80,7 @@ XDAPCOBJS=\
 #
 COMMONOBJSB=\
 	fmain.o\
-	seeme-dec.o\
+	seeme-aix.o\
 	nxspec.o\
 	userface.o\
 	userfacecom.o\
@@ -95,13 +97,13 @@ SCOMMONOBJS=\
 	$(COMMONOBJSB)
 
 XCOMMONOBJS=\
-	seeme-dec.o\
+	seeme-aix.o\
 	xspec.o\
 	subs89.a\
 	$(COBJS)
 
 XDAPCOMMONOBJS=\
-	seeme-dec.o\
+	seeme-aix.o\
 	xspec.o\
 	subs89.a\
 	$(XDAPCOBJS)
@@ -549,25 +551,34 @@ vep: $(VEPOBJS)
 # avoid filling up the (small on this machine) /tmp directory
 # with compiler debugging information.
 #
-%.a:	$(SRC)/%.f
-	BINDIR=`pwd`; \
-	cd $(SRC); \
-	SRCDIR=`pwd`; \
-	TMPDIR=/tmp/staden$$$$; \
-	if test ! -d $$TMPDIR; \
-	then mkdir $$TMPDIR; \
-	fi; \
-	cd $$TMPDIR; \
-	rm -f *.f *.o; \
-	fsplit $$SRCDIR/`expr $< : '.*/\(.*\)' \| $<`; \
-	$(F77) $(FFLAGS) -c *.f; \
-	rm *.f; \
-	rm -f $$BINDIR/$@; \
-	ar rcv $$BINDIR/$@ *.o; \
-	ranlib $$BINDIR/$@; \
-	rm *.o; \
-	cd $$BINDIR; \
-	rm -r $$TMPDIR
+%.a: $(SRC)/%.f
+	sh gen_a.sh
+
+#	BINDIR=`pwd`; \
+#	cd $(SRC); \
+#	SRCDIR=`pwd`; \
+#
+#	TMPDIR=/tmp/staden$$$$; \
+#	if test ! -d $$TMPDIR; \
+#	then mkdir $$TMPDIR; \
+#	fi; \
+#	cd $$TMPDIR; \
+#	rm -f *.f *.o; \
+#
+#	fsplit $$SRCDIR/`expr $< : '.*/\(.*\)' \| $<`; \
+#	$(F77) $(FFLAGS) -c *.f; \
+#
+##	rm *.f; \
+#
+#	rm -f $@; \
+#	ar rcv $@ *.o; \
+#	ranlib $@; \
+##rm *.o; \
+#
+#	cd $$BINDIR; \
+#	rm -r $$TMPDIR
+
+
 
 #.f.a:
 #	$(F77) $(FFLAGS) -c $<

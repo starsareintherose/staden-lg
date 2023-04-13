@@ -21,7 +21,7 @@ all: $(PROGS)
 SRC = .
 #STADENSRC=/nfs/rutland/home3/pubseq/inhouse/share/src/staden
 STADENSRC=$(SRC)/../staden
-STADENBIN=$(STADENSRC)/alpha-binaries
+STADENBIN=$(STADENSRC)
 # Use the ted sources compiled for staden executables
 INCLUDES= -I$(STADENSRC)
 
@@ -31,13 +31,14 @@ INCLUDES= -I$(STADENSRC)
 #
 # debug on
 CC= cc
-CFLAGS= -g -std1 -ieee_with_inexact $(INCLUDES)
-F77= f77
+CFLAGS= -g $(INCLUDES)
+F77= gfortran
 FFLAGS= -g
-LD= f77
-LDFLAGS= -g -non_shared
+LD= gfortran
+LDFLAGS= -g 
 
-FLIBS= -lfor -lutil -lUfor -lots -lFutil -lm -lfor -lutil -lUfor -lots -lFutil
+FLAGS = -lutil -lm
+#FLIBS= -lfor -lutil -lUfor -lots -lFutil -lm -lfor -lutil -lUfor -lots -lFutil
 XLIBS= -lXaw -lXt -lXmu -lXext -lX11
 #LFLAGS= $(FLIBS)
 XLFLAGS= $(FLIBS) $(XLIBS)
@@ -52,7 +53,7 @@ $(STADENBIN)/%.o : $(STADENSRC)/%.c
 # Common objects, needed by every program
 #
 COMMONOBJS=\
-	$(STADENBIN)/seeme-dec.o\
+	$(STADENBIN)/seeme-aix.o\
 	$(STADENBIN)/nxspec.o\
 	$(STADENBIN)/userface.o\
 	$(STADENBIN)/userfacecom.o\

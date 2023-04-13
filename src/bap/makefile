@@ -3,9 +3,9 @@
 
 # This makefile generates the following staden programs which
 # run under xterm (normal, `N') and those which run directly under X.
-NPROGS=      mep  nip   pip   bap  sap  sip   splitp1 splitp2 splitp3 sethelp convert_project
-LPROGS=           nipl  pip             sipl
-XPROGS=     xmep xnip  xpip  xbap xsap xsip
+NPROGS=      mep  nip   bap  sap  sip   splitp1 splitp2 splitp3 sethelp
+LPROGS=           nipl     
+XPROGS=     xmep xnip  xbap xsap xsip
 PROGS= $(NPROGS) $(LPROGS) $(XPROGS)
 
 
@@ -26,13 +26,13 @@ PROGS= $(NPROGS) $(LPROGS) $(XPROGS)
 #
 SRC = .
 STADENSRC=$(SRC)/../staden
-STADENBIN=$(STADENSRC)/alpha-binaries
+STADENBIN=$(STADENSRC)
 TEDSRC=$(SRC)/../ted
-TEDBIN=$(STADENBIN)
+TEDBIN=$(TEDSRC)
 OSPSRC=$(SRC)/osp-bits
-OSPBIN=$(OSPSRC)/alpha-binaries
+OSPBIN=$(OSPSRC)
 MISCSRC=$(SRC)/../Misc
-MISCBIN=$(MISCSRC)/alpha-binaries
+MISCBIN=$(MISCSRC)
 # Use the ted sources compiled for staden executables
 INCLUDES= -I$(SRC) -I$(STADENSRC) -I$(TEDSRC) -I$(OSPSRC) -I$(MISCSRC)
 
@@ -41,18 +41,19 @@ INCLUDES= -I$(SRC) -I$(STADENSRC) -I$(TEDSRC) -I$(OSPSRC) -I$(MISCSRC)
 # Compilers and flags
 #
 CC= cc
-CFLAGS= -g -std1 -ieee_with_inexact $(INCLUDES)
-F77= f77
-FFLAGS= -g -C
+CFLAGS= -g $(INCLUDES)
+F77= gfortran
+FFLAGS= -g -fdec -std=legacy -C
 
-FLIBS= -lfor -lutil -lUfor -lots -lFutil -lm -lfor -lutil -lUfor -lots -lFutil -ldnet_stub
+#FLIBS= -lfor -lUfor  -lots -lFutil
+FLIBS = -lm -lutil  
 XLIBS= -lXaw -lXt -lXmu -lXext -lX11
 LFLAGS= $(FLIBS)
 XLFLAGS= $(XLIBS) $(FLIBS)
 
-LD = f77
+LD = gfortran
 XLD = cc
-LDFLAGS = -g -non_shared
+LDFLAGS = -g -fdec -std=legacy -L/usr/lib -lgfortran
 
 #
 # Avoid compilation of objects in remote directories
@@ -75,7 +76,7 @@ SEQLIB=\
 #
 CCORE=\
 	$(STADENBIN)/postscript.o\
-	$(STADENBIN)/Graph.o\
+	$(TEDBIN)/Graph.o\
 	$(STADENBIN)/plotLog.o\
 	$(STADENBIN)/help.o\
 	$(STADENBIN)/dialogues.o\
@@ -100,7 +101,7 @@ COBJS2=\
 #
 COMMONOBJSB=\
 	$(STADENBIN)/fmain.o\
-	$(STADENBIN)/seeme-dec.o\
+	$(STADENBIN)/seeme-aix.o\
 	$(STADENBIN)/nxspec.o\
 	$(STADENBIN)/userface.o\
 	$(STADENBIN)/userfacecom.o\
@@ -117,13 +118,13 @@ SCOMMONOBJS=\
 	$(COMMONOBJSB)
 
 XCOMMONOBJS=\
-	$(STADENBIN)/seeme-dec.o\
+	$(STADENBIN)/seeme-aix.o\
 	$(STADENBIN)/xspec.o\
 	$(STADENBIN)/subs89.a\
 	$(COBJS)
 
 XCOMMONOBJS2=\
-	$(STADENBIN)/seeme-dec.o\
+	$(STADENBIN)/seeme-aix.o\
 	$(STADENBIN)/xspec.o\
 	$(STADENBIN)/subs89.a\
 	$(COBJS2)
@@ -366,7 +367,7 @@ bap:	$(BAPOBJS)
 	$(LD) $(LDFLAGS) -o $@ $(BAPOBJS) $(LFLAGS)
 
 xbap:	$(XBAPOBJS)
-	$(XLD) $(LDFLAGS) -o $@ $(XBAPOBJS) $(XLFLAGS)
+	$(LD) $(LDFLAGS) -o $@ $(XBAPOBJS) $(XLFLAGS)
 
 SAP=\
 	sap.o\
@@ -540,28 +541,30 @@ splitp3: $(SPLITP3OBJS)
 # avoid filling up the (small on this machine) /tmp directory
 # with compiler debugging information.
 #
-%.a: $(SRC)/%.f
-	BINDIR=`pwd`; \
-	cd $(SRC); \
-	SRCDIR=`pwd`; \
-	TMPDIR=/tmp/staden$$$$; \
-	if test ! -d $$TMPDIR; \
-	then mkdir $$TMPDIR; \
-	fi; \
-	cd $$TMPDIR; \
-	rm -f *.f *.o; \
-	fsplit $$SRCDIR/`expr $< : '.*/\(.*\)' \| $<`; \
-	$(F77) $(FFLAGS) -c *.f; \
-	rm *.f; \
-	rm -f $$BINDIR/$@; \
-	ar rcv $$BINDIR/$@ *.o; \
-	ranlib $$BINDIR/$@; \
-	rm *.o; \
-	cd $$BINDIR; \
-	rm -r $$TMPDIR
+#%.a: $(SRC)/%.f
+#	BINDIR=`pwd`; \
+#	cd $(SRC); \
+#	SRCDIR=`pwd`; \
+#	TMPDIR=/tmp/staden$$$$; \
+#	if test ! -d $$TMPDIR; \
+#	then mkdir $$TMPDIR; \
+#	fi; \
+#	cd $$TMPDIR; \
+#	rm -f *.f *.o; \
+#	fsplit $$SRCDIR/`expr $< : '.*/\(.*\)' \| $<`; \
+#	$(F77) $(FFLAGS) -c *.f; \
+#	rm *.f; \
+#	rm -f $$BINDIR/$@; \
+#	ar rcv $$BINDIR/$@ *.o; \
+#	ranlib $$BINDIR/$@; \
+#	rm *.o; \
+#	cd $$BINDIR; \
+#	rm -r $$TMPDIR
 
 
-
+#%.a: $(SRC)/%.f
+#	$(F77) $(FFLAGS) -c *.f; 
+#	ar rcv $$BINDIR/$@ *.o; 
 
 
 

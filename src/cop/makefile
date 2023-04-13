@@ -6,14 +6,14 @@
 # Programs made by this makefile
 #
 PROGS = cop cop-bap
-
+all: $(PROGS)
 #
 # Where the wild things are
 #
 SRC = .
 TEDSRC = $(SRC)/../ted
 MISCSRC = $(SRC)/../Misc
-MISCBIN = $(MISCSRC)/alpha-binaries
+MISCBIN = $(MISCSRC)
 CONVERTSRC = $(SRC)/../convert
 INCLUDES = -I$(SRC) -I$(TEDSRC) -I$(MISCSRC) -I$(CONVERTSRC)
 
@@ -21,9 +21,9 @@ INCLUDES = -I$(SRC) -I$(TEDSRC) -I$(MISCSRC) -I$(CONVERTSRC)
 # Alpha
 #
 CC = cc
-CFLAGS = -g -std1 -ieee_with_inexact $(INCLUDES)
+CFLAGS = -g $(INCLUDES)
 LD = cc
-LDFLAGS = -g -non_shared
+LDFLAGS = -g 
 LIBFLAGS = 
 
 #

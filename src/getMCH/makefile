@@ -1,12 +1,12 @@
 #
-# Makefile for expGetSeq - Alpha version
+# Makefile for getMCH - Alpha version
 #
 
 #
-# Turning on the AUTO_CLIP switch allows ted to automatically
-# select a left (using the -enzyme option or the .enzyme in the
-# Xted file) and right cutoff on your sequence (using 2 out of
-# 5 N's)
+#Turning on the AUTO_CLIP switch allows ted to automatically
+#select a left (using the -enzyme option or the .enzyme in the
+#Xted file) and right cutoff on your sequence (using 2 out of
+#5 N's)
 #
 # Turning on the SAVE_EDITS switch allows the user to maintain
 # copies of their edits, i.e. when you open up ted on a file
@@ -14,37 +14,31 @@
 # ted edit window.  The user may also call up any of their
 # past editing sessions.  
 #
-# Turning on the DEF_OUT  switch makes
+#Turning on the DEF_OUT  switch makes
 # trace_name.seq the default output file name
 #
-# Turning on the QUAL_CODE switch enables LaDeana's trace quality
-# clipping code.
-#
-# Turning on the QUAL_CHECK switch (at the same time as QUAL_CODE)
-# enables the overall trace quality check.
-#
-#SWITCHES = -DAUTO_CLIP  -DDEF_OUT  -DSAVE_EDITS  -DQUAL_CODE -DQUAL_CHECK
-SWITCHES = -DAUTO_CLIP -DQUAL_CODE
+#SWITCHES = -DAUTO_CLIP  -DDEF_OUT  -DSAVE_EDITS
 
 #
 # Programs made by this makefile
 #
-PROGS = expGetSeq
-
+PROGS = getMCH trace2seq
+all: $(PROGS)
 #
 # Where the wild things are
 #
 SRC = .
-TEDSRC = $(SRC)/../newted
-INCLUDES = -I/usr/include/mit -I$(SRC) -I$(TEDSRC)
+TEDSRC = $(SRC)/../ted
+INCLUDES = -I$(SRC) -I$(TEDSRC)
 
 #
 # Compiler - debug on
 #
 CC= cc
-CFLAGS= -g -ieee_with_inexact $(SWITCHES) $(INCLUDES)
+CFLAGS= -g $(SWITCHES) $(INCLUDES)
 LD= cc
-LDFLAGS= -g -non_shared
+LDFLAGS= -g
+LIBFLAGS =
 
 
 #
@@ -58,19 +52,18 @@ OBJS=\
 	seqIOEdit.o\
 	seqIOALF.o\
 	seqIOSCF.o\
+	seqOutput.o\
 	opp.o\
 	fpoint.o\
 	match.o\
-	mach-io.o\
-	seqRead.o\
-	traceType.o
+	mach-io.o
 
 
 #
 # Linking
 #
-expGetSeq: $(OBJS)
-	$(LD) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
+trace2seq getMCH: $(OBJS)
+	$(LD) $(LDFLAGS) -o $@ $(OBJS) $(LIBS) $(LIBFLAGS)
 
 #
 # Files requiring simple C compilation (thing.c -> thing.o)

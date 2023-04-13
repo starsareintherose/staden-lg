@@ -1,5 +1,5 @@
 #
-# Makefile for expGetSeq - Alpha version
+# Makefile for ted (trace editor) - Alpha fork
 #
 
 #
@@ -24,62 +24,86 @@
 # enables the overall trace quality check.
 #
 #SWITCHES = -DAUTO_CLIP  -DDEF_OUT  -DSAVE_EDITS  -DQUAL_CODE -DQUAL_CHECK
-SWITCHES = -DAUTO_CLIP -DQUAL_CODE
+SWITCHES = -DAUTO_CLIP -DQUAL_CODE -DQUAL_CHECK
+
 
 #
 # Programs made by this makefile
 #
-PROGS = expGetSeq
+PROGS = ted autoted
 
 #
 # Where the wild things are
 #
 SRC = .
-TEDSRC = $(SRC)/../newted
-INCLUDES = -I/usr/include/mit -I$(SRC) -I$(TEDSRC)
 
 #
 # Compiler - debug on
 #
 CC= cc
-CFLAGS= -g -ieee_with_inexact $(SWITCHES) $(INCLUDES)
+INCLUDES = -I$(SRC)
+CFLAGS= -g  $(SWITCHES) $(INCLUDES)
+LIBS= -lXaw -lXt -lXmu -lXext -lX11 
+#
 LD= cc
-LDFLAGS= -g -non_shared
-
+LDFLAGS= -g 
 
 #
 # Object files
 #
-OBJS=\
-	getMCH.o\
+TEDOBJS=\
+	ted.o\
+	dialogues.o\
+	seq.o\
+	seqIOPlain.o\
+	seqIOABI.o\
+	help.o\
+	display.o\
+	traceDisplay.o\
+	basesDisplay.o\
+	Graph.o\
+	seqIOEdit.o\
+	seqIOALF.o\
+	seqIOSCF.o\
+	seqOutput.o\
+	opp.o\
+	info.o\
+	fpoint.o\
+	mach-io.o\
+	seqRead.o\
+	traceType.o\
+	match.o
+
+AUTOTEDOBJS=\
+	autoted.o\
 	seq.o\
 	seqIOPlain.o\
 	seqIOABI.o\
 	seqIOEdit.o\
 	seqIOALF.o\
 	seqIOSCF.o\
+	seqOutput.o\
 	opp.o\
+	traceType.o\
 	fpoint.o\
-	match.o\
 	mach-io.o\
-	seqRead.o\
-	traceType.o
+	match.o\
+	seqRead.o
+
 
 
 #
 # Linking
 #
-expGetSeq: $(OBJS)
-	$(LD) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
+ted: $(TEDOBJS)
+	$(LD) $(LDFLAGS) -o $@ $(TEDOBJS) $(LIBS)
+autoted: $(AUTOTEDOBJS)
+	$(LD) $(LDFLAGS) -o $@ $(AUTOTEDOBJS) $(LIBS)
 
 #
 # Files requiring simple C compilation (thing.c -> thing.o)
 # 
-%.o : %.c
-	$(CC) $(CFLAGS) -c $<
 %.o : $(SRC)/%.c
-	$(CC) $(CFLAGS) -c $<
-%.o : $(TEDSRC)/%.c
 	$(CC) $(CFLAGS) -c $<
 
 
@@ -87,7 +111,7 @@ expGetSeq: $(OBJS)
 # Special dependencies
 #
 clean:
-	rm -f $(PROGS) $(OBJS) *~ *.aux *.log *.bbl *.blg *.dvi *.ps
+	rm -f ted $(TEDOBJS) *~ *.aux *.log *.bbl *.blg *.dvi *.ps
 
 all: $(PROGS)
 

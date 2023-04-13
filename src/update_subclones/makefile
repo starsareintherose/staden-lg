@@ -12,16 +12,16 @@ PROGS = update_subclones
 #
 SRC = .
 MISCSRC = $(SRC)/../Misc
-MISCBIN = $(MISCSRC)/alpha-binaries
+MISCBIN = $(MISCSRC)
 INCLUDES = -I$(SRC) -I$(MISCSRC)
 
 #
 # Alpha
 #
 CC = cc
-CFLAGS = -g -std1 -ieee_with_inexact $(INCLUDES)
+CFLAGS = -g $(INCLUDES)
 LD = cc
-LDFLAGS = -g -non_shared
+LDFLAGS = -g 
 
 #
 # Here they are

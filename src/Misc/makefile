@@ -16,7 +16,7 @@ INCLUDES = -I$(SRC)
 # Alpha Version
 #
 CC = cc
-CFLAGS = -g -std1 -ieee_with_inexact $(INCLUDES)
+CFLAGS = -g  $(INCLUDES)
 ARFLAGS = rv
 
 #

@@ -5,7 +5,8 @@
 #
 # Programs made by this makefile
 #
-PROGS = getABISampleName
+PROGS = getABISampleName 2rs
+all: $(PROGS)
 
 #
 # Where the wild things are
@@ -16,9 +17,9 @@ SRC = .
 # Alpha
 #
 CC = cc
-CFLAGS = -g -std1 -ieee_with_inexact -I$(SRC)/../ted
+CFLAGS = -g -I$(SRC)/../ted
 LD = cc
-LDFLAGS = -g -non_shared
+LDFLAGS = -g
 
 #
 # Make the programs
@@ -26,6 +27,8 @@ LDFLAGS = -g -non_shared
 getABISampleName: getABISampleName.o
 	$(LD) $(LDFLAGS) -o getABISampleName getABISampleName.o
 
+2rs: 2rs.o
+	$(LD) $(LDFLAGS) -o 2rs 2rs.o
 
 #
 # Special dependencies

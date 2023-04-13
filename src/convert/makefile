@@ -4,12 +4,12 @@
 
 SRC = .
 MISCSRC=$(SRC)/../Misc
-MISCBIN=$(MISCSRC)/alpha-binaries
+MISCBIN=$(MISCSRC)
 
 CC = cc
-CFLAGS = -g -std1 -ieee_with_inexact -I$(MISCSRC)
+CFLAGS = -g -I$(MISCSRC)
 LD = cc
-LDFLAGS = -g -non_shared
+LDFLAGS = -g
 LIBS = $(MISCBIN)/misc.a
 
 #

@@ -22,9 +22,9 @@ TEDSRC = $(SRC)/../ted
 # alpha
 #
 CC= cc
-CFLAGS= -g -std1 -ieee_with_inexact $(SWITCHES) -I$(TEDSRC)
+CFLAGS= -g  $(SWITCHES) -I$(TEDSRC)
 LD= cc
-LDFLAGS= -g -non_shared
+LDFLAGS= -g
 LIBFLAGS =
 
 %.o : $(SRC)/%.c

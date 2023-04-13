@@ -2,6 +2,7 @@
 # indexseqlibs - Alpha version
 #
 
+all: $(PROGS)
 
 #
 # Programs need making
@@ -44,9 +45,9 @@ SRC = .
 # Alpha
 #
 CC = cc
-CFLAGS = -g -std1 -ieee_with_inexact
+CFLAGS = -g
 LD = cc
-LDFLAGS = -g -non_shared
+LDFLAGS = -g
 
 #
 # Shared objects

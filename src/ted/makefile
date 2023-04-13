@@ -1,5 +1,5 @@
 #
-# Makefile for getMCH - Alpha version
+# Makefile for ted (trace editor) - Alpha fork
 #
 
 #
@@ -18,61 +18,65 @@
 # trace_name.seq the default output file name
 #
 #SWITCHES = -DAUTO_CLIP  -DDEF_OUT  -DSAVE_EDITS
+SWITCHES = -DAUTO_CLIP
 
 #
 # Programs made by this makefile
 #
-PROGS = getMCH trace2seq
+PROGS = ted
 
 #
 # Where the wild things are
 #
 SRC = .
-TEDSRC = $(SRC)/../ted
-INCLUDES = -I$(SRC) -I$(TEDSRC)
 
 #
 # Compiler - debug on
 #
-CC= cc
-CFLAGS= -g -std1 -ieee_with_inexact $(SWITCHES) $(INCLUDES)
-LD= cc
-LDFLAGS= -g -non_shared
-LIBFLAGS =
-
+CC= gfortran
+INCLUDES = -I$(SRC)
+CFLAGS= -g $(SWITCHES) $(INCLUDES)
+LIBS= -lXaw -lXt -lXmu -lXext -lX11 
+#-ldnet_stub
+#
+LD= gfortran
+LDFLAGS= -g 
 
 #
 # Object files
 #
-OBJS=\
-	getMCH.o\
+TEDOBJS=\
+	ted.o\
+	dialogues.o\
 	seq.o\
 	seqIOPlain.o\
 	seqIOABI.o\
+	help.o\
+	display.o\
+	traceDisplay.o\
+	basesDisplay.o\
+	Graph.o\
 	seqIOEdit.o\
 	seqIOALF.o\
 	seqIOSCF.o\
 	seqOutput.o\
 	opp.o\
+	info.o\
 	fpoint.o\
-	match.o\
-	mach-io.o
+	mach-io.o\
+	seqRead.o
 
 
 #
 # Linking
 #
-trace2seq getMCH: $(OBJS)
-	$(LD) $(LDFLAGS) -o $@ $(OBJS) $(LIBS) $(LIBFLAGS)
+ted: $(TEDOBJS)
+	$(LD) $(LDFLAGS) -o $@ $(TEDOBJS) $(LIBS)
 
 #
 # Files requiring simple C compilation (thing.c -> thing.o)
 # 
-%.o : %.c
-	$(CC) $(CFLAGS) -c $<
 %.o : $(SRC)/%.c
-	$(CC) $(CFLAGS) -c $<
-%.o : $(TEDSRC)/%.c
 	$(CC) $(CFLAGS) -c $<
 
 
@@ -80,7 +84,7 @@ trace2seq getMCH: $(OBJS)
 # Special dependencies
 #
 clean:
-	rm -f $(PROGS) $(OBJS) *~ *.aux *.log *.bbl *.blg *.dvi *.ps
+	rm -f ted $(TEDOBJS) *~ *.aux *.log *.bbl *.blg *.dvi *.ps
 
 all: $(PROGS)
 
