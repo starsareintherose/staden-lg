@@ -28,16 +28,17 @@ INCLUDES= -I$(SRC) -I$(TEDSRC) -I$(MISCSRC)
 CC= cc
 CFLAGS= -g $(INCLUDES)
 F77= gfortran
-FFLAGS= -g -fdec -std=legacy -C
+FFLAGS= -g -fdec -std=legacy -L/usr/lib -lgfortran -C
 
 FLIBS = -lutil -lm
 #FLIBS= -lfor -lutil -lUfor -lots -lFutil -lm
-XLIBS= -lXaw -lXt -lXmu -lXext -lX11 
+XLIBS= -lXaw -lXt -lXmu -lXext -lX11  
 LFLAGS= $(FLIBS)
 XLFLAGS= $(FLIBS) $(XLIBS) 
 
 LD = gfortran
-CLD = cc
+CLD = gfortran
+#CLD = cc
 LDFLAGS = -g # Comment out for faster linking when debugging
 
 

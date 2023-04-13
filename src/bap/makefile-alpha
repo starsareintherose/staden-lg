@@ -53,7 +53,7 @@ XLFLAGS= $(XLIBS) $(FLIBS)
 
 LD = gfortran
 XLD = cc
-LDFLAGS = -g -fdec -std=legacy
+LDFLAGS = -g -fdec -std=legacy -L/usr/lib -lgfortran
 
 #
 # Avoid compilation of objects in remote directories
@@ -367,7 +367,7 @@ bap:	$(BAPOBJS)
 	$(LD) $(LDFLAGS) -o $@ $(BAPOBJS) $(LFLAGS)
 
 xbap:	$(XBAPOBJS)
-	$(XLD) $(LDFLAGS) -o $@ $(XBAPOBJS) $(XLFLAGS)
+	$(LD) $(LDFLAGS) -o $@ $(XBAPOBJS) $(XLFLAGS)
 
 SAP=\
 	sap.o\
