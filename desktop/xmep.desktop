@@ -1,0 +1,8 @@
+[Desktop Entry]
+X-Desktop-File-Install-Version=0.26
+Name=xmep
+Comment=Xorg MEP
+Icon=/usr/share/icons/xmep.png
+Categories=Science
+Exec=xmep
+Type=Application

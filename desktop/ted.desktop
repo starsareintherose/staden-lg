@@ -1,0 +1,8 @@
+[Desktop Entry]
+X-Desktop-File-Install-Version=0.26
+Name=ted
+Comment=Xorg BAP
+Icon=/usr/share/icons/Xted.png
+Categories=Science
+Exec=ted
+Type=Application

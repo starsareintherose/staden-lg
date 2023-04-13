@@ -4,6 +4,8 @@ STADEN Last Generation
 
 ## Introduction
 
+[logo](./desktop/staden-lg.svg)
+
 This pkg is a fork of STADEN 1993 v12.1. Currently, I fixed the bug for compiling, but not completely.
 
 ## Build

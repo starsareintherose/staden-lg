@@ -1,0 +1,8 @@
+[Desktop Entry]
+X-Desktop-File-Install-Version=0.26
+Name=xsap
+Comment=Xorg SAP
+Icon=/usr/share/icons/xsap.png
+Categories=Science
+Exec=xsap
+Type=Application
